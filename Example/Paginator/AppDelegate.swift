@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  Paginator
 //
-//  Created by homanf on 12/15/2021.
-//  Copyright (c) 2021 homanf. All rights reserved.
+//  Created by Grigor Hakobyan on 12/15/2021.
+//  Copyright (c) 2021 Grigor Hakobyan. All rights reserved.
 //
 
 import UIKit

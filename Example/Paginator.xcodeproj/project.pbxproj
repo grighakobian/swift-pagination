@@ -28,8 +28,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		164CA128863E279DF84BDE23 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		26F723E6E41FFFA6F5EC7670 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		164CA128863E279DF84BDE23 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		26F723E6E41FFFA6F5EC7670 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		427CC71294B83F3875F4AB38 /* Pods_Paginator_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Paginator_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD01AFB9204008FA782 /* Paginator_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paginator_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -43,7 +43,7 @@
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		64FE576A44A7644DF42AA2AA /* Pods-Paginator_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Paginator_Tests.debug.xcconfig"; path = "Target Support Files/Pods-Paginator_Tests/Pods-Paginator_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		7568BD91E5C2ECD8FF635BCD /* Pods-Paginator_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Paginator_Tests.release.xcconfig"; path = "Target Support Files/Pods-Paginator_Tests/Pods-Paginator_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		7EBC2D27EE201CC87170A2FF /* Paginator.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = Paginator.podspec; path = ../Paginator.podspec; sourceTree = "<group>"; };
+		7EBC2D27EE201CC87170A2FF /* Paginator.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Paginator.podspec; path = ../Paginator.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A2F30F2B7F026C7A322CD42A /* Pods-Paginator_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Paginator_Example.release.xcconfig"; path = "Target Support Files/Pods-Paginator_Example/Pods-Paginator_Example.release.xcconfig"; sourceTree = "<group>"; };
 		EAAC2DB7ABB3243140DF3E44 /* Pods-Paginator_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Paginator_Example.debug.xcconfig"; path = "Target Support Files/Pods-Paginator_Example/Pods-Paginator_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		FCF68C6691BA4B97098DB720 /* Pods_Paginator_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Paginator_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -156,7 +156,6 @@
 				64FE576A44A7644DF42AA2AA /* Pods-Paginator_Tests.debug.xcconfig */,
 				7568BD91E5C2ECD8FF635BCD /* Pods-Paginator_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -227,6 +226,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
