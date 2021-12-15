@@ -1,0 +1,6 @@
+framework module Paginator {
+  umbrella header "Paginator-umbrella.h"
+
+  export *
+  module * { export * }
+}
