@@ -32,10 +32,10 @@ public struct ScrollDirection: OptionSet {
     /// Scroll direction down.
     static let down = ScrollDirection(rawValue: 1 << 3)
     
-    /// The horizontal scoll direction.
+    /// The horizontal scroll direction.
     static let horizontal: ScrollDirection = [.left, .right]
     
-    /// The vertical scoll direction.
+    /// The vertical scroll direction.
     static let vertical: ScrollDirection = [.up, .down]
     
     public let rawValue: Int8
