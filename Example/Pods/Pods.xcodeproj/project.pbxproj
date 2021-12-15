@@ -163,6 +163,7 @@
 		D02C1C51CB90DD7B58CCF76FB154F842 /* Pod */ = {
 			isa = PBXGroup;
 			children = (
+				DD5B1B70276A2AE500CA9515 /* Sources */,
 				BC49ACE96FD9B8370970FCB47AD9531C /* LICENSE */,
 				DFC9C76D1AB44C5B5A3BB3CFFD1EF652 /* Paginator.podspec */,
 				AEC67798C460945D7EED1A6901019549 /* README.md */,
@@ -191,6 +192,13 @@
 			);
 			name = "Support Files";
 			path = "Example/Pods/Target Support Files/Paginator";
+			sourceTree = "<group>";
+		};
+		DD5B1B70276A2AE500CA9515 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		EBABBDE7F3E0422EE5376A4078004795 /* Pods-Paginator_Example */ = {
