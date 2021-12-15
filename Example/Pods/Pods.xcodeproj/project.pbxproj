@@ -12,7 +12,6 @@
 		4D1FA65FCAA21A3F1A4138D0ACD52F03 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		8A34F35A6F3604DAB06247E24AE2AEC8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		92DF7FD076797520BF81D1DEF5C112E6 /* Paginator-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 1674BF0579007A8696A31112A2262574 /* Paginator-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AF0838A356E1AF0753904DFA21074C90 /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4BFFA8509CA76BD3507CA1D7B9DEC2 /* ReplaceMe.swift */; };
 		C67EC6D6F27393217A11C9A5FF3B7470 /* Pods-Paginator_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DAA862D99E159D884356962E946EE62F /* Pods-Paginator_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB667B079A061AED73636A46A5667655 /* Paginator-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 07397DC171BB4A462E48DDDF34A17A80 /* Paginator-dummy.m */; };
 		FD563FAB0959BA45E643B3E0F5BCD2AB /* Pods-Paginator_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A43B466693E5D6ABB942D841396E09 /* Pods-Paginator_Example-dummy.m */; };
@@ -51,21 +50,20 @@
 		72A43B466693E5D6ABB942D841396E09 /* Pods-Paginator_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Paginator_Example-dummy.m"; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		8E4CCCC89990CEBB71DDF01950D17FBC /* Pods-Paginator_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Paginator_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		9B4BFFA8509CA76BD3507CA1D7B9DEC2 /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaceMe.swift; path = Paginator/Classes/ReplaceMe.swift; sourceTree = "<group>"; };
 		9BC5475CE20705DC2B561CA41C5815D4 /* Pods-Paginator_Tests */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Paginator_Tests"; path = Pods_Paginator_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9EA58630F158A765CB83D807DADD0D77 /* Pods-Paginator_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Paginator_Example-umbrella.h"; sourceTree = "<group>"; };
 		A10992F8FF0D4ECF936D6DF47A088CC2 /* Pods-Paginator_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Paginator_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		A72E3291E7082A9FFBDFA92EABBFD330 /* Pods-Paginator_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Paginator_Tests-dummy.m"; sourceTree = "<group>"; };
 		ADD3CBA631B710C75DD38B0CE14140C0 /* Pods-Paginator_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Paginator_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
-		AEC67798C460945D7EED1A6901019549 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		AEC67798C460945D7EED1A6901019549 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B49C7EC2DEBDA8A28EBB44A817C49D7A /* Paginator.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Paginator.modulemap; sourceTree = "<group>"; };
-		BC49ACE96FD9B8370970FCB47AD9531C /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		BC49ACE96FD9B8370970FCB47AD9531C /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		BFFE2C765B3883E9CD01169F77F36C6F /* Pods-Paginator_Example */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Paginator_Example"; path = Pods_Paginator_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D07DBC9E0D78DC7E7852FDFC978E1E05 /* Pods-Paginator_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Paginator_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		D852723937EA85CFE5D5631F28678C36 /* Paginator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Paginator.release.xcconfig; sourceTree = "<group>"; };
 		DAA862D99E159D884356962E946EE62F /* Pods-Paginator_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Paginator_Tests-umbrella.h"; sourceTree = "<group>"; };
-		DFC9C76D1AB44C5B5A3BB3CFFD1EF652 /* Paginator.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = Paginator.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		DFC9C76D1AB44C5B5A3BB3CFFD1EF652 /* Paginator.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = Paginator.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		E86B544AB5877220B2ABE4DC67601D1E /* Paginator */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Paginator; path = Paginator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFFF2010487B3B389FB3E3D23C096E67 /* Paginator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Paginator.debug.xcconfig; sourceTree = "<group>"; };
 		F4ADC8E9526E540797D236633D2E064A /* Pods-Paginator_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Paginator_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -215,7 +213,6 @@
 		F98EA18AC0BA01D7DE71484CC8096E75 /* Paginator */ = {
 			isa = PBXGroup;
 			children = (
-				9B4BFFA8509CA76BD3507CA1D7B9DEC2 /* ReplaceMe.swift */,
 				D02C1C51CB90DD7B58CCF76FB154F842 /* Pod */,
 				DBAEA53A55B09FE95B846561BAB19A00 /* Support Files */,
 			);
@@ -368,7 +365,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB667B079A061AED73636A46A5667655 /* Paginator-dummy.m in Sources */,
-				AF0838A356E1AF0753904DFA21074C90 /* ReplaceMe.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -685,8 +681,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
