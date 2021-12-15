@@ -14,6 +14,7 @@
 		92DF7FD076797520BF81D1DEF5C112E6 /* Paginator-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 1674BF0579007A8696A31112A2262574 /* Paginator-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C67EC6D6F27393217A11C9A5FF3B7470 /* Pods-Paginator_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DAA862D99E159D884356962E946EE62F /* Pods-Paginator_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB667B079A061AED73636A46A5667655 /* Paginator-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 07397DC171BB4A462E48DDDF34A17A80 /* Paginator-dummy.m */; };
+		DD5B1B72276A2C9B00CA9515 /* Protected.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5B1B71276A2C9B00CA9515 /* Protected.swift */; };
 		FD563FAB0959BA45E643B3E0F5BCD2AB /* Pods-Paginator_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A43B466693E5D6ABB942D841396E09 /* Pods-Paginator_Example-dummy.m */; };
 		FD8F85623921C96C8C60873C6F325571 /* Pods-Paginator_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EA58630F158A765CB83D807DADD0D77 /* Pods-Paginator_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -63,8 +64,9 @@
 		D07DBC9E0D78DC7E7852FDFC978E1E05 /* Pods-Paginator_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Paginator_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		D852723937EA85CFE5D5631F28678C36 /* Paginator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Paginator.release.xcconfig; sourceTree = "<group>"; };
 		DAA862D99E159D884356962E946EE62F /* Pods-Paginator_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Paginator_Tests-umbrella.h"; sourceTree = "<group>"; };
+		DD5B1B71276A2C9B00CA9515 /* Protected.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protected.swift; sourceTree = "<group>"; };
 		DFC9C76D1AB44C5B5A3BB3CFFD1EF652 /* Paginator.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = Paginator.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		E86B544AB5877220B2ABE4DC67601D1E /* Paginator */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Paginator; path = Paginator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E86B544AB5877220B2ABE4DC67601D1E /* Paginator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Paginator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFFF2010487B3B389FB3E3D23C096E67 /* Paginator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Paginator.debug.xcconfig; sourceTree = "<group>"; };
 		F4ADC8E9526E540797D236633D2E064A /* Pods-Paginator_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Paginator_Example.release.xcconfig"; sourceTree = "<group>"; };
 		F60CCD8CFEF7736152C7EE34C840A53E /* Pods-Paginator_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Paginator_Example.modulemap"; sourceTree = "<group>"; };
@@ -101,7 +103,7 @@
 		2433E6411F0BE87439BBCE281EB69AA7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E86B544AB5877220B2ABE4DC67601D1E /* Paginator */,
+				E86B544AB5877220B2ABE4DC67601D1E /* Paginator.framework */,
 				BFFE2C765B3883E9CD01169F77F36C6F /* Pods-Paginator_Example */,
 				9BC5475CE20705DC2B561CA41C5815D4 /* Pods-Paginator_Tests */,
 			);
@@ -197,6 +199,7 @@
 		DD5B1B70276A2AE500CA9515 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				DD5B1B71276A2C9B00CA9515 /* Protected.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -292,7 +295,7 @@
 			);
 			name = Paginator;
 			productName = Paginator;
-			productReference = E86B544AB5877220B2ABE4DC67601D1E /* Paginator */;
+			productReference = E86B544AB5877220B2ABE4DC67601D1E /* Paginator.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		C3A126C81CC102F648C8997A004F5974 /* Pods-Paginator_Tests */ = {
@@ -322,6 +325,11 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					323984FA993F875D5B718D28B2ABF7E2 = {
+						LastSwiftMigration = 1310;
+					};
+				};
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -372,6 +380,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD5B1B72276A2C9B00CA9515 /* Protected.swift in Sources */,
 				CB667B079A061AED73636A46A5667655 /* Paginator-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -480,6 +489,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EFFF2010487B3B389FB3E3D23C096E67 /* Paginator.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
@@ -499,6 +509,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -510,6 +521,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D852723937EA85CFE5D5631F28678C36 /* Paginator.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
