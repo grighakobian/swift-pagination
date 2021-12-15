@@ -1,6 +1,6 @@
 # Paginator
 
-[![CI Status](https://img.shields.io/travis/homanf/Paginator.svg?style=flat)](https://travis-ci.org/homanf/Paginator)
+[![CI Status](https://img.shields.io/travis/Grigor Hakobyan/Paginator.svg?style=flat)](https://travis-ci.org/Grigor Hakobyan/Paginator)
 [![Version](https://img.shields.io/cocoapods/v/Paginator.svg?style=flat)](https://cocoapods.org/pods/Paginator)
 [![License](https://img.shields.io/cocoapods/l/Paginator.svg?style=flat)](https://cocoapods.org/pods/Paginator)
 [![Platform](https://img.shields.io/cocoapods/p/Paginator.svg?style=flat)](https://cocoapods.org/pods/Paginator)
@@ -22,7 +22,7 @@ pod 'Paginator'
 
 ## Author
 
-homanf, grighakobian@gmail.com
+Grigor Hakobyan, grighakobian@gmail.com
 
 ## License
 
