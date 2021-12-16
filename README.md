@@ -1,9 +1,8 @@
 # Paginator
 
-[![CI Status](https://img.shields.io/travis/Grigor Hakobyan/Paginator.svg?style=flat)](https://travis-ci.org/Grigor Hakobyan/Paginator)
-[![Version](https://img.shields.io/cocoapods/v/Paginator.svg?style=flat)](https://cocoapods.org/pods/Paginator)
-[![License](https://img.shields.io/cocoapods/l/Paginator.svg?style=flat)](https://cocoapods.org/pods/Paginator)
-[![Platform](https://img.shields.io/cocoapods/p/Paginator.svg?style=flat)](https://cocoapods.org/pods/Paginator)
+[![Version](https://img.shields.io/cocoapods/v/Pagination.svg?style=flat)](https://cocoapods.org/pods/Pagination)
+[![License](https://img.shields.io/cocoapods/l/Pagination.svg?style=flat)](https://cocoapods.org/pods/Pagination)
+[![Platform](https://img.shields.io/cocoapods/p/Pagination.svg?style=flat)](https://cocoapods.org/pods/Pagination)
 
 ## Example
 
@@ -17,7 +16,7 @@ Paginator is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'Paginator'
+pod 'Pagination'
 ```
 
 ## Author
