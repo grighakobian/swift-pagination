@@ -17,6 +17,7 @@
 		DD5B1B72276A2C9B00CA9515 /* Protected.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5B1B71276A2C9B00CA9515 /* Protected.swift */; };
 		DD5B1B75276A2F9700CA9515 /* PaginationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5B1B74276A2F9700CA9515 /* PaginationContext.swift */; };
 		DD5B1B79276A38D900CA9515 /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5B1B78276A38D900CA9515 /* ScrollDirection.swift */; };
+		DD613A70276B717D00AD4C2B /* Paginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD613A6F276B717D00AD4C2B /* Paginator.swift */; };
 		FD563FAB0959BA45E643B3E0F5BCD2AB /* Pods-Paginator_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A43B466693E5D6ABB942D841396E09 /* Pods-Paginator_Example-dummy.m */; };
 		FD8F85623921C96C8C60873C6F325571 /* Pods-Paginator_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EA58630F158A765CB83D807DADD0D77 /* Pods-Paginator_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
@@ -69,6 +70,7 @@
 		DD5B1B71276A2C9B00CA9515 /* Protected.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protected.swift; sourceTree = "<group>"; };
 		DD5B1B74276A2F9700CA9515 /* PaginationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationContext.swift; sourceTree = "<group>"; };
 		DD5B1B78276A38D900CA9515 /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
+		DD613A6F276B717D00AD4C2B /* Paginator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paginator.swift; sourceTree = "<group>"; };
 		DFC9C76D1AB44C5B5A3BB3CFFD1EF652 /* Paginator.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = Paginator.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		E86B544AB5877220B2ABE4DC67601D1E /* Paginator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Paginator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFFF2010487B3B389FB3E3D23C096E67 /* Paginator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Paginator.debug.xcconfig; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 				DD5B1B71276A2C9B00CA9515 /* Protected.swift */,
 				DD5B1B74276A2F9700CA9515 /* PaginationContext.swift */,
 				DD5B1B78276A38D900CA9515 /* ScrollDirection.swift */,
+				DD613A6F276B717D00AD4C2B /* Paginator.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				DD5B1B72276A2C9B00CA9515 /* Protected.swift in Sources */,
 				CB667B079A061AED73636A46A5667655 /* Paginator-dummy.m in Sources */,
 				DD5B1B75276A2F9700CA9515 /* PaginationContext.swift in Sources */,
+				DD613A70276B717D00AD4C2B /* Paginator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
