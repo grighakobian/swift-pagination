@@ -21,22 +21,22 @@
 public struct ScrollDirection: OptionSet {
     
     /// Scroll direction right.
-    static let right = ScrollDirection(rawValue: 1 << 0)
+    public static let right = ScrollDirection(rawValue: 1 << 0)
     
     /// Scroll direction left.
-    static let left = ScrollDirection(rawValue: 1 << 1)
+    public static let left = ScrollDirection(rawValue: 1 << 1)
     
     /// Scroll direction up.
-    static let up = ScrollDirection(rawValue: 1 << 2)
+    public static let up = ScrollDirection(rawValue: 1 << 2)
     
     /// Scroll direction down.
-    static let down = ScrollDirection(rawValue: 1 << 3)
+    public static let down = ScrollDirection(rawValue: 1 << 3)
     
     /// The horizontal scroll direction.
-    static let horizontal: ScrollDirection = [.left, .right]
+    public static let horizontal: ScrollDirection = [.left, .right]
     
     /// The vertical scroll direction.
-    static let vertical: ScrollDirection = [.up, .down]
+    public static let vertical: ScrollDirection = [.up, .down]
     
     public let rawValue: Int8
     
