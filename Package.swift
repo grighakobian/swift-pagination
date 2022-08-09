@@ -9,6 +9,6 @@ let package = Package(
         .library(name: "Paginator", targets: ["Paginator"]),
     ],
     targets: [
-        .target(name: "Paginator", dependencies: [], path: "/Sources")
+        .target(name: "Paginator", dependencies: [], path: "Sources/")
     ]
 )
