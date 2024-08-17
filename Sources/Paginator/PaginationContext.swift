@@ -24,6 +24,13 @@ public final class PaginationContext: NSObject {
         super.init()
     }
     
+    /// Indicates whether the ongoing context is completed.
+    public var isCompleted: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return state == .completed
+    }
+    
     /// Indicates whether the ongoing context is fetching.
     public var isFetching: Bool {
         lock.lock()
