@@ -19,59 +19,72 @@
 //    THE SOFTWARE.
 
 
-/// A pagination context to track pagination state.
-public final class PaginationContext {
-    /// The pagination context state.
+import Foundation
+
+/// A pagination context to manage and track the state of pagination.
+public final class PaginationContext: NSObject {
+    
+    /// The various states of the pagination context.
     public enum State {
-        /// State fetching.
+        /// The context is currently fetching.
         case fetching
-        /// State cancelled.
+        /// The context has been cancelled.
         case cancelled
-        /// State completed.
+        /// The context has completed its operation.
         case completed
-        /// State failed.
+        /// The context has failed during operation.
         case failed
     }
 
-    /// The pagination context state.
-    ///
-    /// Defaults to `.completed`.
-    @Protected
-    private var state: PaginationContext.State = .completed
+    private(set) var state: State
+    internal let lock: NSRecursiveLock
     
-    /// Indicates wheter the ongoing context is fetching.
+    public override init() {
+        self.state = .completed
+        self.lock = NSRecursiveLock()
+        super.init()
+    }
+    
+    /// Indicates whether the ongoing context is fetching.
     public var isFetching: Bool {
+        lock.lock()
+        defer { lock.unlock() }
         return state == .fetching
     }
     
-    /// Indicates wheter the ongoing context is cancelled.
+    /// Indicates whether the ongoing context is cancelled.
     public var isCancelled: Bool {
+        lock.lock()
+        defer { lock.unlock() }
         return state == .cancelled
     }
     
-    /// Indicates wheter the ongoing context is failed.
+    /// Indicates whether the ongoing context is failed.
     public var isFailed: Bool {
+        lock.lock()
+        defer { lock.unlock() }
         return state == .failed
     }
     
     /// Start the pagination context.
     public func start() {
+        lock.lock()
         state = .fetching
+        lock.unlock()
     }
     
     /// Cancel the ongoing pagination context.
     public func cancel() {
+        lock.lock()
         state = .cancelled
+        lock.unlock()
     }
     
-    /// Finish the ongoing pagination.
-    /// - Parameter isCompleted: A boolean value that indicates wheter the
-    ///                          ongoing pagination is completed or failed.
+    /// Marks the pagination context as completed or failed.
+    /// - Parameter isCompleted: A boolean value indicating if the pagination operation is completed (`true`) or failed (`false`).
     public func finish(_ isCompleted: Bool) {
-        if (isCompleted) {
-            state = .completed
-        } else {
-            state = .failed
-        }
+        lock.lock()
+        state = isCompleted ? .completed : .failed
+        lock.unlock()
     }
 }
