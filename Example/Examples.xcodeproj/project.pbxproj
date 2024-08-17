@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,7 @@
 		03A0095F2C71099B009A9429 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 03A0095E2C71099B009A9429 /* Base */; };
 		03A009612C71099C009A9429 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 03A009602C71099C009A9429 /* Assets.xcassets */; };
 		03A009642C71099C009A9429 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 03A009632C71099C009A9429 /* Base */; };
+		03A009712C710C28009A9429 /* Domain in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009702C710C28009A9429 /* Domain */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03A009712C710C28009A9429 /* Domain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +85,9 @@
 			dependencies = (
 			);
 			name = Examples;
+			packageProductDependencies = (
+				03A009702C710C28009A9429 /* Domain */,
+			);
 			productName = Examples;
 			productReference = 03A009542C71099B009A9429 /* Examples.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +116,9 @@
 				Base,
 			);
 			mainGroup = 03A0094B2C71099B009A9429;
+			packageReferences = (
+				03A0096F2C710C28009A9429 /* XCLocalSwiftPackageReference "../../bokusreader-app-ios/Domain" */,
+			);
 			productRefGroup = 03A009552C71099B009A9429 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -361,6 +369,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		03A0096F2C710C28009A9429 /* XCLocalSwiftPackageReference "../Paginator" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		03A009702C710C28009A9429 /* Paginator */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Paginator;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 03A0094C2C71099B009A9429 /* Project object */;
 }
