@@ -1,14 +1,24 @@
-// swift-tools-version:5.2
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version:5.9
 import PackageDescription
 
 let package = Package(
     name: "Paginator",
-    platforms: [.iOS(.v10)],
+    platforms: [
+        .iOS(.v12)
+    ],
     products: [
-        .library(name: "Paginator", targets: ["Paginator"]),
+        .library(
+            name: "Paginator",
+            targets: ["Paginator"]
+        ),
     ],
     targets: [
-        .target(name: "Paginator", dependencies: [], path: "Sources")
+        .target(
+            name: "Paginator",
+            path: "Sources"
+        ),
+        .testTarget(
+            name: "PaginatorTests",
+            dependencies: ["Paginator"])
     ]
 )
