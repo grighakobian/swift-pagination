@@ -18,30 +18,33 @@
 //    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //    THE SOFTWARE.
 
+/// Represents the possible scroll directions as an option set.
 public struct ScrollDirection: OptionSet {
     
-    /// Scroll direction right.
+    /// Scroll direction to the right.
     public static let right = ScrollDirection(rawValue: 1 << 0)
     
-    /// Scroll direction left.
+    /// Scroll direction to the left.
     public static let left = ScrollDirection(rawValue: 1 << 1)
     
-    /// Scroll direction up.
+    /// Scroll direction upward.
     public static let up = ScrollDirection(rawValue: 1 << 2)
     
-    /// Scroll direction down.
+    /// Scroll direction downward.
     public static let down = ScrollDirection(rawValue: 1 << 3)
     
-    /// The horizontal scroll direction.
+    /// The combined horizontal scroll directions (left and right).
     public static let horizontal: ScrollDirection = [.left, .right]
     
-    /// The vertical scroll direction.
+    /// The combined vertical scroll directions (up and down).
     public static let vertical: ScrollDirection = [.up, .down]
     
+    /// The raw value used to store the scroll direction options.
     public let rawValue: Int8
     
+    /// Creates a new `ScrollDirection` instance with the specified raw value.
+    /// - Parameter rawValue: The raw value representing the scroll directions.
     public init(rawValue: Int8) {
         self.rawValue = rawValue
     }
-    
 }

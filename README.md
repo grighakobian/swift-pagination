@@ -9,9 +9,6 @@ A flexible and easy-to-use pagination framework for iOS.
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Installation](#installation)
-  - [Swift Package Manager](#swift-package-manager)
-  - [CocoaPods](#cocoapods)
-  - [Carthage](#carthage)
 - [License](#license)
 
 ## Overview
