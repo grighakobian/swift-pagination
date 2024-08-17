@@ -93,7 +93,7 @@ open class Paginator: NSObject {
     /// This property tracks the state of pagination, including in-flight fetches and their status.
     ///
     /// Defaults to a new instance of `PaginationContext`. This context helps in determining whether pagination is ongoing or completed.
-    public private(set) var context: PaginationContext
+    private(set) var context: PaginationContext
 
     /// The number of screens of distance from the end of content that will trigger a batch fetch.
     ///
@@ -203,14 +203,11 @@ open class Paginator: NSObject {
         guard let delegate, delegate.paginator(self, shouldRequestNextPageWith: context) else {
             return
         }
-        
         // Retrieve the old and new content offsets from the change dictionary.
-        guard let oldContentOffset = change.oldValue, let newContentOffset = change.newValue else {
-            return
-        }
-        
+        let newContentOffset = change.newValue ?? .zero
         // Determine the scroll direction based on the change in content offset.
         let scrollDirection: ScrollDirection = {
+            let oldContentOffset = change.oldValue ?? .zero
             var scrollDirection = ScrollDirection()
             if oldContentOffset.x == newContentOffset.x {
                 scrollDirection.insert(oldContentOffset.y < newContentOffset.y ? .down : .up)
