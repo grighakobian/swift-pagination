@@ -16,9 +16,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         let moviesService = MoviesServiceImpl()
-        let viewController = PopularMoviesViewController(moviesService: moviesService)
-        let navigationController = UINavigationController(rootViewController: viewController)
-//        navigationController.navigationBar.prefersLargeTitles = true
+        let popularMoviesViewController = PopularMoviesViewController(moviesService: moviesService)
+        popularMoviesViewController.title = "TMDB"
+        let navigationController = UINavigationController(rootViewController: popularMoviesViewController)
+        navigationController.navigationBar.prefersLargeTitles = true
         self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
     }

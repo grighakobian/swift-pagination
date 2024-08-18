@@ -3,16 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		03A009922C7115E4009A9429 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009912C7115E4009A9429 /* SDWebImage */; };
-		03A009A72C711C0D009A9429 /* Paginator in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009A62C711C0D009A9429 /* Paginator */; };
 		03A009D12C712838009A9429 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009C32C712838009A9429 /* Movie.swift */; };
 		03A009D22C712838009A9429 /* MoviesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009C42C712838009A9429 /* MoviesResult.swift */; };
 		03A009D32C712838009A9429 /* MoviesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009C62C712838009A9429 /* MoviesService.swift */; };
 		03A009D82C7214E8009A9429 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009D72C7214E8009A9429 /* Reusable.swift */; };
+		03A009DD2C725E54009A9429 /* Paginator in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009DC2C725E54009A9429 /* Paginator */; };
+		03A009E02C725F00009A9429 /* Paginator in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009DF2C725F00009A9429 /* Paginator */; };
 		DD0B76D427395F0600817F3F /* MovieCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B76D327395F0600817F3F /* MovieCollectionViewCell.swift */; };
 		DD0B7710273A661B00817F3F /* MovieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B770F273A661B00817F3F /* MovieView.swift */; };
 		DD0B7722273AB93800817F3F /* PopularMoviesModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B7721273AB93800817F3F /* PopularMoviesModels.swift */; };
@@ -45,8 +46,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03A009E02C725F00009A9429 /* Paginator in Frameworks */,
+				03A009DD2C725E54009A9429 /* Paginator in Frameworks */,
 				03A009922C7115E4009A9429 /* SDWebImage in Frameworks */,
-				03A009A72C711C0D009A9429 /* Paginator in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,7 +173,8 @@
 			name = TMDB;
 			packageProductDependencies = (
 				03A009912C7115E4009A9429 /* SDWebImage */,
-				03A009A62C711C0D009A9429 /* Paginator */,
+				03A009DC2C725E54009A9429 /* Paginator */,
+				03A009DF2C725F00009A9429 /* Paginator */,
 			);
 			productName = TMDB;
 			productReference = DD9448952737F047001C8235 /* TMDB.app */;
@@ -202,7 +205,7 @@
 			mainGroup = DD94488C2737F047001C8235;
 			packageReferences = (
 				03A009902C7115E4009A9429 /* XCRemoteSwiftPackageReference "SDWebImage" */,
-				03A009A52C711C0D009A9429 /* XCRemoteSwiftPackageReference "Paginator" */,
+				03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../Paginator" */,
 			);
 			productRefGroup = DD9448962737F047001C8235 /* Products */;
 			projectDirPath = "";
@@ -440,6 +443,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../Paginator" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Paginator;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		03A009902C7115E4009A9429 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -447,14 +457,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.19.6;
-			};
-		};
-		03A009A52C711C0D009A9429 /* XCRemoteSwiftPackageReference "Paginator" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/grighakobian/Paginator";
-			requirement = {
-				branch = develop;
-				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -465,9 +467,12 @@
 			package = 03A009902C7115E4009A9429 /* XCRemoteSwiftPackageReference "SDWebImage" */;
 			productName = SDWebImage;
 		};
-		03A009A62C711C0D009A9429 /* Paginator */ = {
+		03A009DC2C725E54009A9429 /* Paginator */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 03A009A52C711C0D009A9429 /* XCRemoteSwiftPackageReference "Paginator" */;
+			productName = Paginator;
+		};
+		03A009DF2C725F00009A9429 /* Paginator */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = Paginator;
 		};
 /* End XCSwiftPackageProductDependency section */

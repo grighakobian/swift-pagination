@@ -40,5 +40,4 @@ enum PopularMovies {
     }
     
     typealias DataSource = UICollectionViewDiffableDataSource<Section, ViewModel>
-    typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<Section, ViewModel>
 }
