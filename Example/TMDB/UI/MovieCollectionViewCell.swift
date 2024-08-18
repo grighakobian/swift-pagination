@@ -10,7 +10,7 @@ import SDWebImage
 
 final class MovieCollectionViewCell: UICollectionViewCell {
     
-    private lazy var movieView = makeMovieView()
+    private(set) lazy var movieView = makeMovieView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -24,14 +24,11 @@ final class MovieCollectionViewCell: UICollectionViewCell {
         commonInit()
     }
     
-    func bind(item: MovieRepresentable) {
-        movieView.bind(item: item)
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        movieView.prepareForReuse()
+        movieView.imageView.image = nil
+        movieView.imageView.sd_cancelCurrentImageLoad()
     }
     
     private func commonInit() {
@@ -60,42 +57,6 @@ final class MovieCollectionViewCell: UICollectionViewCell {
         movieView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         movieView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         movieView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-    }
-}
-
-// MARK: - Interaction
-
-extension MovieCollectionViewCell {
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        isHighlighted = false
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        isHighlighted = true
-    }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesCancelled(touches, with: event)
-        isHighlighted = false
-    }
-    
-    override var isHighlighted: Bool {
-        didSet { shrink(isHighlighted) }
-    }
-    
-    private func shrink(_ shrink: Bool) {
-        UIView.animate(
-            withDuration: 0.8,
-            delay: 0,
-            usingSpringWithDamping: 0.4,
-            initialSpringVelocity: 0.8,
-            options: [.allowUserInteraction, .beginFromCurrentState],
-            animations: { self.transform = shrink ? CGAffineTransform(scaleX: 0.95, y: 0.95) : .identity },
-            completion: nil
-        )
     }
 }
 
