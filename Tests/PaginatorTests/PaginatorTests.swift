@@ -5,7 +5,7 @@ final class PaginatorTests: XCTestCase {
 
     var paginator: Paginator!
     var mockWindow: UIWindow!
-    var mockViewController: UITableViewController!
+    var mockViewController: UIViewController!
     var mockScrollView: UIScrollView!
     var mockDelegate: MockPaginationDelegate!
 
@@ -15,10 +15,10 @@ final class PaginatorTests: XCTestCase {
         paginator.leadingScreensForBatching = 0.5
         paginator.scrollableDirections = .vertical
         mockWindow = UIWindow()
-        mockViewController = UITableViewController(style: .plain)
-        mockScrollView = mockViewController.tableView
+        mockViewController = UIViewController()
+        mockScrollView = UIScrollView()
+        mockViewController.view = mockScrollView
         mockWindow.rootViewController = mockViewController
-        mockWindow.makeKeyAndVisible()
         mockDelegate = MockPaginationDelegate()
     }
 
@@ -44,18 +44,103 @@ final class PaginatorTests: XCTestCase {
         XCTAssertNil(paginator.scrollView, "scrollView should be nil")
         XCTAssertNil(paginator.delegate, "delegate should be nil")
     }
-
+    
     func testScrollDirection() {
         paginator.scrollableDirections = .horizontal
         XCTAssertEqual(paginator.scrollableDirections, .horizontal, "Scroll directions should be horizontal")
     }
+    
+    func testNotVisible() {
+        paginator.scrollableDirections = .vertical
+        paginator.delegate = mockDelegate
+        paginator.attach(to: mockScrollView)
+        // Simulate scroll to trigger pagination
+        mockScrollView.setContentOffset(CGPoint(x: 0, y: 1000), animated: false)
+        XCTAssertFalse(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith shouldn't be called if scroll view is not visible")
+    }
+    
+    func testIsFetching() {
+        mockWindow.makeKeyAndVisible()
+        paginator.scrollableDirections = .vertical
+        paginator.delegate = mockDelegate
+        paginator.attach(to: mockScrollView)
+        paginator.context.start()
+        mockScrollView.setContentOffset(CGPoint(x: 0, y: 1000), animated: false)
+        XCTAssertFalse(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith shouldn't be called if the context is already fetching")
+    }
+    
+    func testLeadingScreensIsEmpty() {
+        mockWindow.makeKeyAndVisible()
+        paginator.scrollableDirections = .vertical
+        paginator.leadingScreensForBatching = 0
+        paginator.delegate = mockDelegate
+        paginator.attach(to: mockScrollView)
+        mockScrollView.setContentOffset(CGPoint(x: 0, y: 1000), animated: false)
+        XCTAssertFalse(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith shouldn't be called if the leadingScreensForBatching is 0")
+    }
 
-    func testDelegateCalledOnFetchRequest() {
+    func testDelegateCalledVerticalScrollDirection() {
+        mockWindow.makeKeyAndVisible()
+        paginator.scrollableDirections = .vertical
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         // Simulate scroll to trigger pagination
         mockScrollView.setContentOffset(CGPoint(x: 0, y: 1000), animated: false)
         XCTAssertTrue(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith should be called")
+    }
+    
+    func testDelegateCalledHorizontalScrollDirection() {
+        mockWindow.makeKeyAndVisible()
+        paginator.scrollableDirections = .horizontal
+        paginator.delegate = mockDelegate
+        paginator.attach(to: mockScrollView)
+        // Simulate scroll to trigger pagination
+        mockScrollView.setContentOffset(CGPoint(x: 1000, y: 0), animated: false)
+        XCTAssertTrue(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith should be called")
+    }
+    
+    func testDelegateNotCalledWhenScrollingHorizontalDirection() {
+        mockWindow.makeKeyAndVisible()
+        mockScrollView.contentSize = CGSize(width: 400, height: 1200)
+        paginator.scrollableDirections = .vertical
+        paginator.delegate = mockDelegate
+        paginator.attach(to: mockScrollView)
+        // Simulate scroll to trigger pagination
+        mockScrollView.setContentOffset(CGPoint(x: 1000, y: 0), animated: false)
+        XCTAssertFalse(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith shouldn't be called")
+    }
+    
+    func testDelegateNotCalledWhenScrollingVerticalDirection() {
+        mockWindow.makeKeyAndVisible()
+        mockScrollView.contentSize = CGSize(width: 400, height: 1200)
+        paginator.scrollableDirections = .horizontal
+        paginator.delegate = mockDelegate
+        paginator.attach(to: mockScrollView)
+        // Simulate scroll to trigger pagination
+        mockScrollView.setContentOffset(CGPoint(x: 0, y: 1000), animated: false)
+        XCTAssertFalse(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith shouldn't be called")
+    }
+    
+    func testDelegateNotCalledWhenScrollingTowardHeadInVerticalScrollDirection() {
+        mockWindow.makeKeyAndVisible()
+        mockScrollView.contentSize = CGSize(width: 400, height: 1200)
+        paginator.scrollableDirections = .vertical
+        paginator.delegate = mockDelegate
+        paginator.attach(to: mockScrollView)
+        // Simulate scroll to trigger pagination
+        mockScrollView.setContentOffset(CGPoint(x: 0, y: -100), animated: false)
+        XCTAssertFalse(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith shouldn't be called")
+    }
+    
+    func testDelegateNotCalledWhenScrollingTowardHeadInHorizontalScrollDirection() {
+        mockWindow.makeKeyAndVisible()
+        mockScrollView.contentSize = CGSize(width: 400, height: 1200)
+        paginator.scrollableDirections = .horizontal
+        paginator.delegate = mockDelegate
+        paginator.attach(to: mockScrollView)
+        // Simulate scroll to trigger pagination
+        mockScrollView.setContentOffset(CGPoint(x: -100, y: 0), animated: false)
+        XCTAssertFalse(mockDelegate.didRequestNextPageCalled, "Delegate method didRequestNextPageWith shouldn't be called")
     }
     
     func testDelegateNotSet() {
@@ -66,7 +151,6 @@ final class PaginatorTests: XCTestCase {
     }
 }
 
-// Mocking the PaginationDelegate for testing
 class MockPaginationDelegate: PaginationDelegate {
     var didRequestNextPageCalled = false
     var shouldRequestNextPageResult = true
@@ -76,6 +160,8 @@ class MockPaginationDelegate: PaginationDelegate {
     }
 
     func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext) {
+        context.start()
         didRequestNextPageCalled = true
+        context.finish(true)
     }
 }
