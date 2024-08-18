@@ -204,15 +204,24 @@ open class Paginator: NSObject {
             return
         }
         // Retrieve the old and new content offsets from the change dictionary.
-        let newContentOffset = change.newValue ?? .zero
+        let newContentOffset = change.newValue!
         // Determine the scroll direction based on the change in content offset.
         let scrollDirection: ScrollDirection = {
-            let oldContentOffset = change.oldValue ?? .zero
+            let oldContentOffset = change.oldValue!
             var scrollDirection = ScrollDirection()
-            if oldContentOffset.x == newContentOffset.x {
-                scrollDirection.insert(oldContentOffset.y < newContentOffset.y ? .down : .up)
-            } else if oldContentOffset.y == newContentOffset.y {
-                scrollDirection.insert(oldContentOffset.x < newContentOffset.x ? .right : .left)
+            if oldContentOffset.x != newContentOffset.x {
+                if oldContentOffset.x < newContentOffset.x {
+                    scrollDirection.insert(.right)
+                } else {
+                    scrollDirection.insert(.left)
+                }
+            }
+            if oldContentOffset.y != newContentOffset.y {
+                if oldContentOffset.y < newContentOffset.y {
+                    scrollDirection.insert(.down)
+                } else {
+                    scrollDirection.insert(.up)
+                }
             }
             return scrollDirection
         }()
@@ -224,19 +233,23 @@ open class Paginator: NSObject {
             }
             return false
         }()
-        
         // Check if the scroll view is visible in the window.
         let isVisible = scrollView.window != nil
-        
         // Determine if the layout direction is right-to-left.
         let semanticContentAttribute = scrollView.semanticContentAttribute
         let shouldRenderRTLLayout = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
-        
-        // Determine if a new page should be requested based on various attributes and context.
-        let shouldRequestNextPage = shouldRequestNextPage(context: context, scrollDirection: scrollDirection, scrollableDirections: scrollableDirections, bounds: scrollView.bounds, contentSize: scrollView.contentSize, targetOffset: newContentOffset, leadingScreens: leadingScreensForBatching, visible: isVisible, shouldRenderRTLLayout: shouldRenderRTLLayout, flipsHorizontallyInOppositeLayoutDirection: flipsHorizontallyInOppositeLayoutDirection)
-        
         // If a new page should be requested, notify the delegate to perform the batch fetch.
-        if shouldRequestNextPage {
+        if shouldRequestNextPage(
+            context: context,
+            scrollDirection: scrollDirection,
+            scrollableDirections: scrollableDirections,
+            bounds: scrollView.bounds,
+            contentSize: scrollView.contentSize,
+            targetOffset: newContentOffset,
+            leadingScreens: leadingScreensForBatching,
+            visible: isVisible,
+            shouldRenderRTLLayout: shouldRenderRTLLayout,
+            flipsHorizontallyInOppositeLayoutDirection: flipsHorizontallyInOppositeLayoutDirection) {
             delegate.paginator(self, didRequestNextPageWith: context)
         }
     }
@@ -257,9 +270,20 @@ open class Paginator: NSObject {
     ///   - shouldRenderRTLLayout: A boolean indicating whether the layout direction should be rendered right-to-left.
     ///   - flipsHorizontallyInOppositeLayoutDirection: A boolean indicating whether the scroll view's layout flips horizontally in the opposite layout direction.
     /// - Returns: A boolean indicating whether a new page should be requested.
-    func shouldRequestNextPage(context: PaginationContext, scrollDirection: ScrollDirection, scrollableDirections: ScrollDirection, bounds: CGRect, contentSize: CGSize, targetOffset: CGPoint, leadingScreens: CGFloat, visible: Bool, shouldRenderRTLLayout: Bool, flipsHorizontallyInOppositeLayoutDirection: Bool) -> Bool {
+    func shouldRequestNextPage(
+        context: PaginationContext,
+        scrollDirection: ScrollDirection,
+        scrollableDirections: ScrollDirection,
+        bounds: CGRect,
+        contentSize: CGSize,
+        targetOffset: CGPoint,
+        leadingScreens: CGFloat,
+        visible: Bool,
+        shouldRenderRTLLayout: Bool,
+        flipsHorizontallyInOppositeLayoutDirection: Bool) -> Bool {
+        
         // If the scroll view is not visible, do not batch fetch.
-        if !visible {
+        guard visible else {
             return false
         }
         
@@ -270,6 +294,11 @@ open class Paginator: NSObject {
         
         // No fetching if leadingScreens is less than or equal to 0 or if bounds are empty.
         if leadingScreens <= 0.0 || bounds.isEmpty {
+            return false
+        }
+        
+        // Do not allow fetching if scroll direction is not observed.
+        guard scrollableDirections.contains(scrollDirection) else {
             return false
         }
         
@@ -289,13 +318,22 @@ open class Paginator: NSObject {
         }
         
         // If content length is smaller than the view length, always request a new page.
-        let hasSmallContent = contentLength < viewLength
-        if hasSmallContent {
+        if contentLength < viewLength {
             return true
         }
         
+        let isScrollingTowardHead: Bool = {
+            if scrollDirection.contains(.up) {
+                return true
+            }
+            if shouldRenderRTLLayout {
+                return scrollDirection.contains(.right)
+            } else {
+                return scrollDirection.contains(.left)
+            }
+        }()
+        
         // If scrolling towards the head of the content (up or left), do not request a new page.
-        let isScrollingTowardHead = scrollDirection.contains(.up) || (shouldRenderRTLLayout ? scrollDirection.contains(.right) : scrollDirection.contains(.left))
         if isScrollingTowardHead {
             return false
         }
@@ -305,8 +343,7 @@ open class Paginator: NSObject {
         var remainingDistance: CGFloat = 0
         
         // If the scroll view flips horizontally in the opposite layout direction and RTL layout is enabled, calculate remaining distance accordingly.
-        let containsHorizontalDirection = scrollableDirections.contains(.left) && scrollableDirections.contains(.right)
-        if !flipsHorizontallyInOppositeLayoutDirection && shouldRenderRTLLayout && containsHorizontalDirection {
+        if !flipsHorizontallyInOppositeLayoutDirection && shouldRenderRTLLayout && scrollableDirections.contains(.horizontal) {
             remainingDistance = offset
         } else {
             remainingDistance = contentLength - viewLength - offset
