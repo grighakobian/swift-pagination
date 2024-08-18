@@ -44,12 +44,9 @@ public final class PopularMoviesViewController: UICollectionViewController {
         }
         self.collectionView.dataSource = dataSource
         
-        self.paginator.scrollableDirections = .horizontal
-        self.paginator.leadingScreensForBatching = 0.2
-        self.paginator.delegate = self
+        self.paginator.scrollableDirections = .vertical
         self.paginator.attach(to: collectionView)
-         
-        self.title = "TMDB"
+        self.paginator.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -57,16 +54,14 @@ public final class PopularMoviesViewController: UICollectionViewController {
     }
         
     func loadMovies(in context: PaginationContext) {
+        context.start()
         Task {
             do {
-                context.start()
                 let nextPage = currentPage + 1
-                print("Start fetching page \(nextPage)")
                 let moviesResult = try await moviesService.getPopularMovies(page: nextPage)
                 self.updateMovies(with: moviesResult)
                 self.currentPage = nextPage
                 context.finish(true)
-                print("Fetching completed for page \(nextPage)")
             } catch {
                 context.finish(false)
             }
