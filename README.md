@@ -1,6 +1,9 @@
 | ![Paginator](/.github/Resources/Paginator.png) |
 |------------------------------------------------|
 
+<img src="/.github/Resources/Paginator.png" alt="Paginator" style="width: 100%; height: auto;">
+
+
 A flexible and easy-to-use pagination framework inspired by [Texture](https://github.com/TextureGroup/Texture) batch fetching API.
 
 - [Overview](#overview)
