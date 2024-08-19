@@ -35,18 +35,20 @@ public protocol PaginationDelegate: AnyObject {
 ///
 ///         paginator.delegate = self
 ///         paginator.attach(to: collectionView)
-///      }
+///     }
 /// }
+///
+/// // MARK: - PaginatorDelegate
 ///
 /// extension FeedViewController: PaginatorDelegate {
 ///
-///     func paginator(_ paginator: Paginator, willRequestNextPageWith context: PaginationContext) -> Bool {
+///     func paginator(_ paginator: Paginator, shouldRequestNextPageWith context: PaginationContext) -> Bool {
 ///         return isPagingEnabled
 ///     }
 ///
 ///     func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext) {
-///         let nextPage = currentPage + 1
 ///         context.start()
+///         let nextPage = currentPage + 1
 ///         feedProvider.provideFeed(page: nextPage, pageSize: 20) { [weak self] result in
 ///             switch result {
 ///             case .success(let newFeed):
@@ -61,7 +63,6 @@ public protocol PaginationDelegate: AnyObject {
 ///     }
 /// }
 /// ```
-///
 /// > Warning: It is mandatory to call `context.start()` when pagination begins and `context.finish(_:)` with either `true` or `false` once the data loading is complete, to accurately reflect the pagination state.
 ///
 /// This class provides methods to attach and detach from a scroll view and manage pagination state efficiently.
