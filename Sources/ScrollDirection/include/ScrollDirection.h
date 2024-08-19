@@ -1,10 +1,3 @@
-//
-//  ScrollDirection.h
-//
-//
-//  Created by Grigor Hakobyan on 19.08.24.
-//
-
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN

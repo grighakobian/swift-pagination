@@ -99,7 +99,7 @@ open class Paginator: NSObject {
     /// This property tracks the state of pagination, including in-flight fetches and their status.
     ///
     /// Defaults to a new instance of `PaginationContext`. This context helps in determining whether pagination is ongoing or completed.
-    private(set) var context: PaginationContext
+    public private(set) var context: PaginationContext
 
     /// The number of screens of distance from the end of content that will trigger a batch fetch.
     ///
@@ -113,7 +113,7 @@ open class Paginator: NSObject {
     /// This internal property is used for managing the KVO (Key-Value Observing) on the scroll view's content offset.
     ///
     /// Defaults to `nil`. It is automatically managed and should not be modified directly.
-    internal var observationToken: NSKeyValueObservation?
+    private(set) var observationToken: NSKeyValueObservation?
 
     /// Initializes a new instance of `Paginator` with specified scroll directions and batching settings.
     ///
