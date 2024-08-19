@@ -1,3 +1,5 @@
+![Paginator](/.github/Resources/Paginator.svg)
+
 # Paginator
 
 A flexible and easy-to-use pagination framework inspired by [Texture](https://github.com/TextureGroup/Texture) batch fetching API.
