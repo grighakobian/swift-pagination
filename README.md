@@ -9,7 +9,14 @@ A flexible and easy-to-use pagination framework inspired by [Texture](https://gi
 
 ## Overview
 
-`Paginator` is a flexible and easy-to-use pagination framework for iOS applications written in Swift. It provides an efficient way to handle paginated data in scrollable views like `UIScrollView`, `UITableView`, and `UICollectionView`. 
+`Paginator` is a flexible and easy-to-use pagination framework for iOS applications written in Swift. It provides an efficient way to handle paginated data in scrollable views like `UIScrollView`, `UITableView`, and `UICollectionView`.
+
+## Features
+
+- Supports both vertical and horizontal scroll directions.
+- Easily integrates with `UIScrollView`, `UITableView`, and `UICollectionView`.
+- Provides customizable batching settings.
+- **Objective-C Support**: Paginator supports Objective-C, allowing integration in projects written in Objective-C.
 
 With `Paginator`, you can effortlessly manage pagination in your app by automatically detecting when a user has scrolled close to the end of the current content and triggering the fetching of the next page. The framework supports both vertical and horizontal scrolling and is designed to work seamlessly with various UI components.
 
