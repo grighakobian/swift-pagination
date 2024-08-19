@@ -2,9 +2,6 @@
 
 A flexible and easy-to-use pagination framework inspired by [Texture](https://github.com/TextureGroup/Texture) batch fetching API.
 
-[![License](https://img.shields.io/cocoapods/l/Pagination.svg?style=flat)](https://cocoapods.org/pods/Pagination)
-[![Platform](https://img.shields.io/cocoapods/p/Pagination.svg?style=flat)](https://cocoapods.org/pods/Pagination)
-
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Installation](#installation)
