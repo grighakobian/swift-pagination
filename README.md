@@ -1,4 +1,4 @@
-![Paginator](/.github/Resources/Paginator.svg)
+![Paginator](/.github/Resources/Paginator.png)
 
 # Paginator
 
