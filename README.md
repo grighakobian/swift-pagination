@@ -2,7 +2,6 @@
 
 A flexible and easy-to-use pagination framework for iOS.
 
-[![Version](https://img.shields.io/cocoapods/v/Pagination.svg?style=flat)](https://cocoapods.org/pods/Pagination)
 [![License](https://img.shields.io/cocoapods/l/Pagination.svg?style=flat)](https://cocoapods.org/pods/Pagination)
 [![Platform](https://img.shields.io/cocoapods/p/Pagination.svg?style=flat)](https://cocoapods.org/pods/Pagination)
 
@@ -40,23 +39,6 @@ Paginator is available through [Swift Package Manager](https://swift.org/package
 
 ```swift
 .package(url: "https://github.com/grighakobian/Paginator.git", from: "0.1.0")
-```
-
-### CocoaPods
-
-Paginator is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```ruby
-pod 'Pagination', '~> 0.1.0'
-```
-
-### Carthage
-
-Paginator is also available through Carthage. To install it, add the following line to your `Cartfile`:
-
-```ruby
-github "grighakobian/Paginator" ~> 0.1.0
 ```
 
 ## License
