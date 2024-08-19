@@ -1,8 +1,12 @@
-import Foundation
-import UIKit
+import class Foundation.NSObject
+import class Foundation.NSKeyValueObservation
+import class UIKit.UIView
+import class UIKit.UIScrollView
+import class UIKit.UICollectionView
+import ScrollDirection
 
 /// A protocol that defines methods for handling pagination.
-public protocol PaginationDelegate: AnyObject {
+@objc public protocol PaginationDelegate: AnyObject {
     /// Called when the paginator is about to request the next page of data.
     /// - Parameters:
     ///   - paginator: The paginator instance requesting the next page.
@@ -35,18 +39,20 @@ public protocol PaginationDelegate: AnyObject {
 ///
 ///         paginator.delegate = self
 ///         paginator.attach(to: collectionView)
-///      }
+///     }
 /// }
+///
+/// // MARK: - PaginatorDelegate
 ///
 /// extension FeedViewController: PaginatorDelegate {
 ///
-///     func paginator(_ paginator: Paginator, willRequestNextPageWith context: PaginationContext) -> Bool {
+///     func paginator(_ paginator: Paginator, shouldRequestNextPageWith context: PaginationContext) -> Bool {
 ///         return isPagingEnabled
 ///     }
 ///
 ///     func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext) {
-///         let nextPage = currentPage + 1
 ///         context.start()
+///         let nextPage = currentPage + 1
 ///         feedProvider.provideFeed(page: nextPage, pageSize: 20) { [weak self] result in
 ///             switch result {
 ///             case .success(let newFeed):
@@ -61,10 +67,10 @@ public protocol PaginationDelegate: AnyObject {
 ///     }
 /// }
 /// ```
-///
 /// > Warning: It is mandatory to call `context.start()` when pagination begins and `context.finish(_:)` with either `true` or `false` once the data loading is complete, to accurately reflect the pagination state.
 ///
 /// This class provides methods to attach and detach from a scroll view and manage pagination state efficiently.
+@objcMembers
 open class Paginator: NSObject {
     
     /// The scroll view associated with the paginator.
@@ -108,25 +114,29 @@ open class Paginator: NSObject {
     ///
     /// Defaults to `nil`. It is automatically managed and should not be modified directly.
     internal var observationToken: NSKeyValueObservation?
-    
+
     /// Initializes a new instance of `Paginator` with specified scroll directions and batching settings.
     ///
     /// - Parameters:
     ///   - scrollableDirections: The scroll directions in which pagination should be enabled.
-    ///     Defaults to `.vertical`, meaning pagination will be triggered based on vertical scrolling.
     ///   - leadingScreensForBatching: The number of screens to keep ahead for triggering batch fetching.
-    ///     Defaults to `2.0`, meaning the pagination will be triggered when the user is within two screens of the end.
-    ///
-    /// This initializer sets up the `Paginator` with a new `PaginationContext`, configures the scrollable directions,
-    /// and sets the number of leading screens for batching. It prepares the `Paginator` for use in managing pagination
-    /// based on the provided settings.
-    public init(scrollableDirections: ScrollDirection = .vertical, leadingScreensForBatching: CGFloat = 2.0) {
+    public init(scrollableDirections: ScrollDirection, leadingScreensForBatching: CGFloat) {
         self.context = PaginationContext()
         self.scrollableDirections = scrollableDirections
         self.leadingScreensForBatching = leadingScreensForBatching
         super.init()
     }
-    
+
+    /// Initializes a new instance of `Paginator` with default settings.
+    ///
+    /// This initializer sets up the `Paginator` with a vertical scroll direction and a default batching setting of 2 screens.
+    public override init() {
+        self.context = PaginationContext()
+        self.scrollableDirections = .vertical
+        self.leadingScreensForBatching = 2.0
+        super.init()
+    }
+
     deinit {
         observationToken?.invalidate()
     }

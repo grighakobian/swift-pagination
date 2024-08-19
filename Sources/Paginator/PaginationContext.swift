@@ -1,6 +1,8 @@
-import Foundation
+import class Foundation.NSObject
+import class Foundation.NSLock
 
 /// A pagination context to manage and track the state of pagination.
+@objcMembers
 public final class PaginationContext: NSObject {
     
     /// The various states of the pagination context.

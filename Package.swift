@@ -15,10 +15,17 @@ let package = Package(
     targets: [
         .target(
             name: "Paginator",
-            path: "Sources"
+            dependencies: ["ScrollDirection"],
+            path: "Sources/Paginator"
+        ),
+        .target(
+            name: "ScrollDirection",
+            path: "Sources/ScrollDirection",
+            publicHeadersPath: "include"
         ),
         .testTarget(
             name: "PaginatorTests",
-            dependencies: ["Paginator"])
+            dependencies: ["Paginator"]
+        ),
     ]
 )
