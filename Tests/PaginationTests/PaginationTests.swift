@@ -159,7 +159,7 @@ class MockPaginationDelegate: PaginationDelegate {
         return shouldRequestNextPageResult
     }
 
-    func pagination(_ paginator: Pagination, didRequestNextPageWith context: PaginationContext) {
+    func pagination(_ paginator: Pagination, prefetchNextPageWith context: PaginationContext) {
         context.start()
         didRequestNextPageCalled = true
         context.finish(true)

@@ -3,17 +3,11 @@ import UIKit
 
 /// A protocol that defines methods for handling pagination.
 @objc public protocol PaginationDelegate: AnyObject {
-    /// Called when the pagination is about to request the next page of data.
-    /// - Parameters:
-    ///   - pagination: The pagination instance requesting the next page.
-    ///   - context: The pagination context containing the current state.
-    /// - Returns: A boolean indicating whether the pagination request should proceed.
-    func pagination(_ pagination: Pagination, shouldRequestNextPageWith context: PaginationContext) -> Bool
     /// Called when the pagination has requested the next page of data.
     /// - Parameters:
     ///   - pagination: The pagination instance that requested the next page.
     ///   - context: The pagination context containing the current state.
-    func pagination(_ pagination: Pagination, didRequestNextPageWith context: PaginationContext)
+    func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext)
 }
 
 /// A class that manages pagination for a `UIScrollView` by detecting when to request additional pages of data.
@@ -76,6 +70,11 @@ open class Pagination: NSObject {
     /// Defaults to `nil`.
     public private(set) weak var scrollView: UIScrollView?
 
+    /// A Boolean value that determines whether the pagination is enabled.
+    ///
+    ////// Defaults to `true`.
+    public var isEnabled: Bool
+
     /// The scrollable directions supported by the paginator for triggering pagination.
     ///
     /// This property defines whether pagination should occur based on vertical or horizontal scrolling.
@@ -117,6 +116,7 @@ open class Pagination: NSObject {
     ///   - scrollableDirections: The scroll directions in which pagination should be enabled.
     ///   - leadingScreensForBatching: The number of screens to keep ahead for triggering batch fetching.
     public init(scrollableDirections: ScrollDirection, leadingScreensForBatching: CGFloat) {
+        self.isEnabled = true
         self.context = PaginationContext()
         self.scrollableDirections = scrollableDirections
         self.leadingScreensForBatching = leadingScreensForBatching
@@ -127,6 +127,7 @@ open class Pagination: NSObject {
     ///
     /// This initializer sets up the `Pagination` with a vertical scroll direction and a default batching setting of 2 screens.
     public override init() {
+        self.isEnabled = true
         self.context = PaginationContext()
         self.scrollableDirections = .vertical
         self.leadingScreensForBatching = 2.0
@@ -205,10 +206,10 @@ open class Pagination: NSObject {
     /// - Parameter scrollView: The `UIScrollView` instance whose content offset changes are being observed.
     /// - Parameter change: An `NSKeyValueObservedChange<CGPoint>` object containing the old and new values of the `contentOffset`.
     func requestNextPageIfNeeded(for scrollView: UIScrollView, with change: NSKeyValueObservedChange<CGPoint>) {
-        // Check if the delegate allows requesting the next page.
-        guard let delegate, delegate.pagination(self, shouldRequestNextPageWith: context) else {
-            return
-        }
+        // Check if delegate is set.
+        guard let delegate else { return }
+        // Check if prefetching enabled.
+        guard isEnabled else { return }
         // Retrieve the old and new content offsets from the change dictionary.
         let newContentOffset = change.newValue!
         // Determine the scroll direction based on the change in content offset.
@@ -256,7 +257,7 @@ open class Pagination: NSObject {
             visible: isVisible,
             shouldRenderRTLLayout: shouldRenderRTLLayout,
             flipsHorizontallyInOppositeLayoutDirection: flipsHorizontallyInOppositeLayoutDirection) {
-            delegate.pagination(self, didRequestNextPageWith: context)
+            delegate.pagination(self, prefetchNextPageWith: context)
         }
     }
 
