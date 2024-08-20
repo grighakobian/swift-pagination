@@ -1,9 +1,5 @@
-import class Foundation.NSObject
-import class Foundation.NSKeyValueObservation
-import class UIKit.UIView
-import class UIKit.UIScrollView
-import class UIKit.UICollectionView
-import ScrollDirection
+import Foundation
+import UIKit
 
 /// A protocol that defines methods for handling pagination.
 @objc public protocol PaginationDelegate: AnyObject {
