@@ -1,5 +1,4 @@
-import class Foundation.NSObject
-import class Foundation.NSLock
+import Foundation
 
 /// A pagination context to manage and track the state of pagination.
 @objcMembers
