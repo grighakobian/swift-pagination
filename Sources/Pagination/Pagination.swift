@@ -62,17 +62,28 @@ import UIKit
 /// This class provides methods to attach and detach from a scroll view and manage pagination state efficiently.
 @objcMembers
 open class Pagination: NSObject {
-    
+
     /// The scroll view associated with the paginator.
     ///
-    /// This scroll view is monitored for scroll events to trigger pagination. It should be set using the `attach(to:)` method.
+    /// This scroll view is monitored for scroll events to trigger pagination.
     ///
     /// Defaults to `nil`.
-    public private(set) weak var scrollView: UIScrollView?
+    weak var scrollView: UIScrollView? {
+        willSet {
+            observationToken = nil
+        }
+        didSet {
+            if let scrollView {
+                observeValues(for: scrollView)
+            } else {
+                observationToken = nil
+            }
+        }
+    }
 
     /// A Boolean value that determines whether the pagination is enabled.
     ///
-    ////// Defaults to `true`.
+    ////// Defaults to `false`.
     public var isEnabled: Bool
 
     /// The scrollable directions supported by the paginator for triggering pagination.
@@ -110,73 +121,15 @@ open class Pagination: NSObject {
     /// Defaults to `nil`. It is automatically managed and should not be modified directly.
     private(set) var observationToken: NSKeyValueObservation?
 
-    /// Initializes a new instance of `Pagination` with specified scroll directions and batching settings.
-    ///
-    /// - Parameters:
-    ///   - scrollableDirections: The scroll directions in which pagination should be enabled.
-    ///   - leadingScreensForBatching: The number of screens to keep ahead for triggering batch fetching.
-    public init(scrollableDirections: ScrollDirection, leadingScreensForBatching: CGFloat) {
-        self.isEnabled = true
-        self.context = PaginationContext()
-        self.scrollableDirections = scrollableDirections
-        self.leadingScreensForBatching = leadingScreensForBatching
-        super.init()
-    }
-
     /// Initializes a new instance of `Pagination` with default settings.
     ///
     /// This initializer sets up the `Pagination` with a vertical scroll direction and a default batching setting of 2 screens.
     public override init() {
-        self.isEnabled = true
+        self.isEnabled = false
         self.context = PaginationContext()
         self.scrollableDirections = .vertical
         self.leadingScreensForBatching = 2.0
         super.init()
-    }
-
-    deinit {
-        observationToken?.invalidate()
-    }
-    
-    /// Attaches the `Pagination` to a new `UIScrollView` and starts observing its content offset.
-    ///
-    /// This method sets up the `Pagination` to observe the specified `UIScrollView` for changes in content offset,
-    /// enabling pagination functionality for the new scroll view. It invalidates any existing observation token
-    /// to stop observing the previous scroll view and then begins observing the new scroll view.
-    ///
-    /// - Parameter scrollView: The `UIScrollView` to which the `Pagination` will be attached. This scroll view
-    ///   will be observed for changes in its content offset to trigger pagination.
-    ///
-    /// This method is useful when you need to switch the `Pagination` to a different `UIScrollView`
-    /// or when the initial scroll view is dynamically changed.
-    public func attach(to scrollView: UIScrollView) {
-        // Invalidate the existing observation token to stop observing changes on the previous scroll view.
-        self.observationToken?.invalidate()
-        // Clear the existing observation token reference.
-        self.observationToken = nil
-        // Set the new scroll view to observe.
-        self.scrollView = scrollView
-        // Start observing the content offset of the new scroll view.
-        self.observeValues(for: scrollView)
-    }
-    
-    /// Detaches the `Pagination` from its associated `UIScrollView` and cleans up resources.
-    ///
-    /// This method invalidates the observation token to stop observing scroll view changes,
-    /// sets the `scrollView` and `delegate` properties to `nil`, and performs necessary cleanup.
-    ///
-    /// The `detach` method is useful when you want to stop pagination and release resources
-    /// associated with the `Pagination`. It is recommended to call this method when the
-    /// `Pagination` is no longer needed or when the associated `UIScrollView` is being deallocated.
-    public func detach() {
-        // Invalidate the observation token to stop observing scroll view changes.
-        self.observationToken?.invalidate()
-        // Set the observation token to nil to release any held resources.
-        self.observationToken = nil
-        // Set the scroll view to nil to break the reference to the associated scroll view.
-        self.scrollView = nil
-        // Set the delegate to nil to remove the reference to the delegate.
-        self.delegate = nil
     }
 
     /// Starts observing the content offset changes of the provided `UIScrollView`.

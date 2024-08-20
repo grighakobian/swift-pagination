@@ -6,11 +6,10 @@
 //
 
 import UIKit
-import Paginator
+import Pagination
 
 public final class PopularMoviesViewController: UICollectionViewController {
     private var currentPage: Int
-    private let paginator: Paginator
     private let moviesService: MoviesService
     private var dataSource: PopularMovies.DataSource!
     
@@ -18,15 +17,14 @@ public final class PopularMoviesViewController: UICollectionViewController {
     
     init(moviesService: MoviesService) {
         self.currentPage = 0
-        self.paginator = Paginator()
         self.moviesService = moviesService
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.5),
+            widthDimension: .fractionalWidth(1),
             heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalWidth(0.6))
+            heightDimension: .fractionalWidth(1.25))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         group.interItemSpacing = .flexible(20)
         let section = NSCollectionLayoutSection(group: group)
@@ -43,17 +41,16 @@ public final class PopularMoviesViewController: UICollectionViewController {
             return cell
         }
         self.collectionView.dataSource = dataSource
-        
-        self.paginator.scrollableDirections = .vertical
-        self.paginator.attach(to: collectionView)
-        self.paginator.delegate = self
+        self.collectionView.pagination.scrollableDirections = .vertical
+        self.collectionView.pagination.isEnabled = true
+        self.collectionView.pagination.delegate = self
     }
     
     required init?(coder: NSCoder) {
         fatalError("Use init(viewModel:) instead")
     }
         
-    func loadMovies(in context: PaginationContext) {
+    func loadMovies(using pagination: Pagination, in context: PaginationContext) {
         context.start()
         Task {
             do {
@@ -61,6 +58,9 @@ public final class PopularMoviesViewController: UICollectionViewController {
                 let moviesResult = try await moviesService.getPopularMovies(page: nextPage)
                 self.updateMovies(with: moviesResult)
                 self.currentPage = nextPage
+                if let totalPages = moviesResult.totalPages {
+                    pagination.isEnabled = self.currentPage < totalPages
+                }
                 context.finish(true)
             } catch {
                 context.finish(false)
@@ -84,11 +84,7 @@ public final class PopularMoviesViewController: UICollectionViewController {
 
 extension PopularMoviesViewController: PaginationDelegate {
     
-    public func paginator(_ paginator: Paginator, shouldRequestNextPageWith context: PaginationContext) -> Bool {
-        return true
-    }
-    
-    public func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext) {
-        loadMovies(in: context)
+    public func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
+        loadMovies(using: pagination, in: context)
     }
 }
