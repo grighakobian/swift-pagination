@@ -2,24 +2,24 @@
 import PackageDescription
 
 let package = Package(
-    name: "Paginator",
+    name: "Pagination",
     platforms: [
         .iOS(.v12)
     ],
     products: [
         .library(
-            name: "Paginator",
-            targets: ["Paginator"]
+            name: "Pagination",
+            targets: ["Pagination"]
         ),
     ],
     targets: [
         .target(
-            name: "Paginator",
-            path: "Sources/Paginator"
+            name: "Pagination",
+            path: "Sources/Pagination"
         ),
         .testTarget(
-            name: "PaginatorTests",
-            dependencies: ["Paginator"]
+            name: "PaginationTests",
+            dependencies: ["Pagination"]
         ),
     ]
 )

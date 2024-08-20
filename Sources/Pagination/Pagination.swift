@@ -214,7 +214,7 @@ open class Paginator: NSObject {
         // Determine the scroll direction based on the change in content offset.
         let scrollDirection: ScrollDirection = {
             let oldContentOffset = change.oldValue!
-            var scrollDirection = ScrollDirection()
+            let scrollDirection = ScrollDirection()
             if oldContentOffset.x != newContentOffset.x {
                 if oldContentOffset.x < newContentOffset.x {
                     scrollDirection.insert(.right)
