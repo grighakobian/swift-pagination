@@ -3,38 +3,38 @@ import UIKit
 
 /// A protocol that defines methods for handling pagination.
 @objc public protocol PaginationDelegate: AnyObject {
-    /// Called when the paginator is about to request the next page of data.
+    /// Called when the pagination is about to request the next page of data.
     /// - Parameters:
-    ///   - paginator: The paginator instance requesting the next page.
+    ///   - pagination: The pagination instance requesting the next page.
     ///   - context: The pagination context containing the current state.
     /// - Returns: A boolean indicating whether the pagination request should proceed.
-    func paginator(_ paginator: Paginator, shouldRequestNextPageWith context: PaginationContext) -> Bool
-    /// Called when the paginator has requested the next page of data.
+    func pagination(_ pagination: Pagination, shouldRequestNextPageWith context: PaginationContext) -> Bool
+    /// Called when the pagination has requested the next page of data.
     /// - Parameters:
-    ///   - paginator: The paginator instance that requested the next page.
+    ///   - pagination: The pagination instance that requested the next page.
     ///   - context: The pagination context containing the current state.
-    func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext)
+    func pagination(_ pagination: Pagination, didRequestNextPageWith context: PaginationContext)
 }
 
 /// A class that manages pagination for a `UIScrollView` by detecting when to request additional pages of data.
 ///
-/// The `Paginator` monitors the scroll view’s content offset and determines when to trigger pagination based on the scroll direction and proximity to the end of the content. It supports vertical and horizontal scrolling and allows you to configure the threshold for triggering new fetches.
+/// The `Pagination` monitors the scroll view’s content offset and determines when to trigger pagination based on the scroll direction and proximity to the end of the content. It supports vertical and horizontal scrolling and allows you to configure the threshold for triggering new fetches.
 ///
 /// **Example Usage:**
 /// ```swift
 /// import UIKit
-/// import Paginator
+/// import Pagination
 ///
 /// class FeedViewController: UICollectionViewController {
-///     private let paginator = Paginator()
+///     private let pagination = Pagination()
 ///     private var currentPage = 0
 ///     private var isPagingEnabled = true
 ///
 ///     override func viewDidLoad() {
 ///         super.viewDidLoad()
 ///
-///         paginator.delegate = self
-///         paginator.attach(to: collectionView)
+///         pagination.delegate = self
+///         pagination.attach(to: collectionView)
 ///     }
 /// }
 ///
@@ -42,11 +42,11 @@ import UIKit
 ///
 /// extension FeedViewController: PaginatorDelegate {
 ///
-///     func paginator(_ paginator: Paginator, shouldRequestNextPageWith context: PaginationContext) -> Bool {
+///     func pagination(_ pagination: Pagination, shouldRequestNextPageWith context: PaginationContext) -> Bool {
 ///         return isPagingEnabled
 ///     }
 ///
-///     func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext) {
+///     func pagination(_ pagination: Pagination, didRequestNextPageWith context: PaginationContext) {
 ///         context.start()
 ///         let nextPage = currentPage + 1
 ///         feedProvider.provideFeed(page: nextPage, pageSize: 20) { [weak self] result in
@@ -67,7 +67,7 @@ import UIKit
 ///
 /// This class provides methods to attach and detach from a scroll view and manage pagination state efficiently.
 @objcMembers
-open class Paginator: NSObject {
+open class Pagination: NSObject {
     
     /// The scroll view associated with the paginator.
     ///
@@ -111,7 +111,7 @@ open class Paginator: NSObject {
     /// Defaults to `nil`. It is automatically managed and should not be modified directly.
     private(set) var observationToken: NSKeyValueObservation?
 
-    /// Initializes a new instance of `Paginator` with specified scroll directions and batching settings.
+    /// Initializes a new instance of `Pagination` with specified scroll directions and batching settings.
     ///
     /// - Parameters:
     ///   - scrollableDirections: The scroll directions in which pagination should be enabled.
@@ -123,9 +123,9 @@ open class Paginator: NSObject {
         super.init()
     }
 
-    /// Initializes a new instance of `Paginator` with default settings.
+    /// Initializes a new instance of `Pagination` with default settings.
     ///
-    /// This initializer sets up the `Paginator` with a vertical scroll direction and a default batching setting of 2 screens.
+    /// This initializer sets up the `Pagination` with a vertical scroll direction and a default batching setting of 2 screens.
     public override init() {
         self.context = PaginationContext()
         self.scrollableDirections = .vertical
@@ -137,16 +137,16 @@ open class Paginator: NSObject {
         observationToken?.invalidate()
     }
     
-    /// Attaches the `Paginator` to a new `UIScrollView` and starts observing its content offset.
+    /// Attaches the `Pagination` to a new `UIScrollView` and starts observing its content offset.
     ///
-    /// This method sets up the `Paginator` to observe the specified `UIScrollView` for changes in content offset,
+    /// This method sets up the `Pagination` to observe the specified `UIScrollView` for changes in content offset,
     /// enabling pagination functionality for the new scroll view. It invalidates any existing observation token
     /// to stop observing the previous scroll view and then begins observing the new scroll view.
     ///
-    /// - Parameter scrollView: The `UIScrollView` to which the `Paginator` will be attached. This scroll view
+    /// - Parameter scrollView: The `UIScrollView` to which the `Pagination` will be attached. This scroll view
     ///   will be observed for changes in its content offset to trigger pagination.
     ///
-    /// This method is useful when you need to switch the `Paginator` to a different `UIScrollView`
+    /// This method is useful when you need to switch the `Pagination` to a different `UIScrollView`
     /// or when the initial scroll view is dynamically changed.
     public func attach(to scrollView: UIScrollView) {
         // Invalidate the existing observation token to stop observing changes on the previous scroll view.
@@ -159,14 +159,14 @@ open class Paginator: NSObject {
         self.observeValues(for: scrollView)
     }
     
-    /// Detaches the `Paginator` from its associated `UIScrollView` and cleans up resources.
+    /// Detaches the `Pagination` from its associated `UIScrollView` and cleans up resources.
     ///
     /// This method invalidates the observation token to stop observing scroll view changes,
     /// sets the `scrollView` and `delegate` properties to `nil`, and performs necessary cleanup.
     ///
     /// The `detach` method is useful when you want to stop pagination and release resources
-    /// associated with the `Paginator`. It is recommended to call this method when the
-    /// `Paginator` is no longer needed or when the associated `UIScrollView` is being deallocated.
+    /// associated with the `Pagination`. It is recommended to call this method when the
+    /// `Pagination` is no longer needed or when the associated `UIScrollView` is being deallocated.
     public func detach() {
         // Invalidate the observation token to stop observing scroll view changes.
         self.observationToken?.invalidate()
@@ -181,7 +181,7 @@ open class Paginator: NSObject {
     /// Starts observing the content offset changes of the provided `UIScrollView`.
     ///
     /// This method sets up Key-Value Observing (KVO) on the `contentOffset` property of the given `scrollView`.
-    /// It allows the `Paginator` to monitor scrolling and trigger pagination when needed based on the scroll view's content offset.
+    /// It allows the `Pagination` to monitor scrolling and trigger pagination when needed based on the scroll view's content offset.
     ///
     /// - Parameter scrollView: The `UIScrollView` instance whose content offset changes will be observed.
     ///   The method invalidates any existing observation token before setting up a new observer.
@@ -206,7 +206,7 @@ open class Paginator: NSObject {
     /// - Parameter change: An `NSKeyValueObservedChange<CGPoint>` object containing the old and new values of the `contentOffset`.
     func requestNextPageIfNeeded(for scrollView: UIScrollView, with change: NSKeyValueObservedChange<CGPoint>) {
         // Check if the delegate allows requesting the next page.
-        guard let delegate, delegate.paginator(self, shouldRequestNextPageWith: context) else {
+        guard let delegate, delegate.pagination(self, shouldRequestNextPageWith: context) else {
             return
         }
         // Retrieve the old and new content offsets from the change dictionary.
@@ -256,7 +256,7 @@ open class Paginator: NSObject {
             visible: isVisible,
             shouldRenderRTLLayout: shouldRenderRTLLayout,
             flipsHorizontallyInOppositeLayoutDirection: flipsHorizontallyInOppositeLayoutDirection) {
-            delegate.paginator(self, didRequestNextPageWith: context)
+            delegate.pagination(self, didRequestNextPageWith: context)
         }
     }
 

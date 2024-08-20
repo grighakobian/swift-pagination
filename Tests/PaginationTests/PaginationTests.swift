@@ -3,7 +3,7 @@ import XCTest
 
 final class PaginatorTests: XCTestCase {
 
-    var paginator: Paginator!
+    var paginator: Pagination!
     var mockWindow: UIWindow!
     var mockViewController: UIViewController!
     var mockScrollView: UIScrollView!
@@ -11,7 +11,7 @@ final class PaginatorTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        paginator = Paginator()
+        paginator = Pagination()
         paginator.leadingScreensForBatching = 0.5
         paginator.scrollableDirections = .vertical
         mockWindow = UIWindow()
@@ -155,11 +155,11 @@ class MockPaginationDelegate: PaginationDelegate {
     var didRequestNextPageCalled = false
     var shouldRequestNextPageResult = true
 
-    func paginator(_ paginator: Paginator, shouldRequestNextPageWith context: PaginationContext) -> Bool {
+    func pagination(_ paginator: Pagination, shouldRequestNextPageWith context: PaginationContext) -> Bool {
         return shouldRequestNextPageResult
     }
 
-    func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext) {
+    func pagination(_ paginator: Pagination, didRequestNextPageWith context: PaginationContext) {
         context.start()
         didRequestNextPageCalled = true
         context.finish(true)
