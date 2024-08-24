@@ -5,33 +5,38 @@ final class PaginationContextTests: XCTestCase {
 
     func testInitialState() {
         let context = PaginationContext()
-        XCTAssertFalse(context.isFetching, "Initial state should not be fetching")
+        XCTAssertFalse(context.isFetching)
     }
 
-    func testStartFetching() {
+    func testStartPrefetching() {
         let context = PaginationContext()
         context.start()
-        XCTAssertTrue(context.isFetching, "State should be fetching after start()")
+        XCTAssertTrue(context.isFetching)
     }
 
-    func testCancelFetching() {
+    func testCancelPrefetching() {
         let context = PaginationContext()
         context.start()
         context.cancel()
-        XCTAssertFalse(context.isFetching, "State should be cancelled after cancel()")
+        XCTAssertFalse(context.isFetching)
+        XCTAssertTrue(context.isCancelled)
     }
 
-    func testFinishFetchingSuccess() {
+    func testFinishPrefetchingSuccessfully() {
         let context = PaginationContext()
         context.start()
         context.finish(true)
-        XCTAssertFalse(context.isFetching, "State should be completed after finish(true)")
+        XCTAssertFalse(context.isFetching)
+        XCTAssertTrue(context.isCompleted)
+        XCTAssertFalse(context.isFailed)
     }
 
-    func testFinishFetchingFailure() {
+    func testPrefetchingFailed() {
         let context = PaginationContext()
         context.start()
         context.finish(false)
-        XCTAssertFalse(context.isFetching, "State should be failed after finish(false)")
+        XCTAssertFalse(context.isFetching)
+        XCTAssertFalse(context.isCompleted)
+        XCTAssertTrue(context.isFailed)
     }
 }
