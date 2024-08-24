@@ -63,19 +63,19 @@ import UIKit
     ///
     /// Defaults to `nil`.
     weak var scrollView: UIScrollView? {
-        didSet { togglePrefetcingEnabled() }
+        didSet { togglePrefetchingEnabled() }
     }
 
     /// A Boolean value that determines whether the pagination is enabled.
     ///
     /// Defaults to `true`.
     public var isEnabled: Bool {
-        didSet { togglePrefetcingEnabled() }
+        didSet { togglePrefetchingEnabled() }
     }
 
     /// The delegate to notify about pagination events.
     public weak var delegate: PaginationDelegate? {
-        didSet { togglePrefetcingEnabled() }
+        didSet { togglePrefetchingEnabled() }
     }
 
     /// The context managing the current state of pagination.
@@ -110,7 +110,7 @@ import UIKit
     }
 
     /// Manages the observation of the scroll view’s content offset to trigger pagination.
-    func togglePrefetcingEnabled() {
+    func togglePrefetchingEnabled() {
         guard let scrollView, let delegate, isEnabled else {
             self.observation = nil
             return
