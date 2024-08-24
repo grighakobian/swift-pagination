@@ -58,23 +58,22 @@ import Foundation
 
 extension PaginationDirection {
     /// Initializes a new `PaginationDirection` instance based on changes in content offset.
-    ///
+    /// 
     /// This initializer creates a `PaginationDirection` instance by comparing the old and new content offset values of a scroll view.
-    ///
-    /// - Parameter change: The observed change in content offset, typically provided by a `NSKeyValueObservedChange<CGPoint>`.
-    convenience init(change: NSKeyValueObservedChange<CGPoint>) {
+    /// - Parameters:
+    ///   - oldOffset: The old content offset.
+    ///   - newOffset: The new content offset
+    convenience init(oldOffset: CGPoint, newOffset: CGPoint) {
         self.init(rawValue: 0)
-        let oldValue = change.oldValue ?? .zero
-        let newValue = change.newValue ?? .zero
-        if oldValue.x != newValue.x {
-            if oldValue.x < newValue.x {
+        if oldOffset.x != newOffset.x {
+            if oldOffset.x < newOffset.x {
                 self.insert(.right)
             } else {
                 self.insert(.left)
             }
         }
-        if oldValue.y != newValue.y {
-            if oldValue.y < newValue.y {
+        if oldOffset.y != newOffset.y {
+            if oldOffset.y < newOffset.y {
                 self.insert(.down)
             } else {
                 self.insert(.up)

@@ -120,9 +120,11 @@ import UIKit
                 // If the scroll view is not visible, don't prefetch.
                 guard scrollView.window != nil else { return }
                 // Determine the scroll direction based on the change in content offset.
-                let paginationDirection = PaginationDirection(change: change)
+                let oldOffset = change.oldValue ?? .zero
+                let newOffset = change.newValue ?? .zero
+                let direction = PaginationDirection(oldOffset: oldOffset, newOffset: newOffset)
                 // If a new page should be requested, notify the delegate to prefetch.
-                if shouldPrefetchNextPage(for: scrollView, in: paginationDirection) {
+                if shouldPrefetchNextPage(for: scrollView, in: direction) {
                     delegate.pagination(self, prefetchNextPageWith: context)
                 }
             }
