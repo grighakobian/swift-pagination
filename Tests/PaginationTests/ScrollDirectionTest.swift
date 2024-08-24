@@ -4,7 +4,7 @@ import XCTest
 final class ScrollDirectionTest: XCTestCase {
 
     func testInsertDirectionMethod() {
-        let scrollDirection: ScrollDirection = .left
+        let scrollDirection: PaginationDirection = .left
         scrollDirection.insert(.right)
         XCTAssertTrue(scrollDirection.contains(.left))
         XCTAssertTrue(scrollDirection.contains(.right))
@@ -13,7 +13,7 @@ final class ScrollDirectionTest: XCTestCase {
     }
 
     func testContainsDirectionMethod() {
-        let scrollDirection: ScrollDirection = .vertical
+        let scrollDirection: PaginationDirection = .vertical
         XCTAssertFalse(scrollDirection.contains(.left))
         XCTAssertFalse(scrollDirection.contains(.right))
         XCTAssertTrue(scrollDirection.contains(.up))
@@ -21,7 +21,7 @@ final class ScrollDirectionTest: XCTestCase {
     }
 
     func testEquatableConformance() {
-        let scrollDirection: ScrollDirection = .left
+        let scrollDirection: PaginationDirection = .left
         XCTAssertTrue(scrollDirection == .left)
         XCTAssertFalse(scrollDirection == .right)
         scrollDirection.insert(.right)
@@ -31,7 +31,7 @@ final class ScrollDirectionTest: XCTestCase {
     }
 
     func testExpressibleByArrayLiteralComformance() {
-        let scrollDirection: ScrollDirection = [.up, .down]
+        let scrollDirection: PaginationDirection = [.up, .down]
         XCTAssertTrue(scrollDirection.contains(.up))
         XCTAssertTrue(scrollDirection.contains(.down))
         XCTAssertTrue(scrollDirection.contains(.vertical))

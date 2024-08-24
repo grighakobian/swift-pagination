@@ -41,8 +41,6 @@ public final class PopularMoviesViewController: UICollectionViewController {
             return cell
         }
         self.collectionView.dataSource = dataSource
-        self.collectionView.pagination.scrollableDirections = .vertical
-        self.collectionView.pagination.isEnabled = true
         self.collectionView.pagination.delegate = self
     }
     

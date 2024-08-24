@@ -1,4 +1,4 @@
-<img src="https://github.com/grighakobian/Paginator/blob/main/.github/Resources/Paginator.png" alt="Paginator" style="width: 100%; height: auto;">
+<img src="/.github/resources/preview.png" alt="Pagination" style="width: 100%; height: auto;">
 
 #
 

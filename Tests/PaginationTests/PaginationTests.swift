@@ -12,8 +12,8 @@ final class PaginatorTests: XCTestCase {
     override func setUp() {
         super.setUp()
         paginator = Pagination()
-        paginator.leadingScreensForBatching = 0.5
-        paginator.scrollableDirections = .vertical
+        paginator.leadingScreensForPrefetching = 0.5
+        paginator.direction = .vertical
         mockWindow = UIWindow()
         mockViewController = UIViewController()
         mockScrollView = UIScrollView()
@@ -40,18 +40,18 @@ final class PaginatorTests: XCTestCase {
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         paginator.detach()
-        XCTAssertNil(paginator.observationToken, "observationToken token should be nil")
+        XCTAssertNil(paginator.observation, "observation token should be nil")
         XCTAssertNil(paginator.scrollView, "scrollView should be nil")
         XCTAssertNil(paginator.delegate, "delegate should be nil")
     }
     
     func testScrollDirection() {
-        paginator.scrollableDirections = .horizontal
-        XCTAssertEqual(paginator.scrollableDirections, .horizontal, "Scroll directions should be horizontal")
+        paginator.direction = .horizontal
+        XCTAssertEqual(paginator.direction, .horizontal, "Scroll directions should be horizontal")
     }
     
     func testNotVisible() {
-        paginator.scrollableDirections = .vertical
+        paginator.direction = .vertical
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         // Simulate scroll to trigger pagination
@@ -61,7 +61,7 @@ final class PaginatorTests: XCTestCase {
     
     func testIsFetching() {
         mockWindow.makeKeyAndVisible()
-        paginator.scrollableDirections = .vertical
+        paginator.direction = .vertical
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         paginator.context.start()
@@ -71,8 +71,8 @@ final class PaginatorTests: XCTestCase {
     
     func testLeadingScreensIsEmpty() {
         mockWindow.makeKeyAndVisible()
-        paginator.scrollableDirections = .vertical
-        paginator.leadingScreensForBatching = 0
+        paginator.direction = .vertical
+        paginator.leadingScreensForPrefetching = 0
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         mockScrollView.setContentOffset(CGPoint(x: 0, y: 1000), animated: false)
@@ -81,7 +81,7 @@ final class PaginatorTests: XCTestCase {
 
     func testDelegateCalledVerticalScrollDirection() {
         mockWindow.makeKeyAndVisible()
-        paginator.scrollableDirections = .vertical
+        paginator.direction = .vertical
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         // Simulate scroll to trigger pagination
@@ -91,7 +91,7 @@ final class PaginatorTests: XCTestCase {
     
     func testDelegateCalledHorizontalScrollDirection() {
         mockWindow.makeKeyAndVisible()
-        paginator.scrollableDirections = .horizontal
+        paginator.direction = .horizontal
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         // Simulate scroll to trigger pagination
@@ -102,7 +102,7 @@ final class PaginatorTests: XCTestCase {
     func testDelegateNotCalledWhenScrollingHorizontalDirection() {
         mockWindow.makeKeyAndVisible()
         mockScrollView.contentSize = CGSize(width: 400, height: 1200)
-        paginator.scrollableDirections = .vertical
+        paginator.direction = .vertical
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         // Simulate scroll to trigger pagination
@@ -113,7 +113,7 @@ final class PaginatorTests: XCTestCase {
     func testDelegateNotCalledWhenScrollingVerticalDirection() {
         mockWindow.makeKeyAndVisible()
         mockScrollView.contentSize = CGSize(width: 400, height: 1200)
-        paginator.scrollableDirections = .horizontal
+        paginator.direction = .horizontal
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         // Simulate scroll to trigger pagination
@@ -124,7 +124,7 @@ final class PaginatorTests: XCTestCase {
     func testDelegateNotCalledWhenScrollingTowardHeadInVerticalScrollDirection() {
         mockWindow.makeKeyAndVisible()
         mockScrollView.contentSize = CGSize(width: 400, height: 1200)
-        paginator.scrollableDirections = .vertical
+        paginator.direction = .vertical
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         // Simulate scroll to trigger pagination
@@ -135,7 +135,7 @@ final class PaginatorTests: XCTestCase {
     func testDelegateNotCalledWhenScrollingTowardHeadInHorizontalScrollDirection() {
         mockWindow.makeKeyAndVisible()
         mockScrollView.contentSize = CGSize(width: 400, height: 1200)
-        paginator.scrollableDirections = .horizontal
+        paginator.direction = .horizontal
         paginator.delegate = mockDelegate
         paginator.attach(to: mockScrollView)
         // Simulate scroll to trigger pagination
