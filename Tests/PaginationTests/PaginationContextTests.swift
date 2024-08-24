@@ -6,12 +6,18 @@ final class PaginationContextTests: XCTestCase {
     func testInitialState() {
         let context = PaginationContext()
         XCTAssertFalse(context.isFetching)
+        XCTAssertFalse(context.isCancelled)
+        XCTAssertFalse(context.isCompleted)
+        XCTAssertFalse(context.isFailed)
     }
 
     func testStartPrefetching() {
         let context = PaginationContext()
         context.start()
         XCTAssertTrue(context.isFetching)
+        XCTAssertFalse(context.isCancelled)
+        XCTAssertFalse(context.isCompleted)
+        XCTAssertFalse(context.isFailed)
     }
 
     func testCancelPrefetching() {
@@ -20,6 +26,8 @@ final class PaginationContextTests: XCTestCase {
         context.cancel()
         XCTAssertFalse(context.isFetching)
         XCTAssertTrue(context.isCancelled)
+        XCTAssertFalse(context.isCompleted)
+        XCTAssertFalse(context.isFailed)
     }
 
     func testFinishPrefetchingSuccessfully() {
@@ -27,6 +35,7 @@ final class PaginationContextTests: XCTestCase {
         context.start()
         context.finish(true)
         XCTAssertFalse(context.isFetching)
+        XCTAssertFalse(context.isCancelled)
         XCTAssertTrue(context.isCompleted)
         XCTAssertFalse(context.isFailed)
     }
@@ -36,6 +45,7 @@ final class PaginationContextTests: XCTestCase {
         context.start()
         context.finish(false)
         XCTAssertFalse(context.isFetching)
+        XCTAssertFalse(context.isCancelled)
         XCTAssertFalse(context.isCompleted)
         XCTAssertTrue(context.isFailed)
     }
