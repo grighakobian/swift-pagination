@@ -1,6 +1,5 @@
 import ObjectiveC
 import UIKit
-
 /// A key used for associating the `Pagination` instance with a `UIScrollView` object.
 private var paginationKey: UInt8 = 0
 /// Extension to add pagination functionality to any UIScrollView or its subclasses.
