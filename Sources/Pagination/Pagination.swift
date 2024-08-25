@@ -126,9 +126,10 @@ import UIKit
   ///   - scrollView: The `UIScrollView` that is being observed for content offset changes.
   ///   - change: The `NSKeyValueObservedChange<CGPoint>` that represents the old and new content offset of the `scrollView`.
   func prefetchNextPageIfNeeded(
-    scrollView: UIScrollView, 
+    scrollView: UIScrollView,
     delegate: PaginationDelegate,
-    change: NSKeyValueObservedChange<CGPoint>) {
+    change: NSKeyValueObservedChange<CGPoint>
+  ) {
     // If the scroll view is not visible, don't prefetch.
     // Determine the scroll direction based on the change in content offset.
     let scrollDirection: ScrollDirection = {
