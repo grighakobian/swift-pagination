@@ -1,11 +1,13 @@
+import Dispatch
+
 @testable import Pagination
 
 final class MockPaginationDelegate: PaginationDelegate {
-    var didRequestNextPageCalled = false
+  var didPrefetchNextPageCalled = false
 
-    func pagination(_ paginator: Pagination, prefetchNextPageWith context: PaginationContext) {
-        context.start()
-        self.didRequestNextPageCalled = true
-        context.finish(true)
-    }
+  func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
+    context.start()
+    self.didPrefetchNextPageCalled = true
+    context.finish(true)
+  }
 }
