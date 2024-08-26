@@ -115,9 +115,9 @@ import UIKit
       self.observation = nil
       return
     }
-    self.observation = scrollView.observe(\.contentOffset, options: [.old, .new]) {
+    self.observation = scrollView.observe(\.contentOffset, options: [.old, .new]) { [unowned self]
       scrollView, change in
-      self.prefetchNextPageIfNeeded(scrollView: scrollView, delegate: delegate, change: change)
+        self.prefetchNextPageIfNeeded(scrollView: scrollView, delegate: delegate, change: change)
     }
   }
 
@@ -182,90 +182,90 @@ import UIKit
       delegate.pagination(self, prefetchNextPageWith: context)
     }
   }
-}
 
-/// Determines whether the next page of data should be prefetched based on the scroll view’s current state and scrolling direction.
-/// - Parameters:
-///   - context: The context managing the current state of pagination.
-///   - scrollDirection: The direction in which the user is scrolling.
-///   - scrollableDirections: The overall direction of pagination (e.g., vertical or horizontal).
-///   - isScrollViewVisible: A Boolean value indicating whether the scroll view is currently visible on the screen.
-///   - scrollViewBounds: The bounds of the `UIScrollView`.
-///   - scrollViewContentSize: The total size of the content in the `UIScrollView`.
-///   - scrollViewContentOffset: The current content offset of the `UIScrollView`.
-///   - leadingScreens: The number of screens' worth of content that should be visible before prefetching the next page.
-///   - shouldRenderRTLLayout: A Boolean value indicating whether the layout direction is right-to-left.
-///   - flipsHorizontallyInOppositeLayoutDirection: A Boolean value indicating whether the scroll view flips horizontally in opposite layout directions (applicable to `UICollectionView`).
-///
-/// - Returns: A Boolean value indicating whether the next page should be prefetched.
-func shouldPrefetchNextPage(
-  context: PaginationContext,
-  scrollDirection: ScrollDirection,
-  scrollableDirections: ScrollDirection,
-  isScrollViewVisible: Bool,
-  scrollViewBounds: CGRect,
-  scrollViewContentSize: CGSize,
-  scrollViewContentOffset: CGPoint,
-  leadingScreens: CGFloat,
-  shouldRenderRTLLayout: Bool,
-  flipsHorizontallyInOppositeLayoutDirection: Bool
-) -> Bool {
-  // Do not allow fetching if a batch is already in-flight and hasn't been completed or cancelled.
-  if context.isFetching {
-    return false
-  }
-  // No prefetching if leadingScreens is less than or equal to 0 or if bounds are empty.
-  if leadingScreens <= 0.0 || scrollViewBounds.isEmpty {
-    return false
-  }
-  let offset: CGFloat
-  let viewLength: CGFloat
-  let contentLength: CGFloat
-  if scrollableDirections.contains(.vertical) {
-    offset = scrollViewContentOffset.y
-    viewLength = scrollViewBounds.size.height
-    contentLength = scrollViewContentSize.height
-  } else {
-    offset = scrollViewContentOffset.x
-    viewLength = scrollViewBounds.size.width
-    contentLength = scrollViewContentSize.width
-  }
-  // If content length is smaller than the view length, always request a new page.
-  let hasSmallContent = contentLength < viewLength
-  if hasSmallContent {
-    return true
-  }
-  // If we are not visible, but we do have enough content to fill visible area,
-  // don't batch fetch.
-  guard isScrollViewVisible else {
-    return false
-  }
-  // If they are scrolling toward the head of content, don't batch fetch.
-  let isScrollingTowardHead: Bool = {
-    if scrollDirection.contains(.up) {
-      return true
+    /// Determines whether the next page of data should be prefetched based on the scroll view’s current state and scrolling direction.
+    /// - Parameters:
+    ///   - context: The context managing the current state of pagination.
+    ///   - scrollDirection: The direction in which the user is scrolling.
+    ///   - scrollableDirections: The overall direction of pagination (e.g., vertical or horizontal).
+    ///   - isScrollViewVisible: A Boolean value indicating whether the scroll view is currently visible on the screen.
+    ///   - scrollViewBounds: The bounds of the `UIScrollView`.
+    ///   - scrollViewContentSize: The total size of the content in the `UIScrollView`.
+    ///   - scrollViewContentOffset: The current content offset of the `UIScrollView`.
+    ///   - leadingScreens: The number of screens' worth of content that should be visible before prefetching the next page.
+    ///   - shouldRenderRTLLayout: A Boolean value indicating whether the layout direction is right-to-left.
+    ///   - flipsHorizontallyInOppositeLayoutDirection: A Boolean value indicating whether the scroll view flips horizontally in opposite layout directions (applicable to `UICollectionView`).
+    ///
+    /// - Returns: A Boolean value indicating whether the next page should be prefetched.
+    func shouldPrefetchNextPage(
+      context: PaginationContext,
+      scrollDirection: ScrollDirection,
+      scrollableDirections: ScrollDirection,
+      isScrollViewVisible: Bool,
+      scrollViewBounds: CGRect,
+      scrollViewContentSize: CGSize,
+      scrollViewContentOffset: CGPoint,
+      leadingScreens: CGFloat,
+      shouldRenderRTLLayout: Bool,
+      flipsHorizontallyInOppositeLayoutDirection: Bool
+    ) -> Bool {
+      // Do not allow fetching if a batch is already in-flight and hasn't been completed or cancelled.
+      if context.isFetching {
+        return false
+      }
+      // No prefetching if leadingScreens is less than or equal to 0 or if bounds are empty.
+      if leadingScreens <= 0.0 || scrollViewBounds.isEmpty {
+        return false
+      }
+      let offset: CGFloat
+      let viewLength: CGFloat
+      let contentLength: CGFloat
+      if scrollableDirections.contains(.vertical) {
+        offset = scrollViewContentOffset.y
+        viewLength = scrollViewBounds.size.height
+        contentLength = scrollViewContentSize.height
+      } else {
+        offset = scrollViewContentOffset.x
+        viewLength = scrollViewBounds.size.width
+        contentLength = scrollViewContentSize.width
+      }
+      // If content length is smaller than the view length, always request a new page.
+      let hasSmallContent = contentLength < viewLength
+      if hasSmallContent {
+        return true
+      }
+      // If we are not visible, but we do have enough content to fill visible area,
+      // don't batch fetch.
+      guard isScrollViewVisible else {
+        return false
+      }
+      // If they are scrolling toward the head of content, don't batch fetch.
+      let isScrollingTowardHead: Bool = {
+        if scrollDirection.contains(.up) {
+          return true
+        }
+        if shouldRenderRTLLayout {
+          return scrollDirection.contains(.right)
+        } else {
+          return scrollDirection.contains(.left)
+        }
+      }()
+      if isScrollingTowardHead {
+        return false
+      }
+      // Calculate remaining and trigger distance
+      let triggerDistance = viewLength * leadingScreens
+      let remainingDistance: CGFloat = {
+        // If the scroll view flips horizontally in the opposite layout direction and RTL layout is enabled, calculate remaining distance accordingly.
+        if !flipsHorizontallyInOppositeLayoutDirection
+          && shouldRenderRTLLayout
+          && scrollableDirections.contains(.horizontal)
+        {
+          return offset
+        } else {
+          return contentLength - viewLength - offset
+        }
+      }()
+      return remainingDistance <= triggerDistance
     }
-    if shouldRenderRTLLayout {
-      return scrollDirection.contains(.right)
-    } else {
-      return scrollDirection.contains(.left)
-    }
-  }()
-  if isScrollingTowardHead {
-    return false
-  }
-  // Calculate remaining and trigger distance
-  let triggerDistance = viewLength * leadingScreens
-  let remainingDistance: CGFloat = {
-    // If the scroll view flips horizontally in the opposite layout direction and RTL layout is enabled, calculate remaining distance accordingly.
-    if !flipsHorizontallyInOppositeLayoutDirection
-      && shouldRenderRTLLayout
-      && scrollableDirections.contains(.horizontal)
-    {
-      return offset
-    } else {
-      return contentLength - viewLength - offset
-    }
-  }()
-  return remainingDistance <= triggerDistance
 }
