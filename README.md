@@ -42,45 +42,88 @@ Paginator is available through [Swift Package Manager](https://swift.org/package
 
 ```swift
 import UIKit
-import Paginator
-   
+import Pagination
+
 class FeedViewController: UICollectionViewController {
-    private let paginator = Paginator()
     private var currentPage = 0
-    private var isPagingEnabled = true
-   
+    private let feedProvider: FeedProvider
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        paginator.delegate = self
-        paginator.attach(to: collectionView)
+        collectionView.pagination.isEnabled = true
+        collectionView.pagination.direction = .vertical
+        collectionView.pagination.delegate = self
     }
 }
 
-// MARK: - PaginatorDelegate
-   
-extension FeedViewController: PaginatorDelegate {
-   
-    func paginator(_ paginator: Paginator, shouldRequestNextPageWith context: PaginationContext) -> Bool {
-        return isPagingEnabled
-    }
-   
-    func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext) {
-        context.start()
+// MARK: - PaginationDelegate
+
+extension FeedViewController: PaginationDelegate {
+
+    func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
         let nextPage = currentPage + 1
         feedProvider.provideFeed(page: nextPage, pageSize: 20) { [weak self] result in
             switch result {
             case .success(let newFeed):
                 self?.currentPage = nextPage
-                self?.isPagingEnabled = nextPage < newFeed.totalPages
+                pagination.isEnabled = nextPage < newFeed.totalPages
                 self?.reload(using: newFeed)
                 context.finish(true)
-            case .failure(let error):
+            case .failure:
                 context.finish(false)
             }
         }
     }
 }
+```
+
+### Example Usage in Objective-C
+
+```objc
+#import <UIKit/UIKit.h>
+@import Pagination;
+
+@interface FeedViewController : UICollectionViewController <PaginationDelegate>
+
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, strong) FeedProvider *feedProvider;
+
+@end
+
+@implementation FeedViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.currentPage = 0;
+    self.collectionView.pagination.isEnabled = YES;
+    self.collectionView.pagination.direction = PaginationDirectionVertical;
+    self.collectionView.pagination.delegate = self;
+}
+
+// MARK: - PaginationDelegate
+
+- (void)pagination:(Pagination *)pagination prefetchNextPageWithContext:(PaginationContext *)context {
+    NSInteger nextPage = self.currentPage + 1;
+    [self.feedProvider provideFeedWithPage:nextPage pageSize:20 completion:^(FeedResult *result) {
+        switch (result.status) {
+            case FeedResultSuccess: {
+                Feed *newFeed = result.feed;
+                self.currentPage = nextPage;
+                pagination.isEnabled = (nextPage < newFeed.totalPages);
+                [self reloadUsingFeed:newFeed];
+                [context finish:YES];
+                break;
+            }
+            case FeedResultFailure:
+                [context finish:NO];
+                break;
+        }
+    }];
+}
+
+@end
 ```
 
 ## License

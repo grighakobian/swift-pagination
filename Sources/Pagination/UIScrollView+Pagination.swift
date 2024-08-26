@@ -27,6 +27,8 @@ extension UIScrollView {
   ///     private var currentPage = 0
   ///     private let feedProvider: FeedProvider
   ///
+  ///     // .. init
+  ///
   ///     override func viewDidLoad() {
   ///         super.viewDidLoad()
   ///
@@ -46,7 +48,7 @@ extension UIScrollView {
   ///             switch result {
   ///             case .success(let newFeed):
   ///                 self?.currentPage = nextPage
-  ///                 pagination.isPagingEnabled = nextPage < newFeed.totalPages
+  ///                 pagination.isEnabled = nextPage < newFeed.totalPages
   ///                 self?.reload(using: newFeed)
   ///                 context.finish(true)
   ///             case .failure:
