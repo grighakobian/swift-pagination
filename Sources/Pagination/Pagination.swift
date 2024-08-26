@@ -134,8 +134,8 @@ import UIKit
     // If the scroll view is not visible, don't prefetch.
     // Determine the scroll direction based on the change in content offset.
     let scrollDirection = detectScrollDirection(
-      oldContentOffset: change.oldValue!,
-      newContentOffset: change.newValue!
+      oldOffset: change.oldValue!,
+      newOffset: change.newValue!
     )
     let isScrollViewVisible = scrollView.window != nil
     let scrollViewBounds = scrollView.bounds
@@ -168,19 +168,17 @@ import UIKit
     }
   }
 
-  func detectScrollDirection(oldContentOffset: CGPoint, newContentOffset: CGPoint)
-    -> ScrollDirection
-  {
+  func detectScrollDirection(oldOffset: CGPoint, newOffset: CGPoint) -> ScrollDirection {
     var direction: ScrollDirection = []
-    if oldContentOffset.x != newContentOffset.x {
-      if oldContentOffset.x < newContentOffset.x {
+    if oldOffset.x != newOffset.x {
+      if oldOffset.x < newOffset.x {
         direction.insert(.right)
       } else {
         direction.insert(.left)
       }
     }
-    if oldContentOffset.y != newContentOffset.y {
-      if oldContentOffset.y < newContentOffset.y {
+    if oldOffset.y != newOffset.y {
+      if oldOffset.y < newOffset.y {
         direction.insert(.down)
       } else {
         direction.insert(.up)

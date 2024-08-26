@@ -164,26 +164,26 @@ final class PaginatorTests: XCTestCase {
 
   func testScrollDirection() {
     let directionUp = sut.detectScrollDirection(
-      oldContentOffset: .verticalOffset(y: 1),
-      newContentOffset: .zero
+      oldOffset: .verticalOffset(y: 1),
+      newOffset: .zero
     )
     XCTAssertTrue(directionUp == .up, "Scroll direction should be up")
 
     let directionDown = sut.detectScrollDirection(
-      oldContentOffset: .zero,
-      newContentOffset: .verticalOffset(y: 1)
+      oldOffset: .zero,
+      newOffset: .verticalOffset(y: 1)
     )
     XCTAssertTrue(directionDown == .down, "Scroll direction should be down")
 
     let directionRight = sut.detectScrollDirection(
-      oldContentOffset: .zero,
-      newContentOffset: .horizontalOffset(x: 1)
+      oldOffset: .zero,
+      newOffset: .horizontalOffset(x: 1)
     )
     XCTAssertTrue(directionRight == .right, "Scroll direction should be right")
 
     let directionLeft = sut.detectScrollDirection(
-      oldContentOffset: .horizontalOffset(x: 1),
-      newContentOffset: .zero
+      oldOffset: .horizontalOffset(x: 1),
+      newOffset: .zero
     )
     XCTAssertTrue(directionLeft == .left, "Scroll direction should be left")
   }
