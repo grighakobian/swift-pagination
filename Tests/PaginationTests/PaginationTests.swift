@@ -4,19 +4,19 @@ import XCTest
 
 final class PaginatorTests: XCTestCase {
 
-    var sut: Pagination!
+  var sut: Pagination!
 
-    override func setUp() {
-        super.setUp()
+  override func setUp() {
+    super.setUp()
 
-        sut = Pagination()
-    }
+    sut = Pagination()
+  }
 
-    override func tearDown() {
-        super.tearDown()
+  override func tearDown() {
+    super.tearDown()
 
-        sut = nil
-    }
+    sut = nil
+  }
 
   func testBatchNullState() {
     // Test with default settings
@@ -111,6 +111,55 @@ final class PaginatorTests: XCTestCase {
     )
     XCTAssertFalse(
       shouldFetchRTLFlip, "Should not fetch when context is already fetching in RTL flip layout")
+  }
+
+  func testIsNotVisible() {
+    let context = PaginationContext()
+    let shouldFetch = sut.shouldPrefetchNextPage(
+      context: context,
+      scrollDirection: .down,
+      scrollableDirections: .vertical,
+      isScrollViewVisible: false,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
+      leadingScreens: 1.0,
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false
+    )
+    XCTAssertFalse(shouldFetch, "Should not fetch when scroll view is not visible")
+
+    // Test RTL
+    let shouldFetchRTL = sut.shouldPrefetchNextPage(
+      context: context,
+      scrollDirection: .down,
+      scrollableDirections: .vertical,
+      isScrollViewVisible: false,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
+      leadingScreens: 1.0,
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false
+    )
+    XCTAssertFalse(
+      shouldFetchRTL, "Should not fetch when scroll view is not visible in RTL layout")
+
+    // Test RTL with a layout that automatically flips (should act the same as LTR)
+    let shouldFetchRTLFlip = sut.shouldPrefetchNextPage(
+      context: context,
+      scrollDirection: .down,
+      scrollableDirections: .vertical,
+      isScrollViewVisible: false,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
+      leadingScreens: 1.0,
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true
+    )
+    XCTAssertFalse(
+      shouldFetchRTLFlip, "Should not fetch when scroll view is not visible in RTL flip layout")
   }
 
   func testUnsupportedScrollDirections() {
@@ -348,8 +397,8 @@ final class PaginatorTests: XCTestCase {
       scrollDirection: .down,
       scrollableDirections: .vertical,
       isScrollViewVisible: true,
-      scrollViewBounds: .verticalRect(height: screen * 3),
-      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewBounds: .verticalRect(height: screen),
+      scrollViewContentSize: .verticalSize(height: screen * 3),
       scrollViewContentOffset: .verticalOffset(y: screen * 0.5),
       leadingScreens: 1.0,
       shouldRenderRTLLayout: false,
@@ -365,8 +414,8 @@ final class PaginatorTests: XCTestCase {
       scrollDirection: .down,
       scrollableDirections: .vertical,
       isScrollViewVisible: true,
-      scrollViewBounds: .verticalRect(height: screen * 3),
-      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewBounds: .verticalRect(height: screen),
+      scrollViewContentSize: .verticalSize(height: screen * 3),
       scrollViewContentOffset: .verticalOffset(y: screen * 0.5),
       leadingScreens: 1.0,
       shouldRenderRTLLayout: true,
@@ -382,8 +431,8 @@ final class PaginatorTests: XCTestCase {
       scrollDirection: .down,
       scrollableDirections: .vertical,
       isScrollViewVisible: true,
-      scrollViewBounds: .verticalRect(height: screen * 3),
-      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewBounds: .verticalRect(height: screen),
+      scrollViewContentSize: .verticalSize(height: screen * 3),
       scrollViewContentOffset: .verticalOffset(y: screen * 0.5),
       leadingScreens: 1.0,
       shouldRenderRTLLayout: true,
@@ -454,7 +503,7 @@ final class PaginatorTests: XCTestCase {
     let shouldFetch = sut.shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
-      scrollableDirections: .horizontal,
+      scrollableDirections: .vertical,
       isScrollViewVisible: true,
       scrollViewBounds: .horizontalRect(width: screen),
       scrollViewContentSize: .horizontalSize(width: screen * 3.0),
@@ -471,7 +520,7 @@ final class PaginatorTests: XCTestCase {
     let shouldFetchRTL = sut.shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
-      scrollableDirections: .horizontal,
+      scrollableDirections: .vertical,
       isScrollViewVisible: true,
       scrollViewBounds: .horizontalRect(width: screen),
       scrollViewContentSize: .horizontalSize(width: screen * 3.0),
@@ -484,12 +533,11 @@ final class PaginatorTests: XCTestCase {
       shouldFetchRTL,
       "Fetch should begin when horizontally scrolling to exactly 1 leading screen away in RTL layout"
     )
-
     // Test RTL with a layout that automatically flips (should act the same as LTR)
     let shouldFetchRTLFlip = sut.shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
-      scrollableDirections: .horizontal,
+      scrollableDirections: .vertical,
       isScrollViewVisible: true,
       scrollViewBounds: .horizontalRect(width: screen),
       scrollViewContentSize: .horizontalSize(width: screen * 3.0),
@@ -566,7 +614,7 @@ final class PaginatorTests: XCTestCase {
     // 3 screens of content, offset 3 screens, width 1 screen, so it's 1 screen past the leading
     let shouldFetch = sut.shouldPrefetchNextPage(
       context: context,
-      scrollDirection: .left,
+      scrollDirection: .down,
       scrollableDirections: .horizontal,
       isScrollViewVisible: true,
       scrollViewBounds: .horizontalRect(width: screen),
@@ -582,7 +630,7 @@ final class PaginatorTests: XCTestCase {
     // In RTL scrolling is reversed, remaining distance is actually our offset (3) which is more than our leading screen (1). So we do not fetch
     let shouldFetchRTL = sut.shouldPrefetchNextPage(
       context: context,
-      scrollDirection: .left,
+      scrollDirection: .down,
       scrollableDirections: .horizontal,
       isScrollViewVisible: true,
       scrollViewBounds: .horizontalRect(width: screen),
@@ -599,7 +647,7 @@ final class PaginatorTests: XCTestCase {
     // Test RTL with a layout that automatically flips (should act the same as LTR)
     let shouldFetchFlipRTL = sut.shouldPrefetchNextPage(
       context: context,
-      scrollDirection: .left,
+      scrollDirection: .down,
       scrollableDirections: .horizontal,
       isScrollViewVisible: true,
       scrollViewBounds: .horizontalRect(width: screen),

@@ -47,10 +47,10 @@ final class UIScrollViewPaginationTests: XCTestCase {
   }
 
   func testSetPaginationDirection() {
-    mockScrollView.pagination.scrollableDirections = .horizontal
-    XCTAssertTrue(mockScrollView.pagination.scrollableDirections == .horizontal)
-    mockScrollView.pagination.scrollableDirections = .vertical
-    XCTAssertTrue(mockScrollView.pagination.scrollableDirections == .vertical)
+    mockScrollView.pagination.direction = .horizontal
+    XCTAssertTrue(mockScrollView.pagination.direction == .horizontal)
+    mockScrollView.pagination.direction = .vertical
+    XCTAssertTrue(mockScrollView.pagination.direction == .vertical)
   }
 
   func testSetPaginationLeadingScreens() {
