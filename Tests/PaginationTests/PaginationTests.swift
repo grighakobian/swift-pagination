@@ -18,6 +18,46 @@ final class PaginatorTests: XCTestCase {
     sut = nil
   }
 
+  func testScrollViewIntegration() {
+    let scrollView = MockScrollView()
+    let delegate = MockPaginationDelegate()
+    let screenHeigth: CGFloat = 100
+    scrollView.bounds = .verticalRect(height: screenHeigth)
+    scrollView.contentSize = .verticalSize(height: 3 * screenHeigth)
+    scrollView.pagination.delegate = delegate
+    scrollView.pagination.direction = .vertical
+    scrollView.pagination.leadingScreensForPrefetching = 1
+    scrollView.setContentOffset(.verticalOffset(y: screenHeigth * 2.5), animated: false)
+    XCTAssertTrue(delegate.didPrefetchNextPageCalled, "Should call delegate method")
+  }
+
+  func testTableViewIntegration() {
+    let tableView = MockTableView()
+    let delegate = MockPaginationDelegate()
+    let screenHeigth: CGFloat = 100
+    tableView.bounds = .verticalRect(height: screenHeigth)
+    tableView.contentSize = .verticalSize(height: 3 * screenHeigth)
+    tableView.pagination.delegate = delegate
+    tableView.pagination.direction = .vertical
+    tableView.pagination.leadingScreensForPrefetching = 1
+    tableView.setContentOffset(.verticalOffset(y: screenHeigth * 2), animated: false)
+    XCTAssertTrue(delegate.didPrefetchNextPageCalled, "Should call delegate method")
+  }
+
+  func testCollectionViewIntegration() {
+    let screenHeigth: CGFloat = 100
+    let collectionView = MockCollectionView(
+      frame: .horizontalRect(width: screenHeigth),
+      collectionViewLayout: MockCollectionViewLayout())
+    let delegate = MockPaginationDelegate()
+    collectionView.contentSize = .horizontalSize(width: screenHeigth * 3)
+    collectionView.pagination.delegate = delegate
+    collectionView.pagination.direction = .horizontal
+    collectionView.pagination.leadingScreensForPrefetching = 1
+    collectionView.setContentOffset(.horizontalOffset(x: screenHeigth * 2.5), animated: false)
+    XCTAssertTrue(delegate.didPrefetchNextPageCalled, "Should call delegate method")
+  }
+
   func testBatchNullState() {
     // Test with default settings
     let context = PaginationContext()
