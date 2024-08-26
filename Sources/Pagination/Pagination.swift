@@ -168,7 +168,23 @@ import UIKit
     }
   }
 
-  func detectScrollDirection(oldOffset: CGPoint, newOffset: CGPoint) -> ScrollDirection {
+  /// Detects the direction of the scroll based on the change in content offset.
+  ///
+  /// This method compares the old and new content offsets to determine which direction
+  /// the user is scrolling. The returned `ScrollDirection` indicates whether the scroll
+  /// is moving left, right, up, or down. Multiple directions can be returned if the scroll
+  /// occurs diagonally.
+  ///
+  /// - Parameters:
+  ///   - oldOffset: The content offset before the scroll action occurred.
+  ///   - newOffset: The content offset after the scroll action occurred.
+  /// - Returns: A `ScrollDirection` indicating the direction of the scroll. This could be
+  ///            `.left`, `.right`, `.up`, `.down`, or a combination of these if scrolling
+  ///            occurs diagonally.
+  func detectScrollDirection(
+    oldOffset: CGPoint,
+    newOffset: CGPoint
+  ) -> ScrollDirection {
     var direction: ScrollDirection = []
     if oldOffset.x != newOffset.x {
       if oldOffset.x < newOffset.x {
