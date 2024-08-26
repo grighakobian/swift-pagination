@@ -134,8 +134,8 @@ import UIKit
     // If the scroll view is not visible, don't prefetch.
     // Determine the scroll direction based on the change in content offset.
     let scrollDirection = detectScrollDirection(
-        oldContentOffset: change.oldValue!,
-        newContentOffset: change.newValue!
+      oldContentOffset: change.oldValue!,
+      newContentOffset: change.newValue!
     )
     let isScrollViewVisible = scrollView.window != nil
     let scrollViewBounds = scrollView.bounds
@@ -168,24 +168,26 @@ import UIKit
     }
   }
 
-    func detectScrollDirection(oldContentOffset: CGPoint, newContentOffset: CGPoint)-> ScrollDirection {
-        var direction: ScrollDirection = []
-        if oldContentOffset.x != newContentOffset.x {
-            if oldContentOffset.x < newContentOffset.x {
-                direction.insert(.right)
-            } else {
-                direction.insert(.left)
-            }
-        }
-        if oldContentOffset.y != newContentOffset.y {
-            if oldContentOffset.y < newContentOffset.y {
-                direction.insert(.down)
-            } else {
-                direction.insert(.up)
-            }
-        }
-        return direction
+  func detectScrollDirection(oldContentOffset: CGPoint, newContentOffset: CGPoint)
+    -> ScrollDirection
+  {
+    var direction: ScrollDirection = []
+    if oldContentOffset.x != newContentOffset.x {
+      if oldContentOffset.x < newContentOffset.x {
+        direction.insert(.right)
+      } else {
+        direction.insert(.left)
+      }
     }
+    if oldContentOffset.y != newContentOffset.y {
+      if oldContentOffset.y < newContentOffset.y {
+        direction.insert(.down)
+      } else {
+        direction.insert(.up)
+      }
+    }
+    return direction
+  }
 
   /// Determines whether the next page of data should be prefetched based on the scroll view’s current state and scrolling direction.
   /// - Parameters:

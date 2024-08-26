@@ -1,4 +1,4 @@
-/// Represents possible scroll direction.
+/// Represents possible scroll directions.
 struct ScrollDirection: OptionSet {
   let rawValue: UInt8
   /// Scroll direction to the left.

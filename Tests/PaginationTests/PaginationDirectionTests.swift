@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Pagination
 
 final class PaginationDirectionTests: XCTestCase {

@@ -7,14 +7,14 @@
 }
 
 extension PaginationDirection: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .vertical:
-            return "vertical"
-        case .horizontal:
-            return "horizontal"
-        }
+  public var description: String {
+    switch self {
+    case .vertical:
+      return "vertical"
+    case .horizontal:
+      return "horizontal"
     }
+  }
 }
 
 extension PaginationDirection {
@@ -37,4 +37,3 @@ extension PaginationDirection {
     }
   }
 }
-
