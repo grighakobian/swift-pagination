@@ -12,8 +12,6 @@
 		03A009D22C712838009A9429 /* MoviesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009C42C712838009A9429 /* MoviesResult.swift */; };
 		03A009D32C712838009A9429 /* MoviesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009C62C712838009A9429 /* MoviesService.swift */; };
 		03A009D82C7214E8009A9429 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009D72C7214E8009A9429 /* Reusable.swift */; };
-		03A009DD2C725E54009A9429 /* Paginator in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009DC2C725E54009A9429 /* Paginator */; };
-		03A009E02C725F00009A9429 /* Paginator in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009DF2C725F00009A9429 /* Paginator */; };
 		DD0B76D427395F0600817F3F /* MovieCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B76D327395F0600817F3F /* MovieCollectionViewCell.swift */; };
 		DD0B7710273A661B00817F3F /* MovieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B770F273A661B00817F3F /* MovieView.swift */; };
 		DD0B7722273AB93800817F3F /* PopularMoviesModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B7721273AB93800817F3F /* PopularMoviesModels.swift */; };
@@ -22,6 +20,7 @@
 		DD9448A22737F048001C8235 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD9448A12737F048001C8235 /* Assets.xcassets */; };
 		DD9448A52737F048001C8235 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DD9448A32737F048001C8235 /* LaunchScreen.storyboard */; };
 		DD94491E2737FAD1001C8235 /* PopularMoviesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD94491D2737FAD1001C8235 /* PopularMoviesViewController.swift */; };
+		DDD5B4572C7B4A0C0090AB6E /* Pagination in Frameworks */ = {isa = PBXBuildFile; productRef = DDD5B4562C7B4A0C0090AB6E /* Pagination */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,8 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03A009E02C725F00009A9429 /* Paginator in Frameworks */,
-				03A009DD2C725E54009A9429 /* Paginator in Frameworks */,
+				DDD5B4572C7B4A0C0090AB6E /* Pagination in Frameworks */,
 				03A009922C7115E4009A9429 /* SDWebImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,11 +96,19 @@
 			path = Movies;
 			sourceTree = "<group>";
 		};
+		DD74E6DC2C750DC100FC60B7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DD94488C2737F047001C8235 = {
 			isa = PBXGroup;
 			children = (
 				DD9448972737F047001C8235 /* TMDB */,
 				DD9448962737F047001C8235 /* Products */,
+				DD74E6DC2C750DC100FC60B7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -173,8 +179,7 @@
 			name = TMDB;
 			packageProductDependencies = (
 				03A009912C7115E4009A9429 /* SDWebImage */,
-				03A009DC2C725E54009A9429 /* Paginator */,
-				03A009DF2C725F00009A9429 /* Paginator */,
+				DDD5B4562C7B4A0C0090AB6E /* Pagination */,
 			);
 			productName = TMDB;
 			productReference = DD9448952737F047001C8235 /* TMDB.app */;
@@ -467,13 +472,10 @@
 			package = 03A009902C7115E4009A9429 /* XCRemoteSwiftPackageReference "SDWebImage" */;
 			productName = SDWebImage;
 		};
-		03A009DC2C725E54009A9429 /* Paginator */ = {
+		DDD5B4562C7B4A0C0090AB6E /* Pagination */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Paginator;
-		};
-		03A009DF2C725F00009A9429 /* Paginator */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Paginator;
+			package = 03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../Paginator" */;
+			productName = Pagination;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
