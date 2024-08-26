@@ -111,14 +111,18 @@ import UIKit
 
   /// Manages the observation of the scroll view’s content offset to trigger pagination.
   func togglePrefetchingEnabled() {
-    guard let scrollView, let delegate, isEnabled else {
-      self.observation = nil
+    guard isEnabled, let scrollView, let delegate else {
+      observation = nil
       return
     }
-    self.observation = scrollView.observe(\.contentOffset, options: [.old, .new]) {
-      [unowned self]
-      scrollView, change in
-      self.prefetchNextPageIfNeeded(scrollView: scrollView, delegate: delegate, change: change)
+    observation = scrollView.observe(
+      \.contentOffset,
+      options: [.old, .new]
+    ) { [unowned self] scrollView, change in
+      prefetchIfNeeded(
+        scrollView: scrollView,
+        delegate: delegate,
+        change: change)
     }
   }
 
@@ -126,7 +130,7 @@ import UIKit
   /// - Parameters:
   ///   - scrollView: The `UIScrollView` that is being observed for content offset changes.
   ///   - change: The `NSKeyValueObservedChange<CGPoint>` that represents the old and new content offset of the `scrollView`.
-  func prefetchNextPageIfNeeded(
+  func prefetchIfNeeded(
     scrollView: UIScrollView,
     delegate: PaginationDelegate,
     change: NSKeyValueObservedChange<CGPoint>
