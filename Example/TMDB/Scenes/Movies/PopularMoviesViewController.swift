@@ -38,7 +38,7 @@ public final class PopularMoviesViewController: UICollectionViewController {
       collectionView, indexPath, movieViewModel in
       let cell = collectionView.dequeueReusableCell(
         ofType: MovieCollectionViewCell.self, at: indexPath)
-      cell.movieView.imageView.sd_setImage(with: movieViewModel.posterImageUrl, completed: nil)
+      cell.movieView.imageView.setImage(from: movieViewModel.posterImageUrl)
       cell.movieView.ratingLabel.text = movieViewModel.averageRating
       return cell
     }
@@ -77,10 +77,6 @@ public final class PopularMoviesViewController: UICollectionViewController {
       .map({ PopularMovies.ViewModel(movie: $0) })
     snapshot.appendItems(sectionItems, toSection: .main)
     dataSource.apply(snapshot)
-  }
-
-  public override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    print(#function)
   }
 }
 
