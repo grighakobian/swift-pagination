@@ -117,6 +117,7 @@ import UIKit
       observation = nil
       return
     }
+    if observation != nil { return }
     observation = scrollView.observe(
       \.contentOffset,
       options: [.old, .new]
