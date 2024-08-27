@@ -38,7 +38,8 @@ func pagination(_ pagination: Pagination, prefetchNextPageWith context: Paginati
     fetchData(forPage: nextPage) { result in
         switch result {
         case .success(let data):
-            // Successfully fetched data
+            // Append the new data and update UI.
+            pagination.isEnabled = nextPage < data.totalPages
             context.finish(true)
         case .failure:
             // Failed to fetch data
@@ -77,6 +78,7 @@ collectionView.pagination.leadingScreensForPrefetching = 3
 ```objc
 self.tableView.pagination.isEnabled = YES;
 self.tableView.pagination.direction = PaginationDirectionVertical;
+self.tableView.pagination.leadingScreensForPrefetching = 3;
 self.tableView.pagination.delegate = self;
 ```
 
