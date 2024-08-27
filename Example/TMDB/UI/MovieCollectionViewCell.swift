@@ -28,7 +28,6 @@ final class MovieCollectionViewCell: UICollectionViewCell {
     super.prepareForReuse()
 
     movieView.imageView.image = nil
-    movieView.imageView.sd_cancelCurrentImageLoad()
   }
 
   private func commonInit() {
