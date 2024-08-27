@@ -55,7 +55,7 @@ func pagination(_ pagination: Pagination, prefetchNextPageWith context: Paginati
 To disable pagination, set the `isEnabled` property to `false`. This will stop pagination from monitoring the scrollable view
 
 ```swift
-pagination.isEnabled = false
+collectionView.pagination.isEnabled = false
 ```
 
 For horizontal scrolling, configure pagination to handle horizontal scroll
