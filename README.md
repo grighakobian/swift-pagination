@@ -18,7 +18,7 @@ With `Pagination`, you can effortlessly manage pagination in your app by automat
 ### Features
 
 - Easily integrates with `UIScrollView`, `UITableView`, and `UICollectionView`.
-- Supports both vertical and horizontal scroll directions.
+- Supports both `vertical` and `horizontal` scroll directions.
 - Provides customizable prefetching distance to control when the next batch of data is fetched.
 - **Objective-C Support**: Fully compatible with Objective-C projects, making it easier to integrate into existing codebases.
 
@@ -71,7 +71,8 @@ collectionView.pagination.leadingScreensForPrefetching = 3
 
 ### Objective-C Integration
 
-[!NOTE] `Pagination` is fully compatible with Objective-C projects. Simply import the module and use the provided APIs.
+> [!NOTE] 
+> `Pagination` is fully compatible with Objective-C projects. Simply import the module and use the provided APIs.
 
 ```objc
 self.tableView.pagination.isEnabled = YES;
