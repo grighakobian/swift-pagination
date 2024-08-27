@@ -22,109 +22,67 @@ A flexible and easy-to-use pagination framework inspired by [Texture](https://gi
 
 With `Paginator`, you can effortlessly manage pagination in your app by automatically detecting when a user has scrolled close to the end of the current content and triggering the fetching of the next page. The framework supports both vertical and horizontal scrolling and is designed to work seamlessly with various UI components.
 
-## Requirements
-
-- **Swift Version**: Swift 5.9 or later.
-- **iOS Version**: iOS 12.0 or later.
-- **Xcode**: Xcode 14 or later.
 
 ## Installation
 
-### Swift Package Manager
+You can add pagination to an Xcode project by adding it as a package dependency.
 
-Paginator is available through [Swift Package Manager](https://swift.org/package-manager/). To install it, add the following line to your `Package.swift` file:
+> https://github.com/grighakobian/Paginator
 
-```swift
-.package(url: "https://github.com/grighakobian/Paginator.git", from: "1.0.0")
+If you want to use Pagination in a SwiftPM project, it's as simple as adding it to a dependencies clause in your Package.swift:
+
+``` swift
+dependencies: [
+  .package(url: "https://github.com/grighakobian/Paginator", from: "1.0.0")
+]
 ```
 
 ### Example Usage
 
+Example usage in Swift.
+
 ```swift
-import UIKit
-import Pagination
+collectionView.pagination.isEnabled = true
+// Configure the pagination direction. Defaults to .vertical.
+collectionView.pagination.direction = .horizontal
+// Configure leading screens for prefetching.
+collectionView.pagination.leadingScreensForPrefetching = 3
+// Set the delegate to receive updates.
+collectionView.pagination.delegate = self
+```
 
-class FeedViewController: UICollectionViewController {
-    private var currentPage = 0
-    private let feedProvider: FeedProvider
+Handle pagination delegate.
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        collectionView.pagination.isEnabled = true
-        collectionView.pagination.direction = .vertical
-        collectionView.pagination.delegate = self
-    }
-}
-
-// MARK: - PaginationDelegate
-
-extension FeedViewController: PaginationDelegate {
-
-    func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
+```swift
+func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
+    Task {
+      do {
         let nextPage = currentPage + 1
-        feedProvider.provideFeed(page: nextPage, pageSize: 20) { [weak self] result in
-            switch result {
-            case .success(let newFeed):
-                self?.currentPage = nextPage
-                pagination.isEnabled = nextPage < newFeed.totalPages
-                self?.reload(using: newFeed)
-                context.finish(true)
-            case .failure:
-                context.finish(false)
-            }
+        let moviesResult = try await moviesService.getPopularMovies(page: nextPage)
+        self.updateMovies(with: moviesResult)
+        self.currentPage = nextPage
+        if let totalPages = moviesResult.totalPages {
+          pagination.isEnabled = self.currentPage < totalPages
         }
+        context.finish(true)
+      } catch {
+        context.finish(false)
+      }
     }
 }
 ```
 
-### Example Usage in Objective-C
+> [!IMPORTANT]
+> It is mandatory to call `context.finish(_:)` once the data loading is complete, to accurately reflect the pagination state.
 
+Pagination is fully compatible with Objective-C
 ```objc
-#import <UIKit/UIKit.h>
-@import Pagination;
-
-@interface FeedViewController : UICollectionViewController <PaginationDelegate>
-
-@property (nonatomic, assign) NSInteger currentPage;
-@property (nonatomic, strong) FeedProvider *feedProvider;
-
-@end
-
-@implementation FeedViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-
-    self.currentPage = 0;
-    self.collectionView.pagination.isEnabled = YES;
-    self.collectionView.pagination.direction = PaginationDirectionVertical;
-    self.collectionView.pagination.delegate = self;
-}
-
-// MARK: - PaginationDelegate
-
-- (void)pagination:(Pagination *)pagination prefetchNextPageWithContext:(PaginationContext *)context {
-    NSInteger nextPage = self.currentPage + 1;
-    [self.feedProvider provideFeedWithPage:nextPage pageSize:20 completion:^(FeedResult *result) {
-        switch (result.status) {
-            case FeedResultSuccess: {
-                Feed *newFeed = result.feed;
-                self.currentPage = nextPage;
-                pagination.isEnabled = (nextPage < newFeed.totalPages);
-                [self reloadUsingFeed:newFeed];
-                [context finish:YES];
-                break;
-            }
-            case FeedResultFailure:
-                [context finish:NO];
-                break;
-        }
-    }];
-}
-
-@end
+self.tableView.pagination.isEnabled = YES;
+self.tableView.pagination.direction = PaginationDirectionVertical;
+self.tableView.pagination.delegate = self;
 ```
+
+Handle the paginatio delegate.
 
 ## License
 
