@@ -90,13 +90,13 @@ Check out the Example directory to see how to use Pagination in real-world scena
 
 You can add pagination to an Xcode project by adding it as a package dependency.
 
-> https://github.com/grighakobian/Paginator
+> https://github.com/grighakobian/swift-pagination
 
 If you want to use Pagination in a SwiftPM project, it's as simple as adding it to a dependencies clause in your Package.swift:
 
 ``` swift
 dependencies: [
-  .package(url: "https://github.com/grighakobian/Paginator", from: "1.0.0")
+  .package(url: "https://github.com/grighakobian/swift-pagination", from: "1.0.0")
 ]
 ```
 
