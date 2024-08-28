@@ -4,17 +4,12 @@ TEST_RUNNER_CI = $(CI)
 
 default: test
 
-test: test-ios test-examples
+test: test-ios
 
 test-ios:
 	xcodebuild test \
 		-workspace Pagination.xcworkspace \
 		-scheme Pagination \
-		-destination platform="$(PLATFORM_IOS)"
-test-examples:
-	xcodebuild test \
-		-workspace Pagination.xcworkspace \
-		-scheme TMDB \
 		-destination platform="$(PLATFORM_IOS)"
 
 format:

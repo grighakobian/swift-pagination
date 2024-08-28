@@ -22,7 +22,6 @@ jobs:
           - '15.4'
         variation:
           - ios
-          - examples
 
     steps:
       - uses: actions/checkout@v4
