@@ -5,12 +5,7 @@ default: test
 test:
 	xcodebuild test \
 		-workspace Pagination.xcworkspace \
-		-scheme Pagination \
-		-destination platform="$(PLATFORM_IOS)"
-
-	 xcodebuild test \
-	 	-workspace Pagination.xcworkspace \
-		-scheme Pagination clean build \
+		-scheme PaginationTests \
 		-sdk iphoneos \
 		-destination platform="$(PLATFORM_IOS)"
 
@@ -25,4 +20,3 @@ format:
 define udid_for
 $(shell xcrun simctl list devices available '$(1)' | grep '$(2)' | sort -r | head -1 | awk -F '[()]' '{ print $$(NF-3) }')
 endef
-
