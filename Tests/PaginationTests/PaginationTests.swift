@@ -2,7 +2,7 @@ import XCTest
 
 @testable import Pagination
 
-final class PaginatorTests: XCTestCase {
+final class PaginationTests: XCTestCase {
 
   var sut: Pagination!
 
