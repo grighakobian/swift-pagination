@@ -1,7 +1,8 @@
-# OS X
 .DS_Store
-# SPM
-.swiftpm
-Package.resolved
-xcuserdata
-.build
+/.build
+/.swiftpm
+/Packages
+/*.xcodeproj
+xcuserdata/
+DerivedData/
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
