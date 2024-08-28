@@ -1,15 +1,12 @@
 PLATFORM_IOS = iOS Simulator,id=$(call udid_for,iOS 17.5,iPhone \d\+ Pro [^M])
 
-TEST_RUNNER_CI = $(CI)
-
 default: test
 
-test: test-ios
-
-test-ios:
+test:
 	xcodebuild test \
 		-workspace Pagination.xcworkspace \
-		-scheme Pagination \
+		-scheme PaginationTests \
+		-sdk iphoneos \
 		-destination platform="$(PLATFORM_IOS)"
 
 format:
