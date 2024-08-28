@@ -6,8 +6,8 @@
 //
 
 public struct MoviesResult: Codable {
-    public let page: Int?
-    public let totalPages: Int?
-    public let totalResults: Int?
-    public let results: [Movie]?
+  public let page: Int?
+  public let totalPages: Int?
+  public let totalResults: Int?
+  public let results: [Movie]?
 }

@@ -1,4 +1,4 @@
-<img src="https://github.com/grighakobian/Paginator/blob/main/.github/Resources/Paginator.png" alt="Paginator" style="width: 100%; height: auto;">
+<img src="/.github/resources/preview.png" alt="Pagination" style="width: 100%; height: auto;">
 
 #
 
@@ -11,76 +11,93 @@ A flexible and easy-to-use pagination framework inspired by [Texture](https://gi
 
 ## Overview
 
-`Paginator` is a flexible and easy-to-use pagination framework for iOS applications written in Swift. It provides an efficient way to handle paginated data in scrollable views like `UIScrollView`, `UITableView`, and `UICollectionView`.
+`Pagination` provides an easy-to-use API for implementing infinite scrolling in your applications. It allows seamless integration of pagination functionality in any scrollable view, whether it's a `UITableView`, `UICollectionView`, or any other scrollable container.
 
-## Features
+With `Pagination`, you can effortlessly manage pagination in your app by automatically detecting when a user has scrolled close to the end of the current content and triggering the fetching of the next page. The framework supports both vertical and horizontal scrolling and is designed to work seamlessly with various UI components.
 
-- Supports both vertical and horizontal scroll directions.
+### Features
+
 - Easily integrates with `UIScrollView`, `UITableView`, and `UICollectionView`.
-- Provides customizable batching settings.
-- **Objective-C Support**: Paginator supports Objective-C, allowing integration in projects written in Objective-C.
+- Supports both `vertical` and `horizontal` scroll directions.
+- Provides customizable prefetching distance to control when the next batch of data is fetched.
+- **Objective-C Support**: Fully compatible with Objective-C projects, making it easier to integrate into existing codebases.
 
-With `Paginator`, you can effortlessly manage pagination in your app by automatically detecting when a user has scrolled close to the end of the current content and triggering the fetching of the next page. The framework supports both vertical and horizontal scrolling and is designed to work seamlessly with various UI components.
+### Getting Started
 
-## Requirements
-
-- **Swift Version**: Swift 5.9 or later.
-- **iOS Version**: iOS 12.0 or later.
-- **Xcode**: Xcode 14 or later.
-
-## Installation
-
-### Swift Package Manager
-
-Paginator is available through [Swift Package Manager](https://swift.org/package-manager/). To install it, add the following line to your `Package.swift` file:
+Implementing infinite scrolling is straightforward, especially with vertical scrolling. Set up the delegate to handle requests for new page prefetching
 
 ```swift
-.package(url: "https://github.com/grighakobian/Paginator.git", from: "1.0.0")
+collectionView.pagination.delegate = self
 ```
 
-### Example Usage
+Implement the delegate method to fetch data for the new page
 
 ```swift
-import UIKit
-import Paginator
-   
-class FeedViewController: UICollectionViewController {
-    private let paginator = Paginator()
-    private var currentPage = 0
-    private var isPagingEnabled = true
-   
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        paginator.delegate = self
-        paginator.attach(to: collectionView)
-    }
-}
-
-// MARK: - PaginatorDelegate
-   
-extension FeedViewController: PaginatorDelegate {
-   
-    func paginator(_ paginator: Paginator, shouldRequestNextPageWith context: PaginationContext) -> Bool {
-        return isPagingEnabled
-    }
-   
-    func paginator(_ paginator: Paginator, didRequestNextPageWith context: PaginationContext) {
-        context.start()
-        let nextPage = currentPage + 1
-        feedProvider.provideFeed(page: nextPage, pageSize: 20) { [weak self] result in
-            switch result {
-            case .success(let newFeed):
-                self?.currentPage = nextPage
-                self?.isPagingEnabled = nextPage < newFeed.totalPages
-                self?.reload(using: newFeed)
-                context.finish(true)
-            case .failure(let error):
-                context.finish(false)
-            }
+func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
+    // Fetch the next page of data from your source
+    fetchData(forPage: nextPage) { result in
+        switch result {
+        case .success(let data):
+            // Append the new data and update UI.
+            pagination.isEnabled = nextPage < data.totalPages
+            context.finish(true)
+        case .failure:
+            // Failed to fetch data
+            context.finish(false)
         }
     }
 }
+```
+
+> [!IMPORTANT]
+> It is essential to call `context.finish(_:)` once the data loading is complete to accurately update the pagination state.
+
+To disable pagination, set the `isEnabled` property to `false`. This will stop pagination from monitoring the scrollable view
+
+```swift
+collectionView.pagination.isEnabled = false
+```
+
+For horizontal scrolling, configure pagination to handle horizontal scroll
+
+```swift
+collectionView.pagination.direction = .horizontal
+```
+
+To adjust the prefetching distance, set the `leadingScreensForPrefetching` property to your desired value. The default is `2` leading screens. Setting it to `0` will stop pagination from notifying you about new data prefetching
+
+```swift
+collectionView.pagination.leadingScreensForPrefetching = 3
+```
+
+### Objective-C Integration
+
+> [!NOTE] 
+> `Pagination` is fully compatible with Objective-C projects. Simply import the module and use the provided APIs.
+
+```objc
+self.tableView.pagination.isEnabled = YES;
+self.tableView.pagination.direction = PaginationDirectionVertical;
+self.tableView.pagination.leadingScreensForPrefetching = 3;
+self.tableView.pagination.delegate = self;
+```
+
+### Examples
+
+Check out the Example directory to see how to use Pagination in real-world scenarios.
+
+## Installation
+
+You can add pagination to an Xcode project by adding it as a package dependency.
+
+> https://github.com/grighakobian/swift-pagination
+
+If you want to use Pagination in a SwiftPM project, it's as simple as adding it to a dependencies clause in your Package.swift:
+
+``` swift
+dependencies: [
+  .package(url: "https://github.com/grighakobian/swift-pagination", from: "1.0.0")
+]
 ```
 
 ## License
