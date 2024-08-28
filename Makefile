@@ -1,15 +1,17 @@
 PLATFORM_IOS = iOS Simulator,id=$(call udid_for,iOS 17.5,iPhone \d\+ Pro [^M])
 
-TEST_RUNNER_CI = $(CI)
-
 default: test
 
-test: test-ios
-
-test-ios:
+test:
 	xcodebuild test \
 		-workspace Pagination.xcworkspace \
 		-scheme Pagination \
+		-destination platform="$(PLATFORM_IOS)"
+
+	 xcodebuild test \
+	 	-workspace Pagination.xcworkspace \
+		-scheme Pagination clean build \
+		-sdk iphoneos \
 		-destination platform="$(PLATFORM_IOS)"
 
 format:
@@ -23,3 +25,4 @@ format:
 define udid_for
 $(shell xcrun simctl list devices available '$(1)' | grep '$(2)' | sort -r | head -1 | awk -F '[()]' '{ print $$(NF-3) }')
 endef
+
