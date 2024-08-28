@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   library:
-    runs-on: macos-latest
+    runs-on: macos-14
     strategy:
       matrix:
         xcode:
