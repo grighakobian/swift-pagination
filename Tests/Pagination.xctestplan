@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "AA13D94D-2165-4825-9C9D-D0B7AB7DBF43",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "PaginationTests",
+        "name" : "PaginationTests"
+      }
+    }
+  ],
+  "version" : 1
+}
