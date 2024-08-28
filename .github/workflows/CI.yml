@@ -22,8 +22,6 @@ jobs:
           - '15.4'
         variation:
           - ios
-          - tvos
-          - watchos
           - examples
 
     steps:
