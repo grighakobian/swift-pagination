@@ -12,8 +12,7 @@
 		03A009D22C712838009A9429 /* MoviesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009C42C712838009A9429 /* MoviesResult.swift */; };
 		03A009D32C712838009A9429 /* MoviesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009C62C712838009A9429 /* MoviesService.swift */; };
 		03A009D82C7214E8009A9429 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A009D72C7214E8009A9429 /* Reusable.swift */; };
-		03A009DD2C725E54009A9429 /* Paginator in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009DC2C725E54009A9429 /* Paginator */; };
-		03A009E02C725F00009A9429 /* Paginator in Frameworks */ = {isa = PBXBuildFile; productRef = 03A009DF2C725F00009A9429 /* Paginator */; };
+		03F8DCE42C7F730C00CAF048 /* Paginator in Frameworks */ = {isa = PBXBuildFile; productRef = 03F8DCE32C7F730C00CAF048 /* Paginator */; };
 		DD0B76D427395F0600817F3F /* MovieCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B76D327395F0600817F3F /* MovieCollectionViewCell.swift */; };
 		DD0B7710273A661B00817F3F /* MovieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B770F273A661B00817F3F /* MovieView.swift */; };
 		DD0B7722273AB93800817F3F /* PopularMoviesModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD0B7721273AB93800817F3F /* PopularMoviesModels.swift */; };
@@ -46,8 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03A009E02C725F00009A9429 /* Paginator in Frameworks */,
-				03A009DD2C725E54009A9429 /* Paginator in Frameworks */,
+				03F8DCE42C7F730C00CAF048 /* Paginator in Frameworks */,
 				03A009922C7115E4009A9429 /* SDWebImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,6 +87,13 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		03F8DCE22C7F730C00CAF048 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DD0B76EF2739B65900817F3F /* Movies */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +108,7 @@
 			children = (
 				DD9448972737F047001C8235 /* TMDB */,
 				DD9448962737F047001C8235 /* Products */,
+				03F8DCE22C7F730C00CAF048 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -173,8 +179,7 @@
 			name = TMDB;
 			packageProductDependencies = (
 				03A009912C7115E4009A9429 /* SDWebImage */,
-				03A009DC2C725E54009A9429 /* Paginator */,
-				03A009DF2C725F00009A9429 /* Paginator */,
+				03F8DCE32C7F730C00CAF048 /* Paginator */,
 			);
 			productName = TMDB;
 			productReference = DD9448952737F047001C8235 /* TMDB.app */;
@@ -205,7 +210,7 @@
 			mainGroup = DD94488C2737F047001C8235;
 			packageReferences = (
 				03A009902C7115E4009A9429 /* XCRemoteSwiftPackageReference "SDWebImage" */,
-				03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../Paginator" */,
+				03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../swift-pagination" */,
 			);
 			productRefGroup = DD9448962737F047001C8235 /* Products */;
 			projectDirPath = "";
@@ -444,9 +449,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../Paginator" */ = {
+		03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../swift-pagination" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Paginator;
+			relativePath = "../../swift-pagination";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -467,12 +472,9 @@
 			package = 03A009902C7115E4009A9429 /* XCRemoteSwiftPackageReference "SDWebImage" */;
 			productName = SDWebImage;
 		};
-		03A009DC2C725E54009A9429 /* Paginator */ = {
+		03F8DCE32C7F730C00CAF048 /* Paginator */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Paginator;
-		};
-		03A009DF2C725F00009A9429 /* Paginator */ = {
-			isa = XCSwiftPackageProductDependency;
+			package = 03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../swift-pagination" */;
 			productName = Paginator;
 		};
 /* End XCSwiftPackageProductDependency section */
