@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol MoviesService: AnyObject {
+protocol MoviesService: AnyObject {
   /// Get a list of the current popular movies on TMDB.
   /// - Parameter page: Specify which page to query.
   ///                   Validation: minimum: 1, maximum: 1000, default: 1
@@ -13,7 +13,7 @@ final class MoviesServiceImpl: MoviesService {
   private let decoder: JSONDecoder
   private let urlSession: URLSession
 
-  public init(urlSession: URLSession = .shared) {
+  init(urlSession: URLSession = .shared) {
     self.urlSession = urlSession
     self.decoder = JSONDecoder()
     self.decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -21,7 +21,7 @@ final class MoviesServiceImpl: MoviesService {
     self.baseURL = URL(string: ProcessInfo.processInfo.environment["BASE_URL"]!)!
   }
 
-  public func getPopularMovies(page: Int) async throws -> MoviesResult {
+  func getPopularMovies(page: Int) async throws -> MoviesResult {
     let url = baseURL.appendingPathComponent("tv/popular")
     var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)!
     urlComponents.queryItems = [
@@ -43,29 +43,4 @@ final class MoviesServiceImpl: MoviesService {
     }
     return try decoder.decode(MoviesResult.self, from: data)
   }
-}
-
-// MARk: - Models
-
-public struct Movie: Codable {
-  public let id: Int?
-  public let name: String?
-  public let backdropPath: String?
-  public let firstAirDate: String?
-  public let genreIds: [Int]?
-  public let originCountry: [String]?
-  public let originalLanguage: String?
-  public let originalName: String?
-  public let overview: String?
-  public let popularity: Double?
-  public let posterPath: String?
-  public let voteAverage: Double?
-  public let voteCount: Int?
-}
-
-public struct MoviesResult: Codable {
-  public let page: Int?
-  public let totalPages: Int?
-  public let totalResults: Int?
-  public let results: [Movie]?
 }

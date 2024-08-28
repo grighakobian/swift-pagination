@@ -2,29 +2,38 @@ import UIKit
 
 final class MovieCell: UICollectionViewCell {
 
-  private(set) lazy var movieView = makeMovieView()
+  lazy var imageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.clipsToBounds = true
+    imageView.layer.cornerRadius = 15.0
+    imageView.contentMode = .scaleAspectFill
+    imageView.backgroundColor = .secondarySystemFill
+    imageView.translatesAutoresizingMaskIntoConstraints = false
+    return imageView
+  }()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
 
-    commonInit()
+    addSubview(imageView)
+    clipsToBounds = false
+    layer.cornerRadius = 15.0
+    layer.shadowRadius = 14.0
+    layer.shadowOpacity = 0.22
+    layer.shadowColor = UIColor.black.cgColor
+    layer.shadowOffset = CGSize(width: 0, height: 12)
+    layer.borderWidth = 2.0
+    layer.borderColor = UIColor.quaternarySystemFill.cgColor
   }
 
   required init?(coder: NSCoder) {
-    super.init(coder: coder)
-
-    commonInit()
+    fatalError()
   }
 
   override func prepareForReuse() {
     super.prepareForReuse()
 
-    movieView.imageView.image = nil
-  }
-
-  private func commonInit() {
-    configureShadow()
-    configureMovieView()
+    imageView.image = nil
   }
 
   override func layoutSubviews() {
@@ -33,34 +42,9 @@ final class MovieCell: UICollectionViewCell {
     layer.shadowRadius = 0.03 * bounds.width
   }
 
-  private func configureShadow() {
-    layer.cornerRadius = 15.0
-    layer.shadowColor = UIColor.black.cgColor
-    layer.shadowRadius = 14.0
-    layer.shadowOpacity = 0.22
-    layer.shadowOffset = CGSize(width: 0, height: 12)
-    clipsToBounds = false
+  override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+    super.apply(layoutAttributes)
+
+    imageView.frame = layoutAttributes.bounds
   }
-
-  private func configureMovieView() {
-    addSubview(movieView)
-    movieView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-    movieView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-    movieView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-    movieView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-  }
-}
-
-// MARK: - View Factory
-
-extension MovieCell {
-
-  private func makeMovieView() -> MovieView {
-    let movieView = MovieView()
-    movieView.layer.cornerRadius = 15.0
-    movieView.clipsToBounds = true
-    movieView.translatesAutoresizingMaskIntoConstraints = false
-    return movieView
-  }
-
 }

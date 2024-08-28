@@ -12,7 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     guard let windowScene = (scene as? UIWindowScene) else { return }
     self.window = UIWindow(windowScene: windowScene)
     let moviesService = MoviesServiceImpl()
-    let popularMoviesViewController = PopularMoviesViewController(moviesService: moviesService)
+    let popularMoviesViewController = MoviesViewController(moviesService: moviesService)
     popularMoviesViewController.title = "TMDB"
     let navigationController = UINavigationController(
       rootViewController: popularMoviesViewController)

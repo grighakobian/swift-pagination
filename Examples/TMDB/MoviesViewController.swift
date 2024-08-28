@@ -1,16 +1,15 @@
 import Pagination
 import UIKit
 
-public final class PopularMoviesViewController: UICollectionViewController {
+public final class MoviesViewController: UICollectionViewController {
   private var currentPage: Int
   private let moviesService: MoviesService
-  private var dataSource: PopularMovies.DataSource!
-
-  // MARK: - Init
+  private var dataSource: UICollectionViewDiffableDataSource<Int, MovieViewModel>!
 
   init(moviesService: MoviesService) {
     self.currentPage = 0
     self.moviesService = moviesService
+
     let itemSize = NSCollectionLayoutSize(
       widthDimension: .fractionalWidth(1),
       heightDimension: .fractionalHeight(1))
@@ -27,13 +26,13 @@ public final class PopularMoviesViewController: UICollectionViewController {
 
     self.collectionView.backgroundColor = UIColor.systemBackground
     self.collectionView.register(MovieCell.self, forCellWithReuseIdentifier: "MovieCell")
-    self.dataSource = PopularMovies.DataSource(collectionView: collectionView) {
+    self.dataSource = .init(collectionView: collectionView) {
       collectionView, indexPath, movieViewModel in
       let cell =
         collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCell", for: indexPath)
         as! MovieCell
-      cell.movieView.imageView.setImage(from: movieViewModel.posterImageUrl)
-      cell.movieView.ratingLabel.text = movieViewModel.averageRating
+      cell.imageView.setImage(from: movieViewModel.posterImageUrl)
+      //      cell.movieView.ratingLabel.text = movieViewModel.averageRating
       return cell
     }
     self.collectionView.dataSource = dataSource
@@ -65,18 +64,18 @@ public final class PopularMoviesViewController: UICollectionViewController {
   @MainActor func updateMovies(with moviesResult: MoviesResult) {
     var snapshot = dataSource.snapshot()
     if snapshot.sectionIdentifiers.isEmpty {
-      snapshot.appendSections([.main])
+      snapshot.appendSections([0])
     }
     let sectionItems = (moviesResult.results ?? [])
-      .map({ PopularMovies.ViewModel(movie: $0) })
-    snapshot.appendItems(sectionItems, toSection: .main)
+      .map({ MovieViewModel(movie: $0) })
+    snapshot.appendItems(sectionItems, toSection: 0)
     dataSource.apply(snapshot)
   }
 }
 
 // MARK: - PaginationDelegate
 
-extension PopularMoviesViewController: PaginationDelegate {
+extension MoviesViewController: PaginationDelegate {
 
   public func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext)
   {

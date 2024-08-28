@@ -11,16 +11,6 @@ final class ImageLoader {
     self.session.configuration.requestCachePolicy = .returnCacheDataElseLoad
   }
 
-  func cancelTask(for url: URL) {
-    session.getAllTasks { tasks in
-      for task in tasks {
-        if task.originalRequest?.url == url {
-          task.cancel()
-        }
-      }
-    }
-  }
-
   func loadImage(_ url: URL) async throws -> UIImage? {
     let request = URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad)
     let (data, response) = try await URLSession.shared.data(for: request)
