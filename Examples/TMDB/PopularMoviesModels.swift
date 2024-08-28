@@ -1,10 +1,3 @@
-//
-//  PopularMovies.swift
-//  TMDB
-//
-//  Created by Grigor Hakobyan on 09.11.21.
-//
-
 import Foundation
 import UIKit
 

@@ -1,13 +1,6 @@
-//
-//  MovieCollectionViewCell.swift
-//  TMDB
-//
-//  Created by Grigor Hakobyan on 08.11.21.
-//
-
 import UIKit
 
-final class MovieCollectionViewCell: UICollectionViewCell {
+final class MovieCell: UICollectionViewCell {
 
   private(set) lazy var movieView = makeMovieView()
 
@@ -60,7 +53,7 @@ final class MovieCollectionViewCell: UICollectionViewCell {
 
 // MARK: - View Factory
 
-extension MovieCollectionViewCell {
+extension MovieCell {
 
   private func makeMovieView() -> MovieView {
     let movieView = MovieView()

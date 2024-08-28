@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.swift
-//  TMDB
-//
-//  Created by Grigor Hakobyan on 07.11.21.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

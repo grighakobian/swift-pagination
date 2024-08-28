@@ -1,10 +1,3 @@
-//
-//  ImageLoader.swift
-//  TMDB
-//
-//  Created by Grigor Hakobyan on 27.08.24.
-//
-
 import Foundation
 import UIKit
 

@@ -1,10 +1,3 @@
-//
-//  PopularMoviesViewController.swift
-//  TMDB
-//
-//  Created by Grigor Hakobyan on 07.11.21.
-//
-
 import Pagination
 import UIKit
 
@@ -33,11 +26,12 @@ public final class PopularMoviesViewController: UICollectionViewController {
     super.init(collectionViewLayout: UICollectionViewCompositionalLayout(section: section))
 
     self.collectionView.backgroundColor = UIColor.systemBackground
-    self.collectionView.register(MovieCollectionViewCell.self)
+    self.collectionView.register(MovieCell.self, forCellWithReuseIdentifier: "MovieCell")
     self.dataSource = PopularMovies.DataSource(collectionView: collectionView) {
       collectionView, indexPath, movieViewModel in
-      let cell = collectionView.dequeueReusableCell(
-        ofType: MovieCollectionViewCell.self, at: indexPath)
+      let cell =
+        collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCell", for: indexPath)
+        as! MovieCell
       cell.movieView.imageView.setImage(from: movieViewModel.posterImageUrl)
       cell.movieView.ratingLabel.text = movieViewModel.averageRating
       return cell
