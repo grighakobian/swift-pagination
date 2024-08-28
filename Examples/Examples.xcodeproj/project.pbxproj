@@ -209,7 +209,7 @@
 			);
 			mainGroup = DD94488C2737F047001C8235;
 			packageReferences = (
-				03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../Paginator" */,
+				03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../swift-pagination" */,
 			);
 			productRefGroup = DD9448962737F047001C8235 /* Products */;
 			projectDirPath = "";
@@ -449,16 +449,16 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../Paginator" */ = {
+		03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../swift-pagination" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Paginator;
+			relativePath = ../../swift-pagination;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		DDD5B4562C7B4A0C0090AB6E /* Pagination */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../Paginator" */;
+			package = 03A009DE2C725F00009A9429 /* XCLocalSwiftPackageReference "../../swift-pagination" */;
 			productName = Pagination;
 		};
 /* End XCSwiftPackageProductDependency section */
