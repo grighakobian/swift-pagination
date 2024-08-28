@@ -1,10 +1,3 @@
-//
-//  ImageLoader.swift
-//  TMDB
-//
-//  Created by Grigor Hakobyan on 27.08.24.
-//
-
 import Foundation
 import UIKit
 
@@ -16,16 +9,6 @@ final class ImageLoader {
     self.session = URLSession(configuration: .default)
     self.session.configuration.urlCache = URLCache.shared
     self.session.configuration.requestCachePolicy = .returnCacheDataElseLoad
-  }
-
-  func cancelTask(for url: URL) {
-    session.getAllTasks { tasks in
-      for task in tasks {
-        if task.originalRequest?.url == url {
-          task.cancel()
-        }
-      }
-    }
   }
 
   func loadImage(_ url: URL) async throws -> UIImage? {
