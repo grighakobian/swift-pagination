@@ -24,3 +24,7 @@ format:
 		--parallel \
 		--recursive \
 		./Examples ./Package.swift ./Sources ./Tests
+
+define udid_for
+$(shell xcrun simctl list devices available '$(1)' | grep '$(2)' | sort -r | head -1 | awk -F '[()]' '{ print $$(NF-3) }')
+endef
