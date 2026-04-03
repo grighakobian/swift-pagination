@@ -11,8 +11,8 @@ struct PaginationTests {
 
   @Test("Scroll view triggers delegate when scrolled past threshold")
   func scrollViewIntegration() {
-    let scrollView = MockScrollView()
-    let delegate = MockPaginationDelegate()
+    let scrollView = FakeScrollView()
+    let delegate = SpyPaginationDelegate()
     let screenHeight: CGFloat = 100
     scrollView.bounds = .verticalRect(height: screenHeight)
     scrollView.contentSize = .verticalSize(height: 3 * screenHeight)
@@ -25,8 +25,8 @@ struct PaginationTests {
 
   @Test("Table view triggers delegate when scrolled past threshold")
   func tableViewIntegration() {
-    let tableView = MockTableView()
-    let delegate = MockPaginationDelegate()
+    let tableView = FakeTableView()
+    let delegate = SpyPaginationDelegate()
     let screenHeight: CGFloat = 100
     tableView.bounds = .verticalRect(height: screenHeight)
     tableView.contentSize = .verticalSize(height: 3 * screenHeight)
@@ -40,10 +40,10 @@ struct PaginationTests {
   @Test("Collection view triggers delegate when scrolled past threshold")
   func collectionViewIntegration() {
     let screenHeight: CGFloat = 100
-    let collectionView = MockCollectionView(
+    let collectionView = FakeCollectionView(
       frame: .horizontalRect(width: screenHeight),
-      collectionViewLayout: MockCollectionViewLayout())
-    let delegate = MockPaginationDelegate()
+      collectionViewLayout: StubCollectionViewLayout())
+    let delegate = SpyPaginationDelegate()
     collectionView.contentSize = .horizontalSize(width: screenHeight * 3)
     collectionView.pagination.delegate = delegate
     collectionView.pagination.direction = .horizontal

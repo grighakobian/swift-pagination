@@ -1,6 +1,6 @@
 import UIKit
 
-final class MockScrollView: UIScrollView {
+final class FakeTableView: UIScrollView {
   var isVisible: Bool = true
   var _contentOffset: CGPoint = .zero
 

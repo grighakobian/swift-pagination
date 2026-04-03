@@ -7,51 +7,51 @@ import UIKit
 @MainActor
 struct UIScrollViewPaginationTests {
 
-  let mockScrollView = UIScrollView()
-  let mockDelegate = MockPaginationDelegate()
+  let scrollView = UIScrollView()
+  let delegate = SpyPaginationDelegate()
 
   @Test("Get pagination returns associated instance with scroll view set")
   func getPagination() {
-    let pagination = mockScrollView.pagination
+    let pagination = scrollView.pagination
     #expect(pagination.scrollView != nil)
   }
 
   @Test("Set pagination associates the given instance")
   func setPagination() {
     let pagination = Pagination()
-    mockScrollView.pagination = pagination
-    #expect(mockScrollView.pagination === pagination)
+    scrollView.pagination = pagination
+    #expect(scrollView.pagination === pagination)
   }
 
   @Test("Toggle pagination enabled state")
   func togglePaginationEnabled() {
-    mockScrollView.pagination.isEnabled = false
-    #expect(!mockScrollView.pagination.isEnabled)
-    mockScrollView.pagination.isEnabled = true
-    #expect(mockScrollView.pagination.isEnabled)
+    scrollView.pagination.isEnabled = false
+    #expect(!scrollView.pagination.isEnabled)
+    scrollView.pagination.isEnabled = true
+    #expect(scrollView.pagination.isEnabled)
   }
 
   @Test("Set and unset pagination delegate")
   func setPaginationDelegate() {
-    mockScrollView.pagination.delegate = mockDelegate
-    #expect(mockScrollView.pagination.delegate != nil)
-    mockScrollView.pagination.delegate = nil
-    #expect(mockScrollView.pagination.delegate == nil)
+    scrollView.pagination.delegate = delegate
+    #expect(scrollView.pagination.delegate != nil)
+    scrollView.pagination.delegate = nil
+    #expect(scrollView.pagination.delegate == nil)
   }
 
   @Test("Set pagination direction")
   func setPaginationDirection() {
-    mockScrollView.pagination.direction = .horizontal
-    #expect(mockScrollView.pagination.direction == .horizontal)
-    mockScrollView.pagination.direction = .vertical
-    #expect(mockScrollView.pagination.direction == .vertical)
+    scrollView.pagination.direction = .horizontal
+    #expect(scrollView.pagination.direction == .horizontal)
+    scrollView.pagination.direction = .vertical
+    #expect(scrollView.pagination.direction == .vertical)
   }
 
   @Test("Set pagination leading screens for prefetching")
   func setPaginationLeadingScreens() {
-    mockScrollView.pagination.leadingScreensForPrefetching = 3
-    #expect(mockScrollView.pagination.leadingScreensForPrefetching == 3)
-    mockScrollView.pagination.leadingScreensForPrefetching = 1
-    #expect(mockScrollView.pagination.leadingScreensForPrefetching == 1)
+    scrollView.pagination.leadingScreensForPrefetching = 3
+    #expect(scrollView.pagination.leadingScreensForPrefetching == 3)
+    scrollView.pagination.leadingScreensForPrefetching = 1
+    #expect(scrollView.pagination.leadingScreensForPrefetching == 1)
   }
 }

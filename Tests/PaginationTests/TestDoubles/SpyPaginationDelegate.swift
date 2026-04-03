@@ -2,7 +2,7 @@ import Dispatch
 
 @testable import Pagination
 
-final class MockPaginationDelegate: PaginationDelegate {
+final class SpyPaginationDelegate: PaginationDelegate {
   nonisolated(unsafe) var didPrefetchNextPageCalled = false
 
   func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
