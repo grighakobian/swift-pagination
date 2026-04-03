@@ -56,18 +56,17 @@ extension ColorsViewController: PaginationDelegate {
   ) {
     Task {
       do {
-        let nextPage = currentPage + 1
-        let result = try await colorService.fetchColors(page: nextPage)
+        let response = try await colorService.fetchColors(page: currentPage + 1)
 
         var snapshot = dataSource.snapshot()
         if snapshot.sectionIdentifiers.isEmpty {
           snapshot.appendSections([0])
         }
-        snapshot.appendItems(result.colors, toSection: 0)
+        snapshot.appendItems(response.colors, toSection: 0)
         await dataSource.apply(snapshot)
 
-        currentPage = nextPage
-        pagination.isEnabled = nextPage < result.totalPages
+        currentPage = response.page
+        pagination.isEnabled = response.page < response.totalPages
         context.finish(true)
       } catch {
         context.finish(false)

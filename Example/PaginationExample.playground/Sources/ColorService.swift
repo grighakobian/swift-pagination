@@ -1,11 +1,18 @@
 import UIKit
 
+/// The response returned by a color service.
+public struct ColorResponse {
+  public let colors: [Color]
+  public let page: Int
+  public let totalPages: Int
+}
+
 /// A service that fetches pages of colors.
 public protocol ColorService {
   /// Fetches a page of colors.
   /// - Parameter page: The page number to fetch (1-indexed).
-  /// - Returns: A tuple containing the colors and total number of pages.
-  func fetchColors(page: Int) async throws -> (colors: [Color], totalPages: Int)
+  /// - Returns: A `ColorResponse` containing the colors, current page, and total pages.
+  func fetchColors(page: Int) async throws -> ColorResponse
 }
 
 /// A color service implementation that generates random colors with a simulated network delay.
@@ -43,7 +50,7 @@ public final class ColorServiceImpl: ColorService {
     ("Violet", UIColor(red: 0.54, green: 0.23, blue: 0.78, alpha: 1)),
   ]
 
-  public func fetchColors(page: Int) async throws -> (colors: [Color], totalPages: Int) {
+  public func fetchColors(page: Int) async throws -> ColorResponse {
     try await Task.sleep(for: .seconds(delay))
 
     let colors = (0..<pageSize).map { index in
@@ -52,6 +59,6 @@ public final class ColorServiceImpl: ColorService {
       return Color(name: "\(entry.name) \(globalIndex + 1)", color: entry.color)
     }
 
-    return (colors, totalPages)
+    return ColorResponse(colors: colors, page: page, totalPages: totalPages)
   }
 }
