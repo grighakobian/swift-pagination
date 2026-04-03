@@ -1,7 +1,7 @@
 import UIKit
 
 /// A simple model representing a named color.
-public struct Color: Hashable {
+public struct Color: Hashable, Sendable {
   public let name: String
   public let color: UIColor
 

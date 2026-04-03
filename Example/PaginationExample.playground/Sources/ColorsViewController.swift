@@ -40,6 +40,7 @@ public final class ColorsViewController: UICollectionViewController {
     collectionView.dataSource = dataSource
     collectionView.pagination.delegate = self
     collectionView.pagination.direction = .vertical
+    collectionView.pagination.leadingScreensForPrefetching = 1.5
   }
 
   required init?(coder: NSCoder) {
