@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import UIKit
 
 final class FakeTableView: UITableView {
@@ -23,3 +24,4 @@ final class FakeTableView: UITableView {
     self.contentOffset = contentOffset
   }
 }
+#endif

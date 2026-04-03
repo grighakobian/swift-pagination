@@ -1,14 +1,14 @@
-#if canImport(UIKit)
+#if canImport(AppKit)
+import AppKit
 import Testing
-import UIKit
 
 @testable import Pagination
 
-@Suite("UIScrollView Pagination")
+@Suite("NSScrollView Pagination")
 @MainActor
-struct UIScrollViewPaginationTests {
+struct NSScrollViewPaginationTests {
 
-  let scrollView = UIScrollView()
+  let scrollView = NSScrollView()
   let delegate = SpyPaginationDelegate()
 
   @Test("Get pagination returns associated instance with scroll view set")
