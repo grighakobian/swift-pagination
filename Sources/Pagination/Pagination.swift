@@ -122,9 +122,9 @@ import UIKit
       \.contentOffset,
       options: [.old, .new]
     ) { [weak self] scrollView, change in
-      guard let pagination = self else { return }
+      guard let self else { return }
       MainActor.assumeIsolated {
-        pagination.prefetchIfNeeded(
+        prefetchIfNeeded(
           scrollView: scrollView,
           delegate: delegate,
           change: change)
