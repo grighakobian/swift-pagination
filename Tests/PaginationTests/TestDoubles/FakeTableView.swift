@@ -1,6 +1,6 @@
 import UIKit
 
-final class FakeTableView: UIScrollView {
+final class FakeTableView: UITableView {
   var isVisible: Bool = true
   var _contentOffset: CGPoint = .zero
 
