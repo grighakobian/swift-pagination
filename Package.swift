@@ -15,17 +15,11 @@ let package = Package(
   targets: [
     .target(
       name: "Pagination",
-      path: "Sources/Pagination",
-      swiftSettings: [
-        .swiftLanguageMode(.v6),
-      ]
+      path: "Sources/Pagination"
     ),
     .testTarget(
       name: "PaginationTests",
-      dependencies: ["Pagination"],
-      swiftSettings: [
-        .swiftLanguageMode(.v6),
-      ]
+      dependencies: ["Pagination"]
     ),
   ]
 )
