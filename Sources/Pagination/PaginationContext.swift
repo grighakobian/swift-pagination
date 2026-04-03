@@ -7,7 +7,7 @@ import Foundation
 @objcMembers public final class PaginationContext: NSObject, @unchecked Sendable {
 
   /// Represents the various states a pagination context can be in.
-  public enum State {
+  public enum State: Sendable {
     /// The context is idle, awaiting the start of a pagination operation.
     case idle
     /// The context is currently in the process of fetching new data.
