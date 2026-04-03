@@ -1,8 +1,7 @@
-import Foundation
 import UIKit
 
 /// A protocol that defines methods for handling pagination.
-@objc public protocol PaginationDelegate: AnyObject {
+@objc public protocol PaginationDelegate: AnyObject, Sendable {
   /// Called when the pagination has requested the next page of data.
   /// - Parameters:
   ///   - pagination: The pagination instance that requested the next page.
@@ -58,7 +57,8 @@ import UIKit
 /// > Warning: It is mandatory to call `context.finish(_:)` with either `true` or `false` once the data loading is complete, to accurately reflect the pagination state.
 ///
 /// This class provides methods to monitor scroll view events and manage pagination state efficiently.
-@objcMembers open class Pagination: NSObject {
+@MainActor
+@objcMembers public final class Pagination: NSObject {
   /// The scroll view associated with the paginator.
   ///
   /// This scroll view is monitored for scroll events to trigger pagination.
@@ -121,11 +121,14 @@ import UIKit
     observation = scrollView.observe(
       \.contentOffset,
       options: [.old, .new]
-    ) { [unowned self] scrollView, change in
-      prefetchIfNeeded(
-        scrollView: scrollView,
-        delegate: delegate,
-        change: change)
+    ) { [weak self] scrollView, change in
+      guard let self else { return }
+      MainActor.assumeIsolated {
+        prefetchIfNeeded(
+          scrollView: scrollView,
+          delegate: delegate,
+          change: change)
+      }
     }
   }
 

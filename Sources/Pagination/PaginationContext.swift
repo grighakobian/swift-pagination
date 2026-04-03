@@ -3,10 +3,11 @@ import Foundation
 /// A `PaginationContext` is responsible for managing and tracking the state of a pagination operation in a scrollable view.
 ///
 /// This class ensures thread safety and provides methods to control the state of pagination, making it suitable for use in complex, asynchronous operations that require reliable state management.
-@objcMembers public final class PaginationContext: NSObject {
+/// Concurrency safety is enforced via `NSLock`, so it is safe to pass across actors.
+@objcMembers public final class PaginationContext: NSObject, @unchecked Sendable {
 
   /// Represents the various states a pagination context can be in.
-  public enum State {
+  public enum State: Sendable {
     /// The context is idle, awaiting the start of a pagination operation.
     case idle
     /// The context is currently in the process of fetching new data.

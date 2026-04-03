@@ -1,28 +1,31 @@
-import XCTest
+import Testing
 
 @testable import Pagination
 
-final class PaginationDirectionTests: XCTestCase {
+@Suite("PaginationDirection")
+struct PaginationDirectionTests {
 
-  func testVerticalDirection() {
-    let paginationDirection: PaginationDirection = .vertical
-    XCTAssertTrue(paginationDirection.description == "vertical")
-    XCTAssertFalse(paginationDirection.contains(.left))
-    XCTAssertFalse(paginationDirection.contains(.right))
-    XCTAssertFalse(paginationDirection.contains(.horizontal))
-    XCTAssertTrue(paginationDirection.contains(.up))
-    XCTAssertTrue(paginationDirection.contains(.down))
-    XCTAssertTrue(paginationDirection.contains(.vertical))
+  @Test("Vertical direction contains up, down, and vertical")
+  func verticalDirection() {
+    let direction: PaginationDirection = .vertical
+    #expect(direction.description == "vertical")
+    #expect(!direction.contains(.left))
+    #expect(!direction.contains(.right))
+    #expect(!direction.contains(.horizontal))
+    #expect(direction.contains(.up))
+    #expect(direction.contains(.down))
+    #expect(direction.contains(.vertical))
   }
 
-  func testHorzontalDirection() {
-    let paginationDirection: PaginationDirection = .horizontal
-    XCTAssertTrue(paginationDirection.description == "horizontal")
-    XCTAssertTrue(paginationDirection.contains(.left))
-    XCTAssertTrue(paginationDirection.contains(.right))
-    XCTAssertTrue(paginationDirection.contains(.horizontal))
-    XCTAssertFalse(paginationDirection.contains(.up))
-    XCTAssertFalse(paginationDirection.contains(.down))
-    XCTAssertFalse(paginationDirection.contains(.vertical))
+  @Test("Horizontal direction contains left, right, and horizontal")
+  func horizontalDirection() {
+    let direction: PaginationDirection = .horizontal
+    #expect(direction.description == "horizontal")
+    #expect(direction.contains(.left))
+    #expect(direction.contains(.right))
+    #expect(direction.contains(.horizontal))
+    #expect(!direction.contains(.up))
+    #expect(!direction.contains(.down))
+    #expect(!direction.contains(.vertical))
   }
 }

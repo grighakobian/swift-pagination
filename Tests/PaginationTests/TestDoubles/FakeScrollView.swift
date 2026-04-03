@@ -1,6 +1,6 @@
 import UIKit
 
-final class MockCollectionView: UICollectionView {
+final class FakeScrollView: UIScrollView {
   var isVisible: Bool = true
   var _contentOffset: CGPoint = .zero
 
@@ -21,13 +21,5 @@ final class MockCollectionView: UICollectionView {
 
   override func setContentOffset(_ contentOffset: CGPoint, animated: Bool) {
     self.contentOffset = contentOffset
-  }
-}
-
-final class MockCollectionViewLayout: UICollectionViewLayout {
-  var _flipsHorizontallyInOppositeLayoutDirection: Bool = true
-
-  override var flipsHorizontallyInOppositeLayoutDirection: Bool {
-    return _flipsHorizontallyInOppositeLayoutDirection
   }
 }
