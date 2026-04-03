@@ -1,59 +1,57 @@
-import XCTest
+import Testing
+import UIKit
 
 @testable import Pagination
 
+@Suite("UIScrollView Pagination")
 @MainActor
-final class UIScrollViewPaginationTests: XCTestCase {
+struct UIScrollViewPaginationTests {
 
-  var mockScrollView: UIScrollView!
-  var mockDelegate: MockPaginationDelegate!
+  let mockScrollView = UIScrollView()
+  let mockDelegate = MockPaginationDelegate()
 
-  override func setUp() async throws {
-    mockScrollView = UIScrollView()
-    mockDelegate = MockPaginationDelegate()
-  }
-
-  override func tearDown() async throws {
-    mockScrollView = nil
-    mockDelegate = nil
-  }
-
-  func testGetPagination() {
+  @Test("Get pagination returns associated instance with scroll view set")
+  func getPagination() {
     let pagination = mockScrollView.pagination
-    XCTAssertNotNil(pagination.scrollView)
+    #expect(pagination.scrollView != nil)
   }
 
-  func testSetPagination() {
+  @Test("Set pagination associates the given instance")
+  func setPagination() {
     let pagination = Pagination()
     mockScrollView.pagination = pagination
-    XCTAssertTrue(mockScrollView.pagination === pagination)
+    #expect(mockScrollView.pagination === pagination)
   }
 
-  func testTogglePaginationEnabled() {
+  @Test("Toggle pagination enabled state")
+  func togglePaginationEnabled() {
     mockScrollView.pagination.isEnabled = false
-    XCTAssertFalse(mockScrollView.pagination.isEnabled)
+    #expect(!mockScrollView.pagination.isEnabled)
     mockScrollView.pagination.isEnabled = true
-    XCTAssertTrue(mockScrollView.pagination.isEnabled == true)
+    #expect(mockScrollView.pagination.isEnabled)
   }
 
-  func testSetPaginationDelegate() {
+  @Test("Set and unset pagination delegate")
+  func setPaginationDelegate() {
     mockScrollView.pagination.delegate = mockDelegate
-    XCTAssertNotNil(mockScrollView.pagination.delegate)
+    #expect(mockScrollView.pagination.delegate != nil)
     mockScrollView.pagination.delegate = nil
-    XCTAssertNil(mockScrollView.pagination.delegate)
+    #expect(mockScrollView.pagination.delegate == nil)
   }
 
-  func testSetPaginationDirection() {
+  @Test("Set pagination direction")
+  func setPaginationDirection() {
     mockScrollView.pagination.direction = .horizontal
-    XCTAssertTrue(mockScrollView.pagination.direction == .horizontal)
+    #expect(mockScrollView.pagination.direction == .horizontal)
     mockScrollView.pagination.direction = .vertical
-    XCTAssertTrue(mockScrollView.pagination.direction == .vertical)
+    #expect(mockScrollView.pagination.direction == .vertical)
   }
 
-  func testSetPaginationLeadingScreens() {
+  @Test("Set pagination leading screens for prefetching")
+  func setPaginationLeadingScreens() {
     mockScrollView.pagination.leadingScreensForPrefetching = 3
-    XCTAssertTrue(mockScrollView.pagination.leadingScreensForPrefetching == 3)
+    #expect(mockScrollView.pagination.leadingScreensForPrefetching == 3)
     mockScrollView.pagination.leadingScreensForPrefetching = 1
-    XCTAssertTrue(mockScrollView.pagination.leadingScreensForPrefetching == 1)
+    #expect(mockScrollView.pagination.leadingScreensForPrefetching == 1)
   }
 }

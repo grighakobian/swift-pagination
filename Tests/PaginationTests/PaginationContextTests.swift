@@ -1,53 +1,59 @@
-import XCTest
+import Testing
 
 @testable import Pagination
 
-final class PaginationContextTests: XCTestCase {
+@Suite("PaginationContext")
+struct PaginationContextTests {
 
-  func testInitialState() {
+  @Test("Initial state is idle")
+  func initialState() {
     let context = PaginationContext()
-    XCTAssertFalse(context.isFetching)
-    XCTAssertFalse(context.isCancelled)
-    XCTAssertFalse(context.isCompleted)
-    XCTAssertFalse(context.isFailed)
+    #expect(!context.isFetching)
+    #expect(!context.isCancelled)
+    #expect(!context.isCompleted)
+    #expect(!context.isFailed)
   }
 
-  func testStartPrefetching() {
+  @Test("Start transitions to fetching state")
+  func startPrefetching() {
     let context = PaginationContext()
     context.start()
-    XCTAssertTrue(context.isFetching)
-    XCTAssertFalse(context.isCancelled)
-    XCTAssertFalse(context.isCompleted)
-    XCTAssertFalse(context.isFailed)
+    #expect(context.isFetching)
+    #expect(!context.isCancelled)
+    #expect(!context.isCompleted)
+    #expect(!context.isFailed)
   }
 
-  func testCancelPrefetching() {
+  @Test("Cancel transitions to cancelled state")
+  func cancelPrefetching() {
     let context = PaginationContext()
     context.start()
     context.cancel()
-    XCTAssertFalse(context.isFetching)
-    XCTAssertTrue(context.isCancelled)
-    XCTAssertFalse(context.isCompleted)
-    XCTAssertFalse(context.isFailed)
+    #expect(!context.isFetching)
+    #expect(context.isCancelled)
+    #expect(!context.isCompleted)
+    #expect(!context.isFailed)
   }
 
-  func testFinishPrefetchingSuccessfully() {
+  @Test("Finish with true transitions to completed state")
+  func finishPrefetchingSuccessfully() {
     let context = PaginationContext()
     context.start()
     context.finish(true)
-    XCTAssertFalse(context.isFetching)
-    XCTAssertFalse(context.isCancelled)
-    XCTAssertTrue(context.isCompleted)
-    XCTAssertFalse(context.isFailed)
+    #expect(!context.isFetching)
+    #expect(!context.isCancelled)
+    #expect(context.isCompleted)
+    #expect(!context.isFailed)
   }
 
-  func testPrefetchingFailed() {
+  @Test("Finish with false transitions to failed state")
+  func prefetchingFailed() {
     let context = PaginationContext()
     context.start()
     context.finish(false)
-    XCTAssertFalse(context.isFetching)
-    XCTAssertFalse(context.isCancelled)
-    XCTAssertFalse(context.isCompleted)
-    XCTAssertTrue(context.isFailed)
+    #expect(!context.isFetching)
+    #expect(!context.isCancelled)
+    #expect(!context.isCompleted)
+    #expect(context.isFailed)
   }
 }
