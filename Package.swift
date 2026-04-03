@@ -1,10 +1,10 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.2
 import PackageDescription
 
 let package = Package(
   name: "Pagination",
   platforms: [
-    .iOS(.v12)
+    .iOS(.v13)
   ],
   products: [
     .library(
@@ -15,11 +15,17 @@ let package = Package(
   targets: [
     .target(
       name: "Pagination",
-      path: "Sources/Pagination"
+      path: "Sources/Pagination",
+      swiftSettings: [
+        .swiftLanguageMode(.v6),
+      ]
     ),
     .testTarget(
       name: "PaginationTests",
-      dependencies: ["Pagination"]
+      dependencies: ["Pagination"],
+      swiftSettings: [
+        .swiftLanguageMode(.v6),
+      ]
     ),
   ]
 )

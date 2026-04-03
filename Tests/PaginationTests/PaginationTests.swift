@@ -2,21 +2,8 @@ import XCTest
 
 @testable import Pagination
 
+@MainActor
 final class PaginationTests: XCTestCase {
-
-  var sut: Pagination!
-
-  override func setUp() {
-    super.setUp()
-
-    sut = Pagination()
-  }
-
-  override func tearDown() {
-    super.tearDown()
-
-    sut = nil
-  }
 
   func testScrollViewIntegration() {
     let scrollView = MockScrollView()
@@ -59,6 +46,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testBatchNullState() {
+    let sut = Pagination()
     // Test with default settings
     let context = PaginationContext()
     let shouldFetch = sut.shouldPrefetchNextPage(
@@ -104,6 +92,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testBatchAlreadyFetching() {
+    let sut = Pagination()
     let context = PaginationContext()
     context.start()
     let shouldFetch = sut.shouldPrefetchNextPage(
@@ -154,6 +143,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testIsNotVisible() {
+    let sut = Pagination()
     let context = PaginationContext()
     let shouldFetch = sut.shouldPrefetchNextPage(
       context: context,
@@ -203,6 +193,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testScrollDirection() {
+    let sut = Pagination()
     let directionUp = sut.detectScrollDirection(
       oldOffset: .verticalOffset(y: 1),
       newOffset: .zero
@@ -229,6 +220,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testUnsupportedScrollDirections() {
+    let sut = Pagination()
     let context = PaginationContext()
     // Test scrolling right
     let fetchRight = sut.shouldPrefetchNextPage(
@@ -400,6 +392,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testVerticalScrollToExactLeading() {
+    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
     // Scroll to 1-screen top offset, height is 1 screen, so bottom is 1 screen away from the end of content
@@ -455,6 +448,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testVerticalScrollToLessThanLeading() {
+    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
     // 3 screens of content, scroll only 1/2 of one screen
@@ -510,6 +504,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testVerticalScrollingPastContentSize() {
+    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
     // 3 screens of content, top offset to 3-screens, height 1 screen, so it's 1 screen past the leading
@@ -563,6 +558,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testHorizontalScrollToExactLeading() {
+    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
     // Scroll to 1-screen left offset, width is 1 screen, so right is 1 screen away from end of content
@@ -619,6 +615,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testHorizontalScrollToLessThanLeading() {
+    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
     // 3 screens of content, scroll only 1/2 of one screen
@@ -675,6 +672,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testHorizontalScrollingPastContentSize() {
+    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
     // 3 screens of content, offset 3 screens, width 1 screen, so it's 1 screen past the leading
@@ -730,6 +728,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testVerticalScrollingSmallContentSize() {
+    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
     // When the content size is smaller than the screen size, the target offset will always be 0
@@ -786,6 +785,7 @@ final class PaginationTests: XCTestCase {
   }
 
   func testHorizontalScrollingSmallContentSize() {
+    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
     // When the content size is smaller than the screen size, the target offset will always be 0

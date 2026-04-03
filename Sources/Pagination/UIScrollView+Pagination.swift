@@ -2,7 +2,7 @@ import ObjectiveC
 import UIKit
 
 /// A key used for associating the `Pagination` instance with a `UIScrollView` object.
-private var paginationKey: UInt8 = 0
+nonisolated(unsafe) private var paginationKey: UInt8 = 0
 /// Extension to add pagination functionality to any UIScrollView or its subclasses.
 ///
 /// This extension allows `UIScrollView`, including subclasses like `UITableView` and `UICollectionView`, to seamlessly integrate with the `Pagination` class, enabling automatic detection and handling of paginated content loading.

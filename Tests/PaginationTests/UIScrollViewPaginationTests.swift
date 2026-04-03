@@ -2,21 +2,18 @@ import XCTest
 
 @testable import Pagination
 
+@MainActor
 final class UIScrollViewPaginationTests: XCTestCase {
 
   var mockScrollView: UIScrollView!
   var mockDelegate: MockPaginationDelegate!
 
-  override func setUp() {
-    super.setUp()
-
+  override func setUp() async throws {
     mockScrollView = UIScrollView()
     mockDelegate = MockPaginationDelegate()
   }
 
-  override func tearDown() {
-    super.tearDown()
-
+  override func tearDown() async throws {
     mockScrollView = nil
     mockDelegate = nil
   }
