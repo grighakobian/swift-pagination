@@ -106,7 +106,11 @@ public typealias PlatformScrollView = NSScrollView
   public var leadingScreensForPrefetching: CGFloat
 
   /// The observation token used to observe changes in the scroll view's content offset.
+  #if canImport(UIKit)
   private(set) var observation: NSKeyValueObservation?
+  #elseif canImport(AppKit)
+  private(set) var observation: (any NSObjectProtocol)?
+  #endif
 
   /// Initializes a new instance of `Pagination` with default settings.
   public override init() {
@@ -120,6 +124,11 @@ public typealias PlatformScrollView = NSScrollView
   /// Manages the observation of the scroll view's content offset to trigger pagination.
   func togglePrefetchingEnabled() {
     guard isEnabled, let scrollView, delegate != nil else {
+      #if canImport(AppKit)
+      if let observation {
+        NotificationCenter.default.removeObserver(observation)
+      }
+      #endif
       observation = nil
       return
     }
@@ -145,25 +154,44 @@ public typealias PlatformScrollView = NSScrollView
     }
     #elseif canImport(AppKit)
     scrollView.contentView.postsBoundsChangedNotifications = true
-    observation = scrollView.contentView.observe(
-      \.bounds,
-      options: [.old, .new]
-    ) { [weak self] clipView, change in
+    var lastOffset = scrollView.contentView.bounds.origin
+    observation = NotificationCenter.default.addObserver(
+      forName: NSView.boundsDidChangeNotification,
+      object: scrollView.contentView,
+      queue: .main
+    ) { [weak self] _ in
       guard let self else { return }
       MainActor.assumeIsolated {
         guard let delegate = self.delegate,
-          let scrollView = clipView.enclosingScrollView,
-          let oldBounds = change.oldValue,
-          let newBounds = change.newValue
+          let scrollView = self.scrollView
         else { return }
+        let newOffset = scrollView.contentView.bounds.origin
         self.prefetchIfNeeded(
           scrollView: scrollView,
           delegate: delegate,
-          oldOffset: oldBounds.origin,
-          newOffset: newBounds.origin)
+          oldOffset: lastOffset,
+          newOffset: newOffset)
+        lastOffset = newOffset
       }
     }
     #endif
+
+    // Trigger an initial prefetch check for empty or small content.
+    // Deferred to the next run loop cycle so the view has been laid out.
+    DispatchQueue.main.async { [weak self] in
+      guard let self, let scrollView = self.scrollView, let delegate = self.delegate else { return }
+      let offset: CGPoint
+      #if canImport(UIKit)
+      offset = scrollView.contentOffset
+      #elseif canImport(AppKit)
+      offset = scrollView.contentView.bounds.origin
+      #endif
+      self.prefetchIfNeeded(
+        scrollView: scrollView,
+        delegate: delegate,
+        oldOffset: offset,
+        newOffset: offset)
+    }
   }
 
   /// Evaluates whether the next page of data should be prefetched based on the scroll view's current state and direction of scrolling.
@@ -195,7 +223,7 @@ public typealias PlatformScrollView = NSScrollView
     let scrollViewBounds = scrollView.contentView.bounds
     let scrollViewContentSize = scrollView.documentView?.frame.size ?? .zero
     let scrollViewContentOffset = scrollView.contentView.bounds.origin
-    let shouldRenderRTLLayout = NSApp.userInterfaceLayoutDirection == .rightToLeft
+    let shouldRenderRTLLayout = NSApp?.userInterfaceLayoutDirection == .rightToLeft
     let flipsHorizontallyInOppositeLayoutDirection = false
     #endif
 

@@ -8,7 +8,7 @@
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
 
     ColorsViewController *colorsVC = [[ColorsViewController alloc] init];
-    colorsVC.title = @"Colors (Obj-C)";
+    colorsVC.title = @"Colors";
 
     UINavigationController *nav =
         [[UINavigationController alloc] initWithRootViewController:colorsVC];
