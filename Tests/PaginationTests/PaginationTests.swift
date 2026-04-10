@@ -1,13 +1,14 @@
+import CoreGraphics
 import Testing
-import UIKit
 
 @testable import Pagination
 
-@Suite("Pagination")
-@MainActor
-struct PaginationTests {
+#if canImport(UIKit)
+import UIKit
 
-  // MARK: - Integration Tests
+@Suite("UIKit Integration")
+@MainActor
+struct UIKitIntegrationTests {
 
   @Test("Scroll view triggers delegate when scrolled past threshold")
   func scrollViewIntegration() {
@@ -51,6 +52,12 @@ struct PaginationTests {
     collectionView.setContentOffset(.horizontalOffset(x: screenHeight * 2.5), animated: false)
     #expect(delegate.didPrefetchNextPageCalled)
   }
+}
+#endif
+
+@Suite("Pagination")
+@MainActor
+struct PaginationTests {
 
   // MARK: - Batch Null State
 

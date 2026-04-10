@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import UIKit
 
 final class FakeCollectionView: UICollectionView {
@@ -31,3 +32,4 @@ final class StubCollectionViewLayout: UICollectionViewLayout {
     return _flipsHorizontallyInOppositeLayoutDirection
   }
 }
+#endif

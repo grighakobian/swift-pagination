@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import UIKit
 
 final class FakeScrollView: UIScrollView {
@@ -23,3 +24,4 @@ final class FakeScrollView: UIScrollView {
     self.contentOffset = contentOffset
   }
 }
+#endif
