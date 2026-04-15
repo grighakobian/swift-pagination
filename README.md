@@ -13,16 +13,22 @@ A flexible and easy-to-use pagination framework inspired by [Texture](https://gi
 
 ## Overview
 
-`Pagination` provides an easy-to-use API for implementing infinite scrolling in your applications. It allows seamless integration of pagination functionality in any scrollable view, whether it's a `UITableView`, `UICollectionView`, or any other scrollable container.
+`Pagination` provides an easy-to-use API for implementing infinite scrolling in your applications. It allows seamless integration of pagination functionality in any scrollable view — `UITableView`, `UICollectionView`, `NSScrollView`, or any other scrollable container.
 
-With `Pagination`, you can effortlessly manage pagination in your app by automatically detecting when a user has scrolled close to the end of the current content and triggering the fetching of the next page. The framework supports both vertical and horizontal scrolling and is designed to work seamlessly with various UI components.
+With `Pagination`, you can effortlessly manage pagination in your app by automatically detecting when a user has scrolled close to the end of the current content and triggering the fetching of the next page. The framework supports both vertical and horizontal scrolling and is designed to work seamlessly with various UI components across iOS and macOS.
 
 ### Features
 
-- Easily integrates with `UIScrollView`, `UITableView`, and `UICollectionView`.
+- Easily integrates with `UIScrollView`, `UITableView`, `UICollectionView`, and `NSScrollView`.
+- Works on both **iOS** and **macOS**.
 - Supports both `vertical` and `horizontal` scroll directions.
 - Provides customizable prefetching distance to control when the next batch of data is fetched.
 - **Objective-C Support**: Fully compatible with Objective-C projects, making it easier to integrate into existing codebases.
+
+## Requirements
+
+- iOS 13.0+ / macOS 11.0+
+- Swift 6.0+
 
 ### Getting Started
 
@@ -84,9 +90,22 @@ self.tableView.pagination.leadingScreensForPrefetching = 3;
 self.tableView.pagination.delegate = self;
 ```
 
+### macOS Integration
+
+The same API is available on macOS via `NSScrollView`:
+
+```swift
+scrollView.pagination.delegate = self
+scrollView.pagination.direction = .horizontal
+```
+
 ### Examples
 
-Check out the Example directory to see how to use Pagination in real-world scenarios.
+Check out the `Example` directory to see how to use Pagination in real-world scenarios, including:
+
+- A Swift Playground demonstrating vertical pagination on iOS
+- An Objective-C iOS app
+- A macOS app with horizontal scrolling
 
 ## Installation
 
