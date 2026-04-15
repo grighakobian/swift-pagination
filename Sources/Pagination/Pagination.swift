@@ -176,22 +176,24 @@ public typealias PlatformScrollView = NSScrollView
     }
     #endif
 
+    #if canImport(AppKit)
     // Trigger an initial prefetch check for empty or small content.
     // Deferred to the next run loop cycle so the view has been laid out.
+    // Only needed on macOS — on iOS, KVO on `contentOffset` fires naturally
+    // during the first layout pass, which covers the initial check.
     DispatchQueue.main.async { [weak self] in
-      guard let self, let scrollView = self.scrollView, let delegate = self.delegate else { return }
-      let offset: CGPoint
-      #if canImport(UIKit)
-      offset = scrollView.contentOffset
-      #elseif canImport(AppKit)
-      offset = scrollView.contentView.bounds.origin
-      #endif
+      guard let self,
+        let scrollView = self.scrollView,
+        let delegate = self.delegate
+      else { return }
+      let offset = scrollView.contentView.bounds.origin
       self.prefetchIfNeeded(
         scrollView: scrollView,
         delegate: delegate,
         oldOffset: offset,
         newOffset: offset)
     }
+    #endif
   }
 
   /// Evaluates whether the next page of data should be prefetched based on the scroll view's current state and direction of scrolling.
