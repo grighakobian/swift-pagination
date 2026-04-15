@@ -112,6 +112,11 @@ public typealias PlatformScrollView = NSScrollView
   private(set) var observation: (any NSObjectProtocol)?
   #endif
 
+  /// The content size at the moment the last successful prefetch was triggered. Used to
+  /// suppress spurious re-fetches that occur when scroll events fire after `context.finish(true)`
+  /// but before the scroll view's content size has been updated with the newly loaded data.
+  private var contentSizeAtLastFetch: CGSize = .zero
+
   /// Initializes a new instance of `Pagination` with default settings.
   public override init() {
     self.isEnabled = true
@@ -176,22 +181,25 @@ public typealias PlatformScrollView = NSScrollView
     }
     #endif
 
+    #if canImport(AppKit)
     // Trigger an initial prefetch check for empty or small content.
     // Deferred to the next run loop cycle so the view has been laid out.
+    // Only needed on macOS — on iOS, KVO on `contentOffset` fires naturally
+    // during the first layout pass, which covers the initial check.
     DispatchQueue.main.async { [weak self] in
-      guard let self, let scrollView = self.scrollView, let delegate = self.delegate else { return }
-      let offset: CGPoint
-      #if canImport(UIKit)
-      offset = scrollView.contentOffset
-      #elseif canImport(AppKit)
-      offset = scrollView.contentView.bounds.origin
-      #endif
+      guard let self, 
+      let scrollView = self.scrollView, 
+      let delegate = self.delegate else {
+        return
+      }
+      let offset = scrollView.contentView.bounds.origin
       self.prefetchIfNeeded(
         scrollView: scrollView,
         delegate: delegate,
         oldOffset: offset,
         newOffset: offset)
     }
+    #endif
   }
 
   /// Evaluates whether the next page of data should be prefetched based on the scroll view's current state and direction of scrolling.
@@ -227,6 +235,14 @@ public typealias PlatformScrollView = NSScrollView
     let flipsHorizontallyInOppositeLayoutDirection = false
     #endif
 
+    // Suppress re-fetches while the scroll view's content size is still reflecting
+    // the data from the previous fetch. Without this guard, a fast scroll could fire
+    // another prefetch right after `context.finish(true)` — before the newly loaded
+    // items have been laid out — against stale geometry.
+    if scrollViewContentSize == contentSizeAtLastFetch {
+      return
+    }
+
     if shouldPrefetchNextPage(
       context: context,
       scrollDirection: scrollDirection,
@@ -239,6 +255,7 @@ public typealias PlatformScrollView = NSScrollView
       shouldRenderRTLLayout: shouldRenderRTLLayout,
       flipsHorizontallyInOppositeLayoutDirection: flipsHorizontallyInOppositeLayoutDirection)
     {
+      contentSizeAtLastFetch = scrollViewContentSize
       context.start()
       delegate.pagination(self, prefetchNextPageWith: context)
     }

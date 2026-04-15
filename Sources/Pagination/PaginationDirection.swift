@@ -1,5 +1,5 @@
 /// Represents the pagination direction.
-@objc public enum PaginationDirection: Int {
+@objc public enum PaginationDirection: Int, Sendable {
   /// The vertical pagination direction.
   case vertical
   /// The horizontal pagination direction.
