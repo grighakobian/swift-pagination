@@ -1,9 +1,9 @@
 import ObjectiveC
 
 #if canImport(UIKit)
-import UIKit
+  import UIKit
 #elseif canImport(AppKit)
-import AppKit
+  import AppKit
 #endif
 
 /// A key used for associating the `Pagination` instance with a scroll view object.
