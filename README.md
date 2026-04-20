@@ -99,14 +99,6 @@ scrollView.pagination.delegate = self
 scrollView.pagination.direction = .horizontal
 ```
 
-### Examples
-
-Check out the `Example` directory to see how to use Pagination in real-world scenarios, including:
-
-- A Swift Playground demonstrating vertical pagination on iOS
-- An Objective-C iOS app
-- A macOS app with horizontal scrolling
-
 ## Installation
 
 You can add pagination to an Xcode project by adding it as a package dependency.
