@@ -1,11 +1,13 @@
 PLATFORM_IOS = iOS Simulator,id=$(call udid_for,iPhone)
+DERIVED_DATA_PATH = ~/.derivedData
 
 default: test-ios
 
 test-ios:
 	xcodebuild test \
 		-scheme Pagination \
-		-destination platform="$(PLATFORM_IOS)"
+		-destination platform="$(PLATFORM_IOS)" \
+		-derivedDataPath $(DERIVED_DATA_PATH)
 
 test-macos:
 	swift test

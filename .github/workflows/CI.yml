@@ -25,5 +25,15 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode_26.3.app
 
+      - name: Cache Derived Data
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.derivedData
+            .build
+          key: deriveddata-${{ matrix.platform }}-${{ hashFiles('**/Sources/**/*.swift', '**/Tests/**/*.swift', 'Package.swift') }}
+          restore-keys: |
+            deriveddata-${{ matrix.platform }}-
+
       - name: Run tests (${{ matrix.platform }})
         run: make test-${{ matrix.platform }}
