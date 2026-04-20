@@ -55,6 +55,38 @@ import Testing
   }
 #endif
 
+#if canImport(AppKit)
+  import AppKit
+
+  @Suite("AppKit Integration")
+  @MainActor
+  struct AppKitIntegrationTests {
+
+    @Test("Scroll view triggers delegate when clip view bounds change past threshold")
+    func boundsChangeTriggersPrefetch() async {
+      let screenHeight: CGFloat = 100
+      let scrollView = FakeNSScrollView(
+        frame: .verticalRect(height: screenHeight))
+      scrollView.documentView = NSView(
+        frame: .verticalRect(height: 3 * screenHeight))
+      let delegate = SpyPaginationDelegate()
+      scrollView.pagination.delegate = delegate
+      scrollView.pagination.direction = .vertical
+      scrollView.pagination.leadingScreensForPrefetching = 1
+
+      // Drain the deferred initial-prefetch check scheduled at setup time.
+      await Task.yield()
+
+      scrollView.simulateScroll(to: .verticalOffset(y: screenHeight * 2.5))
+
+      // Let the NSView.boundsDidChangeNotification observer run on the main queue.
+      await Task.yield()
+
+      #expect(delegate.didPrefetchNextPageCalled)
+    }
+  }
+#endif
+
 @Suite("Pagination")
 @MainActor
 struct PaginationTests {
@@ -68,14 +100,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .zero,
+      scrollViewContentSize: .zero,
+      scrollViewContentOffset: .zero,
       leadingScreens: 0.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .zero,
-        contentSize: .zero,
-        contentOffset: .zero,
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -86,14 +117,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .zero,
+      scrollViewContentSize: .zero,
+      scrollViewContentOffset: .zero,
       leadingScreens: 0.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .zero,
-        contentSize: .zero,
-        contentOffset: .zero,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -104,14 +134,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .zero,
+      scrollViewContentSize: .zero,
+      scrollViewContentOffset: .zero,
       leadingScreens: 0.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .zero,
-        contentSize: .zero,
-        contentOffset: .zero,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(!shouldFetch)
   }
 
@@ -125,14 +154,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -144,14 +172,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -163,14 +190,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(!shouldFetch)
   }
 
@@ -183,14 +209,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: false,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: false,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -201,14 +226,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: false,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: false,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -219,14 +243,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: false,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: false,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(!shouldFetch)
   }
 
@@ -273,14 +296,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -291,14 +313,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -309,14 +330,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .up,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -327,14 +347,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -347,14 +366,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -365,14 +383,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -383,14 +400,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .up,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -401,14 +417,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -421,14 +436,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(!shouldFetch)
   }
 
@@ -439,14 +453,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(shouldFetch)
   }
 
@@ -457,14 +470,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .up,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(!shouldFetch)
   }
 
@@ -475,14 +487,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .passingRect,
+      scrollViewContentSize: .passingSize,
+      scrollViewContentOffset: .passingPoint,
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .passingRect,
-        contentSize: .passingSize,
-        contentOffset: .passingPoint,
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(shouldFetch)
   }
 
@@ -496,14 +507,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewContentOffset: .verticalOffset(y: screen * 1.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen),
-        contentOffset: .verticalOffset(y: screen * 1.0),
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -515,14 +525,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewContentOffset: .verticalOffset(y: screen * 1.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen),
-        contentOffset: .verticalOffset(y: screen * 1.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -535,14 +544,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewContentOffset: .verticalOffset(y: screen * 1.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen),
-        contentOffset: .verticalOffset(y: screen * 1.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(shouldFetch)
   }
 
@@ -556,14 +564,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen),
+      scrollViewContentSize: .verticalSize(height: screen * 3),
+      scrollViewContentOffset: .verticalOffset(y: screen * 0.5),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen),
-        contentSize: .verticalSize(height: screen * 3),
-        contentOffset: .verticalOffset(y: screen * 0.5),
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -576,14 +583,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen),
+      scrollViewContentSize: .verticalSize(height: screen * 3),
+      scrollViewContentOffset: .verticalOffset(y: screen * 0.5),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen),
-        contentSize: .verticalSize(height: screen * 3),
-        contentOffset: .verticalOffset(y: screen * 0.5),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -597,14 +603,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen),
+      scrollViewContentSize: .verticalSize(height: screen * 3),
+      scrollViewContentOffset: .verticalOffset(y: screen * 0.5),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen),
-        contentSize: .verticalSize(height: screen * 3),
-        contentOffset: .verticalOffset(y: screen * 0.5),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(!shouldFetch)
   }
 
@@ -618,14 +623,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewContentOffset: .verticalOffset(y: screen * 3.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen),
-        contentOffset: .verticalOffset(y: screen * 3.0),
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -637,14 +641,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewContentOffset: .verticalOffset(y: screen * 3.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen),
-        contentOffset: .verticalOffset(y: screen * 3.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -656,14 +659,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen),
+      scrollViewContentOffset: .verticalOffset(y: screen * 3.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen),
-        contentOffset: .verticalOffset(y: screen * 3.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(shouldFetch)
   }
 
@@ -677,14 +679,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 1.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 1.0),
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -696,14 +697,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 1.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 1.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -716,14 +716,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 1.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 1.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(shouldFetch)
   }
 
@@ -737,14 +736,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 0.5),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 0.5),
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -757,14 +755,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 0.5),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 0.5),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -778,14 +775,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 0.5),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 0.5),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(!shouldFetch)
   }
 
@@ -799,14 +795,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 3.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 3.0),
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -818,14 +813,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 3.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 3.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(!shouldFetch)
   }
 
@@ -838,14 +832,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 3.0),
+      scrollViewContentOffset: .horizontalOffset(x: screen * 3.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 3.0),
-        contentOffset: .horizontalOffset(x: screen * 3.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(shouldFetch)
   }
 
@@ -859,14 +852,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen * 0.5),
+      scrollViewContentOffset: .verticalOffset(y: 0.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen * 0.5),
-        contentOffset: .verticalOffset(y: 0.0),
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -878,14 +870,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen * 0.5),
+      scrollViewContentOffset: .verticalOffset(y: 0.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen * 0.5),
-        contentOffset: .verticalOffset(y: 0.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -897,14 +888,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
+      isScrollViewVisible: true,
+      scrollViewBounds: .verticalRect(height: screen * 3),
+      scrollViewContentSize: .verticalSize(height: screen * 0.5),
+      scrollViewContentOffset: .verticalOffset(y: 0.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .verticalRect(height: screen * 3),
-        contentSize: .verticalSize(height: screen * 0.5),
-        contentOffset: .verticalOffset(y: 0.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(shouldFetch)
   }
 
@@ -918,14 +908,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 0.5),
+      scrollViewContentOffset: .horizontalOffset(x: 0.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 0.5),
-        contentOffset: .horizontalOffset(x: 0.0),
-        isVisible: true,
-        shouldRenderRTLLayout: false,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: false,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -937,14 +926,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 0.5),
+      scrollViewContentOffset: .horizontalOffset(x: 0.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 0.5),
-        contentOffset: .horizontalOffset(x: 0.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: false))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: false)
     #expect(shouldFetch)
   }
 
@@ -956,14 +944,13 @@ struct PaginationTests {
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
+      isScrollViewVisible: true,
+      scrollViewBounds: .horizontalRect(width: screen),
+      scrollViewContentSize: .horizontalSize(width: screen * 0.5),
+      scrollViewContentOffset: .horizontalOffset(x: 0.0),
       leadingScreens: 1.0,
-      snapshot: ScrollViewSnapshot(
-        bounds: .horizontalRect(width: screen),
-        contentSize: .horizontalSize(width: screen * 0.5),
-        contentOffset: .horizontalOffset(x: 0.0),
-        isVisible: true,
-        shouldRenderRTLLayout: true,
-        flipsHorizontallyInOppositeLayoutDirection: true))
+      shouldRenderRTLLayout: true,
+      flipsHorizontallyInOppositeLayoutDirection: true)
     #expect(shouldFetch)
   }
 }

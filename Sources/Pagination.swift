@@ -206,13 +206,40 @@
     let scrollDirection = detectScrollDirection(
       oldOffset: oldOffset,
       newOffset: newOffset)
-    let snapshot = scrollViewSnapshot(of: scrollView)
+    let isScrollViewVisible = scrollView.window != nil
+
+    #if canImport(UIKit)
+      let scrollViewBounds = scrollView.bounds
+      let scrollViewContentSize = scrollView.contentSize
+      let scrollViewContentOffset = scrollView.contentOffset
+      let shouldRenderRTLLayout =
+        UIView.userInterfaceLayoutDirection(for: scrollView.semanticContentAttribute)
+        == .rightToLeft
+      let flipsHorizontallyInOppositeLayoutDirection: Bool = {
+        if let collectionView = scrollView as? UICollectionView {
+          return collectionView.collectionViewLayout.flipsHorizontallyInOppositeLayoutDirection
+        }
+        return false
+      }()
+    #elseif canImport(AppKit)
+      let scrollViewBounds = scrollView.contentView.bounds
+      let scrollViewContentSize = scrollView.documentView?.frame.size ?? .zero
+      let scrollViewContentOffset = scrollView.contentView.bounds.origin
+      let shouldRenderRTLLayout = NSApp?.userInterfaceLayoutDirection == .rightToLeft
+      let flipsHorizontallyInOppositeLayoutDirection = false
+    #endif
+
     if shouldPrefetchNextPage(
       context: context,
       scrollDirection: scrollDirection,
       scrollableDirections: direction,
+      isScrollViewVisible: isScrollViewVisible,
+      scrollViewBounds: scrollViewBounds,
+      scrollViewContentSize: scrollViewContentSize,
+      scrollViewContentOffset: scrollViewContentOffset,
       leadingScreens: leadingScreensForPrefetching,
-      snapshot: snapshot)
+      shouldRenderRTLLayout: shouldRenderRTLLayout,
+      flipsHorizontallyInOppositeLayoutDirection: flipsHorizontallyInOppositeLayoutDirection)
     {
       context.start()
       delegate.pagination(self, prefetchNextPageWith: context)
@@ -222,85 +249,50 @@
 
 // MARK: - Helpers
 
-/// A platform-agnostic capture of the scroll-view properties needed to evaluate
-/// whether pagination should trigger.
-struct ScrollViewSnapshot {
-  let bounds: CGRect
-  let contentSize: CGSize
-  let contentOffset: CGPoint
-  let isVisible: Bool
-  let shouldRenderRTLLayout: Bool
-  let flipsHorizontallyInOppositeLayoutDirection: Bool
-}
-
-@MainActor
-func scrollViewSnapshot(of scrollView: PlatformScrollView) -> ScrollViewSnapshot {
-  #if canImport(UIKit)
-    let flipsHorizontally: Bool = {
-      if let collectionView = scrollView as? UICollectionView {
-        return collectionView.collectionViewLayout.flipsHorizontallyInOppositeLayoutDirection
-      }
-      return false
-    }()
-    return ScrollViewSnapshot(
-      bounds: scrollView.bounds,
-      contentSize: scrollView.contentSize,
-      contentOffset: scrollView.contentOffset,
-      isVisible: scrollView.window != nil,
-      shouldRenderRTLLayout:
-        UIView.userInterfaceLayoutDirection(for: scrollView.semanticContentAttribute)
-        == .rightToLeft,
-      flipsHorizontallyInOppositeLayoutDirection: flipsHorizontally)
-  #elseif canImport(AppKit)
-    return ScrollViewSnapshot(
-      bounds: scrollView.contentView.bounds,
-      contentSize: scrollView.documentView?.frame.size ?? .zero,
-      contentOffset: scrollView.contentView.bounds.origin,
-      isVisible: scrollView.window != nil,
-      shouldRenderRTLLayout: NSApp?.userInterfaceLayoutDirection == .rightToLeft,
-      flipsHorizontallyInOppositeLayoutDirection: false)
-  #endif
-}
-
 /// Determines whether the next page of data should be prefetched based on the
 /// scroll view's current state and scrolling direction.
 func shouldPrefetchNextPage(
   context: PaginationContext,
   scrollDirection: ScrollDirection,
   scrollableDirections: PaginationDirection,
+  isScrollViewVisible: Bool,
+  scrollViewBounds: CGRect,
+  scrollViewContentSize: CGSize,
+  scrollViewContentOffset: CGPoint,
   leadingScreens: CGFloat,
-  snapshot: ScrollViewSnapshot
+  shouldRenderRTLLayout: Bool,
+  flipsHorizontallyInOppositeLayoutDirection: Bool
 ) -> Bool {
   if context.isFetching {
     return false
   }
-  if leadingScreens <= 0.0 || snapshot.bounds.isEmpty {
+  if leadingScreens <= 0.0 || scrollViewBounds.isEmpty {
     return false
   }
   let offset: CGFloat
   let viewLength: CGFloat
   let contentLength: CGFloat
   if scrollableDirections == .vertical {
-    offset = snapshot.contentOffset.y
-    viewLength = snapshot.bounds.size.height
-    contentLength = snapshot.contentSize.height
+    offset = scrollViewContentOffset.y
+    viewLength = scrollViewBounds.size.height
+    contentLength = scrollViewContentSize.height
   } else {
-    offset = snapshot.contentOffset.x
-    viewLength = snapshot.bounds.size.width
-    contentLength = snapshot.contentSize.width
+    offset = scrollViewContentOffset.x
+    viewLength = scrollViewBounds.size.width
+    contentLength = scrollViewContentSize.width
   }
   let hasSmallContent = contentLength < viewLength
   if hasSmallContent {
     return true
   }
-  guard snapshot.isVisible else {
+  guard isScrollViewVisible else {
     return false
   }
   let isScrollingTowardHead: Bool = {
     if scrollDirection.contains(.up) {
       return true
     }
-    if snapshot.shouldRenderRTLLayout {
+    if shouldRenderRTLLayout {
       return scrollDirection.contains(.right)
     } else {
       return scrollDirection.contains(.left)
@@ -311,8 +303,8 @@ func shouldPrefetchNextPage(
   }
   let triggerDistance = viewLength * leadingScreens
   let remainingDistance: CGFloat = {
-    if !snapshot.flipsHorizontallyInOppositeLayoutDirection
-      && snapshot.shouldRenderRTLLayout
+    if !flipsHorizontallyInOppositeLayoutDirection
+      && shouldRenderRTLLayout
       && scrollableDirections.contains(.horizontal)
     {
       return offset
