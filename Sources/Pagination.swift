@@ -45,6 +45,7 @@
 /// extension FeedViewController: PaginationDelegate {
 ///
 ///     func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
+///         context.start()
 ///         let nextPage = currentPage + 1
 ///         feedProvider.provideFeed(page: nextPage, pageSize: 20) { [weak self] result in
 ///             switch result {
@@ -60,7 +61,7 @@
 ///     }
 /// }
 /// ```
-/// > Warning: It is mandatory to call `context.finish(_:)` with either `true` or `false` once the data loading is complete, to accurately reflect the pagination state.
+/// > Warning: It is mandatory to call `context.start()` when beginning a fetch and `context.finish(_:)` with either `true` or `false` once the data loading is complete, to accurately reflect the pagination state.
 ///
 /// This class provides methods to monitor scroll view events and manage pagination state efficiently.
 @MainActor
@@ -241,7 +242,6 @@
       shouldRenderRTLLayout: shouldRenderRTLLayout,
       flipsHorizontallyInOppositeLayoutDirection: flipsHorizontallyInOppositeLayoutDirection)
     {
-      context.start()
       delegate.pagination(self, prefetchNextPageWith: context)
     }
   }
