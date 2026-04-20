@@ -7,3 +7,4 @@ xcuserdata/
 *.xcuserstate
 DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.claude
