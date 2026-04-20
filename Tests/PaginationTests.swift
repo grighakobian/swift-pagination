@@ -55,6 +55,38 @@ import Testing
   }
 #endif
 
+#if canImport(AppKit)
+  import AppKit
+
+  @Suite("AppKit Integration")
+  @MainActor
+  struct AppKitIntegrationTests {
+
+    @Test("Scroll view triggers delegate when clip view bounds change past threshold")
+    func boundsChangeTriggersPrefetch() async {
+      let screenHeight: CGFloat = 100
+      let scrollView = FakeNSScrollView(
+        frame: .verticalRect(height: screenHeight))
+      scrollView.documentView = NSView(
+        frame: .verticalRect(height: 3 * screenHeight))
+      let delegate = SpyPaginationDelegate()
+      scrollView.pagination.delegate = delegate
+      scrollView.pagination.direction = .vertical
+      scrollView.pagination.leadingScreensForPrefetching = 1
+
+      // Drain the deferred initial-prefetch check scheduled at setup time.
+      await Task.yield()
+
+      scrollView.simulateScroll(to: .verticalOffset(y: screenHeight * 2.5))
+
+      // Let the NSView.boundsDidChangeNotification observer run on the main queue.
+      await Task.yield()
+
+      #expect(delegate.didPrefetchNextPageCalled)
+    }
+  }
+#endif
+
 @Suite("Pagination")
 @MainActor
 struct PaginationTests {
@@ -63,9 +95,8 @@ struct PaginationTests {
 
   @Test("Should not fetch in null state")
   func batchNullState() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -81,9 +112,8 @@ struct PaginationTests {
 
   @Test("Should not fetch in null state with RTL layout")
   func batchNullStateRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -99,9 +129,8 @@ struct PaginationTests {
 
   @Test("Should not fetch in null state with RTL flip layout")
   func batchNullStateRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -119,10 +148,9 @@ struct PaginationTests {
 
   @Test("Should not fetch when context is already fetching")
   func batchAlreadyFetching() {
-    let sut = Pagination()
     let context = PaginationContext()
     context.start()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -138,10 +166,9 @@ struct PaginationTests {
 
   @Test("Should not fetch when context is already fetching in RTL layout")
   func batchAlreadyFetchingRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     context.start()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -157,10 +184,9 @@ struct PaginationTests {
 
   @Test("Should not fetch when context is already fetching in RTL flip layout")
   func batchAlreadyFetchingRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     context.start()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -178,9 +204,8 @@ struct PaginationTests {
 
   @Test("Should not fetch when scroll view is not visible")
   func isNotVisible() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -196,9 +221,8 @@ struct PaginationTests {
 
   @Test("Should not fetch when scroll view is not visible in RTL layout")
   func isNotVisibleRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -214,9 +238,8 @@ struct PaginationTests {
 
   @Test("Should not fetch when scroll view is not visible in RTL flip layout")
   func isNotVisibleRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -234,8 +257,7 @@ struct PaginationTests {
 
   @Test("Detects upward scroll direction")
   func scrollDirectionUp() {
-    let sut = Pagination()
-    let direction = sut.detectScrollDirection(
+    let direction = detectScrollDirection(
       oldOffset: .verticalOffset(y: 1),
       newOffset: .zero)
     #expect(direction == .up)
@@ -243,8 +265,7 @@ struct PaginationTests {
 
   @Test("Detects downward scroll direction")
   func scrollDirectionDown() {
-    let sut = Pagination()
-    let direction = sut.detectScrollDirection(
+    let direction = detectScrollDirection(
       oldOffset: .zero,
       newOffset: .verticalOffset(y: 1))
     #expect(direction == .down)
@@ -252,8 +273,7 @@ struct PaginationTests {
 
   @Test("Detects rightward scroll direction")
   func scrollDirectionRight() {
-    let sut = Pagination()
-    let direction = sut.detectScrollDirection(
+    let direction = detectScrollDirection(
       oldOffset: .zero,
       newOffset: .horizontalOffset(x: 1))
     #expect(direction == .right)
@@ -261,8 +281,7 @@ struct PaginationTests {
 
   @Test("Detects leftward scroll direction")
   func scrollDirectionLeft() {
-    let sut = Pagination()
-    let direction = sut.detectScrollDirection(
+    let direction = detectScrollDirection(
       oldOffset: .horizontalOffset(x: 1),
       newOffset: .zero)
     #expect(direction == .left)
@@ -272,9 +291,8 @@ struct PaginationTests {
 
   @Test("Should fetch for scrolling right in horizontal direction")
   func fetchScrollingRight() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
@@ -290,9 +308,8 @@ struct PaginationTests {
 
   @Test("Should fetch for scrolling down in vertical direction")
   func fetchScrollingDown() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -308,9 +325,8 @@ struct PaginationTests {
 
   @Test("Should not fetch for scrolling up in vertical direction")
   func noFetchScrollingUp() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .up,
       scrollableDirections: .vertical,
@@ -326,9 +342,8 @@ struct PaginationTests {
 
   @Test("Should not fetch for scrolling left in horizontal direction")
   func noFetchScrollingLeft() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
@@ -346,9 +361,8 @@ struct PaginationTests {
 
   @Test("Should not fetch for scrolling right in RTL layout")
   func noFetchScrollingRightRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
@@ -364,9 +378,8 @@ struct PaginationTests {
 
   @Test("Should fetch for scrolling down in RTL layout")
   func fetchScrollingDownRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -382,9 +395,8 @@ struct PaginationTests {
 
   @Test("Should not fetch for scrolling up in RTL layout")
   func noFetchScrollingUpRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .up,
       scrollableDirections: .vertical,
@@ -400,9 +412,8 @@ struct PaginationTests {
 
   @Test("Should fetch for scrolling left in RTL layout")
   func fetchScrollingLeftRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
@@ -420,9 +431,8 @@ struct PaginationTests {
 
   @Test("Should not fetch for scrolling right with RTL flip layout")
   func noFetchScrollingRightRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
@@ -438,9 +448,8 @@ struct PaginationTests {
 
   @Test("Should fetch for scrolling down with RTL flip layout")
   func fetchScrollingDownRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -456,9 +465,8 @@ struct PaginationTests {
 
   @Test("Should not fetch for scrolling up with RTL flip layout")
   func noFetchScrollingUpRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .up,
       scrollableDirections: .vertical,
@@ -474,9 +482,8 @@ struct PaginationTests {
 
   @Test("Should fetch for scrolling left with RTL flip layout")
   func fetchScrollingLeftRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
@@ -494,10 +501,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when vertically scrolling to exactly 1 leading screen away")
   func verticalScrollToExactLeading() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -513,10 +519,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when vertically scrolling to exactly 1 leading screen away in RTL layout")
   func verticalScrollToExactLeadingRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -533,10 +538,9 @@ struct PaginationTests {
   @Test(
     "Fetch begins when vertically scrolling to exactly 1 leading screen away in RTL flip layout")
   func verticalScrollToExactLeadingRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -554,10 +558,9 @@ struct PaginationTests {
 
   @Test("Should not fetch when vertically scrolling less than the leading distance away")
   func verticalScrollToLessThanLeading() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -574,10 +577,9 @@ struct PaginationTests {
   @Test(
     "Should not fetch when vertically scrolling less than the leading distance away in RTL layout")
   func verticalScrollToLessThanLeadingRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -595,10 +597,9 @@ struct PaginationTests {
     "Should not fetch when vertically scrolling less than the leading distance away in RTL flip layout"
   )
   func verticalScrollToLessThanLeadingRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -616,10 +617,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when vertically scrolling past the content size")
   func verticalScrollingPastContentSize() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -635,10 +635,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when vertically scrolling past the content size in RTL layout")
   func verticalScrollingPastContentSizeRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -654,10 +653,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when vertically scrolling past the content size in RTL flip layout")
   func verticalScrollingPastContentSizeRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -675,10 +673,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when horizontally scrolling to exactly 1 leading screen away")
   func horizontalScrollToExactLeading() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .vertical,
@@ -694,10 +691,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when horizontally scrolling to exactly 1 leading screen away in RTL layout")
   func horizontalScrollToExactLeadingRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .vertical,
@@ -714,10 +710,9 @@ struct PaginationTests {
   @Test(
     "Fetch begins when horizontally scrolling to exactly 1 leading screen away in RTL flip layout")
   func horizontalScrollToExactLeadingRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .vertical,
@@ -735,10 +730,9 @@ struct PaginationTests {
 
   @Test("Should not fetch when horizontally scrolling less than the leading distance away")
   func horizontalScrollToLessThanLeading() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
@@ -755,10 +749,9 @@ struct PaginationTests {
   @Test(
     "Should fetch when horizontally scrolling less than the leading distance away in RTL layout")
   func horizontalScrollToLessThanLeadingRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
@@ -776,10 +769,9 @@ struct PaginationTests {
     "Should not fetch when horizontally scrolling less than the leading distance away in RTL flip layout"
   )
   func horizontalScrollToLessThanLeadingRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .left,
       scrollableDirections: .horizontal,
@@ -797,10 +789,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when horizontally scrolling past the content size")
   func horizontalScrollingPastContentSize() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .horizontal,
@@ -816,10 +807,9 @@ struct PaginationTests {
 
   @Test("Should not fetch when horizontally scrolling past the content size in RTL layout")
   func horizontalScrollingPastContentSizeRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .horizontal,
@@ -836,10 +826,9 @@ struct PaginationTests {
   @Test(
     "Fetch begins when horizontally scrolling past the content size with flipped RTL layout")
   func horizontalScrollingPastContentSizeRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .horizontal,
@@ -857,10 +846,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when vertical content size is smaller than the screen")
   func verticalScrollingSmallContentSize() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -876,10 +864,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when vertical content size is smaller than the screen in RTL layout")
   func verticalScrollingSmallContentSizeRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -895,10 +882,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when vertical content size is smaller than the screen in RTL flip layout")
   func verticalScrollingSmallContentSizeRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
       scrollableDirections: .vertical,
@@ -916,10 +902,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when horizontal content size is smaller than the screen")
   func horizontalScrollingSmallContentSize() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
@@ -935,10 +920,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when horizontal content size is smaller than the screen in RTL layout")
   func horizontalScrollingSmallContentSizeRTL() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,
@@ -954,10 +938,9 @@ struct PaginationTests {
 
   @Test("Fetch begins when horizontal content size is smaller than the screen in RTL flip layout")
   func horizontalScrollingSmallContentSizeRTLFlip() {
-    let sut = Pagination()
     let context = PaginationContext()
     let screen: CGFloat = 1.0
-    let shouldFetch = sut.shouldPrefetchNextPage(
+    let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .right,
       scrollableDirections: .horizontal,

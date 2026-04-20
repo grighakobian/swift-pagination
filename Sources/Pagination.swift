@@ -205,8 +205,7 @@
   ) {
     let scrollDirection = detectScrollDirection(
       oldOffset: oldOffset,
-      newOffset: newOffset
-    )
+      newOffset: newOffset)
     let isScrollViewVisible = scrollView.window != nil
 
     #if canImport(UIKit)
@@ -246,92 +245,95 @@
       delegate.pagination(self, prefetchNextPageWith: context)
     }
   }
+}
 
-  /// Determines whether the next page of data should be prefetched based on the scroll view's current state and scrolling direction.
-  func shouldPrefetchNextPage(
-    context: PaginationContext,
-    scrollDirection: ScrollDirection,
-    scrollableDirections: PaginationDirection,
-    isScrollViewVisible: Bool,
-    scrollViewBounds: CGRect,
-    scrollViewContentSize: CGSize,
-    scrollViewContentOffset: CGPoint,
-    leadingScreens: CGFloat,
-    shouldRenderRTLLayout: Bool,
-    flipsHorizontallyInOppositeLayoutDirection: Bool
-  ) -> Bool {
-    if context.isFetching {
-      return false
-    }
-    if leadingScreens <= 0.0 || scrollViewBounds.isEmpty {
-      return false
-    }
-    let offset: CGFloat
-    let viewLength: CGFloat
-    let contentLength: CGFloat
-    if scrollableDirections == .vertical {
-      offset = scrollViewContentOffset.y
-      viewLength = scrollViewBounds.size.height
-      contentLength = scrollViewContentSize.height
-    } else {
-      offset = scrollViewContentOffset.x
-      viewLength = scrollViewBounds.size.width
-      contentLength = scrollViewContentSize.width
-    }
-    let hasSmallContent = contentLength < viewLength
-    if hasSmallContent {
+// MARK: - Helpers
+
+/// Determines whether the next page of data should be prefetched based on the
+/// scroll view's current state and scrolling direction.
+func shouldPrefetchNextPage(
+  context: PaginationContext,
+  scrollDirection: ScrollDirection,
+  scrollableDirections: PaginationDirection,
+  isScrollViewVisible: Bool,
+  scrollViewBounds: CGRect,
+  scrollViewContentSize: CGSize,
+  scrollViewContentOffset: CGPoint,
+  leadingScreens: CGFloat,
+  shouldRenderRTLLayout: Bool,
+  flipsHorizontallyInOppositeLayoutDirection: Bool
+) -> Bool {
+  if context.isFetching {
+    return false
+  }
+  if leadingScreens <= 0.0 || scrollViewBounds.isEmpty {
+    return false
+  }
+  let offset: CGFloat
+  let viewLength: CGFloat
+  let contentLength: CGFloat
+  if scrollableDirections == .vertical {
+    offset = scrollViewContentOffset.y
+    viewLength = scrollViewBounds.size.height
+    contentLength = scrollViewContentSize.height
+  } else {
+    offset = scrollViewContentOffset.x
+    viewLength = scrollViewBounds.size.width
+    contentLength = scrollViewContentSize.width
+  }
+  let hasSmallContent = contentLength < viewLength
+  if hasSmallContent {
+    return true
+  }
+  guard isScrollViewVisible else {
+    return false
+  }
+  let isScrollingTowardHead: Bool = {
+    if scrollDirection.contains(.up) {
       return true
     }
-    guard isScrollViewVisible else {
-      return false
+    if shouldRenderRTLLayout {
+      return scrollDirection.contains(.right)
+    } else {
+      return scrollDirection.contains(.left)
     }
-    let isScrollingTowardHead: Bool = {
-      if scrollDirection.contains(.up) {
-        return true
-      }
-      if shouldRenderRTLLayout {
-        return scrollDirection.contains(.right)
-      } else {
-        return scrollDirection.contains(.left)
-      }
-    }()
-    if isScrollingTowardHead {
-      return false
-    }
-    let triggerDistance = viewLength * leadingScreens
-    let remainingDistance: CGFloat = {
-      if !flipsHorizontallyInOppositeLayoutDirection
-        && shouldRenderRTLLayout
-        && scrollableDirections.contains(.horizontal)
-      {
-        return offset
-      } else {
-        return contentLength - viewLength - offset
-      }
-    }()
-    return remainingDistance <= triggerDistance
+  }()
+  if isScrollingTowardHead {
+    return false
   }
+  let triggerDistance = viewLength * leadingScreens
+  let remainingDistance: CGFloat = {
+    if !flipsHorizontallyInOppositeLayoutDirection
+      && shouldRenderRTLLayout
+      && scrollableDirections.contains(.horizontal)
+    {
+      return offset
+    } else {
+      return contentLength - viewLength - offset
+    }
+  }()
+  return remainingDistance <= triggerDistance
+}
 
-  /// Detects the direction of the scroll based on the change in content offset.
-  func detectScrollDirection(
-    oldOffset: CGPoint,
-    newOffset: CGPoint
-  ) -> ScrollDirection {
-    var direction: ScrollDirection = []
-    if oldOffset.x != newOffset.x {
-      if oldOffset.x < newOffset.x {
-        direction.insert(.right)
-      } else {
-        direction.insert(.left)
-      }
+/// Detects the direction of the scroll based on the change in content offset.
+func detectScrollDirection(
+  oldOffset: CGPoint,
+  newOffset: CGPoint
+) -> ScrollDirection {
+  var direction: ScrollDirection = []
+  if oldOffset.x != newOffset.x {
+    if oldOffset.x < newOffset.x {
+      direction.insert(.right)
+    } else {
+      direction.insert(.left)
     }
-    if oldOffset.y != newOffset.y {
-      if oldOffset.y < newOffset.y {
-        direction.insert(.down)
-      } else {
-        direction.insert(.up)
-      }
-    }
-    return direction
   }
+  if oldOffset.y != newOffset.y {
+    if oldOffset.y < newOffset.y {
+      direction.insert(.down)
+    } else {
+      direction.insert(.up)
+    }
+  }
+  return direction
 }
