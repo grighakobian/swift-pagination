@@ -42,6 +42,7 @@ Implement the delegate method to fetch data for the new page
 
 ```swift
 func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
+    context.start()
     // Fetch the next page of data from your source
     fetchData(forPage: nextPage) { result in
         switch result {
@@ -58,7 +59,7 @@ func pagination(_ pagination: Pagination, prefetchNextPageWith context: Paginati
 ```
 
 > [!IMPORTANT]
-> It is essential to call `context.finish(_:)` once the data loading is complete to accurately update the pagination state.
+> It is essential to call `context.start()` when beginning a fetch and `context.finish(_:)` once the data loading is complete to accurately update the pagination state.
 
 To disable pagination, set the `isEnabled` property to `false`. This will stop pagination from monitoring the scrollable view
 
