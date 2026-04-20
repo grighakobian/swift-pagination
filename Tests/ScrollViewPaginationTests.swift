@@ -2,9 +2,9 @@ import Testing
 
 @testable import Pagination
 
-@Suite("PlatformScrollView Pagination")
+@Suite("ScrollView Pagination")
 @MainActor
-struct PlatformScrollViewPaginationTests {
+struct ScrollViewPaginationTests {
 
   let scrollView = PlatformScrollView()
   let delegate = SpyPaginationDelegate()
