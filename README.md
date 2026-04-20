@@ -3,6 +3,9 @@
 #
 
 [![CI](https://github.com/grighakobian/swift-pagination/actions/workflows/CI.yml/badge.svg)](https://github.com/grighakobian/swift-pagination/actions/workflows/CI.yml)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fgrighakobian%2Fswift-pagination%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/grighakobian/swift-pagination)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fgrighakobian%2Fswift-pagination%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/grighakobian/swift-pagination)
+
 
 A flexible and easy-to-use pagination framework inspired by [Texture](https://github.com/TextureGroup/Texture) batch fetching API.
 
@@ -81,7 +84,7 @@ collectionView.pagination.leadingScreensForPrefetching = 3
 
 ### Objective-C Integration
 
-> [!NOTE] 
+> [!NOTE]
 > `Pagination` is fully compatible with Objective-C projects. Simply import the module and use the provided APIs.
 
 ```objc
@@ -110,7 +113,7 @@ If you want to use Pagination in a SwiftPM project, it's as simple as adding it 
 
 ``` swift
 dependencies: [
-  .package(url: "https://github.com/grighakobian/swift-pagination", from: "1.0.0")
+  .package(url: "https://github.com/grighakobian/swift-pagination", from: "1.1.1")
 ]
 ```
 
