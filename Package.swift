@@ -16,11 +16,12 @@ let package = Package(
   targets: [
     .target(
       name: "Pagination",
-      path: "Sources/Pagination"
+      path: "Sources"
     ),
     .testTarget(
       name: "PaginationTests",
-      dependencies: ["Pagination"]
+      dependencies: ["Pagination"],
+      path: "Tests"
     ),
   ]
 )

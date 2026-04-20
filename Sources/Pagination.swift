@@ -1,9 +1,9 @@
 #if canImport(UIKit)
-import UIKit
-public typealias PlatformScrollView = UIScrollView
+  import UIKit
+  public typealias PlatformScrollView = UIScrollView
 #elseif canImport(AppKit)
-import AppKit
-public typealias PlatformScrollView = NSScrollView
+  import AppKit
+  public typealias PlatformScrollView = NSScrollView
 #endif
 
 /// A protocol that defines methods for handling pagination.
@@ -107,9 +107,9 @@ public typealias PlatformScrollView = NSScrollView
 
   /// The observation token used to observe changes in the scroll view's content offset.
   #if canImport(UIKit)
-  private(set) var observation: NSKeyValueObservation?
+    private(set) var observation: NSKeyValueObservation?
   #elseif canImport(AppKit)
-  private(set) var observation: (any NSObjectProtocol)?
+    private(set) var observation: (any NSObjectProtocol)?
   #endif
 
   /// Initializes a new instance of `Pagination` with default settings.
@@ -125,9 +125,9 @@ public typealias PlatformScrollView = NSScrollView
   func togglePrefetchingEnabled() {
     guard isEnabled, let scrollView, delegate != nil else {
       #if canImport(AppKit)
-      if let observation {
-        NotificationCenter.default.removeObserver(observation)
-      }
+        if let observation {
+          NotificationCenter.default.removeObserver(observation)
+        }
       #endif
       observation = nil
       return
@@ -135,64 +135,64 @@ public typealias PlatformScrollView = NSScrollView
     if observation != nil { return }
 
     #if canImport(UIKit)
-    observation = scrollView.observe(
-      \.contentOffset,
-      options: [.old, .new]
-    ) { [weak self] scrollView, change in
-      guard let self else { return }
-      MainActor.assumeIsolated {
-        guard let delegate = self.delegate,
-          let oldOffset = change.oldValue,
-          let newOffset = change.newValue
-        else { return }
-        self.prefetchIfNeeded(
-          scrollView: scrollView,
-          delegate: delegate,
-          oldOffset: oldOffset,
-          newOffset: newOffset)
+      observation = scrollView.observe(
+        \.contentOffset,
+        options: [.old, .new]
+      ) { [weak self] scrollView, change in
+        guard let self else { return }
+        MainActor.assumeIsolated {
+          guard let delegate = self.delegate,
+            let oldOffset = change.oldValue,
+            let newOffset = change.newValue
+          else { return }
+          self.prefetchIfNeeded(
+            scrollView: scrollView,
+            delegate: delegate,
+            oldOffset: oldOffset,
+            newOffset: newOffset)
+        }
       }
-    }
     #elseif canImport(AppKit)
-    scrollView.contentView.postsBoundsChangedNotifications = true
-    var lastOffset = scrollView.contentView.bounds.origin
-    observation = NotificationCenter.default.addObserver(
-      forName: NSView.boundsDidChangeNotification,
-      object: scrollView.contentView,
-      queue: .main
-    ) { [weak self] _ in
-      guard let self else { return }
-      MainActor.assumeIsolated {
-        guard let delegate = self.delegate,
-          let scrollView = self.scrollView
-        else { return }
-        let newOffset = scrollView.contentView.bounds.origin
-        self.prefetchIfNeeded(
-          scrollView: scrollView,
-          delegate: delegate,
-          oldOffset: lastOffset,
-          newOffset: newOffset)
-        lastOffset = newOffset
+      scrollView.contentView.postsBoundsChangedNotifications = true
+      var lastOffset = scrollView.contentView.bounds.origin
+      observation = NotificationCenter.default.addObserver(
+        forName: NSView.boundsDidChangeNotification,
+        object: scrollView.contentView,
+        queue: .main
+      ) { [weak self] _ in
+        guard let self else { return }
+        MainActor.assumeIsolated {
+          guard let delegate = self.delegate,
+            let scrollView = self.scrollView
+          else { return }
+          let newOffset = scrollView.contentView.bounds.origin
+          self.prefetchIfNeeded(
+            scrollView: scrollView,
+            delegate: delegate,
+            oldOffset: lastOffset,
+            newOffset: newOffset)
+          lastOffset = newOffset
+        }
       }
-    }
     #endif
 
     #if canImport(AppKit)
-    // Trigger an initial prefetch check for empty or small content.
-    // Deferred to the next run loop cycle so the view has been laid out.
-    // Only needed on macOS — on iOS, KVO on `contentOffset` fires naturally
-    // during the first layout pass, which covers the initial check.
-    DispatchQueue.main.async { [weak self] in
-      guard let self,
-        let scrollView = self.scrollView,
-        let delegate = self.delegate
-      else { return }
-      let offset = scrollView.contentView.bounds.origin
-      self.prefetchIfNeeded(
-        scrollView: scrollView,
-        delegate: delegate,
-        oldOffset: offset,
-        newOffset: offset)
-    }
+      // Trigger an initial prefetch check for empty or small content.
+      // Deferred to the next run loop cycle so the view has been laid out.
+      // Only needed on macOS — on iOS, KVO on `contentOffset` fires naturally
+      // during the first layout pass, which covers the initial check.
+      DispatchQueue.main.async { [weak self] in
+        guard let self,
+          let scrollView = self.scrollView,
+          let delegate = self.delegate
+        else { return }
+        let offset = scrollView.contentView.bounds.origin
+        self.prefetchIfNeeded(
+          scrollView: scrollView,
+          delegate: delegate,
+          oldOffset: offset,
+          newOffset: offset)
+      }
     #endif
   }
 
@@ -210,23 +210,24 @@ public typealias PlatformScrollView = NSScrollView
     let isScrollViewVisible = scrollView.window != nil
 
     #if canImport(UIKit)
-    let scrollViewBounds = scrollView.bounds
-    let scrollViewContentSize = scrollView.contentSize
-    let scrollViewContentOffset = scrollView.contentOffset
-    let shouldRenderRTLLayout =
-      UIView.userInterfaceLayoutDirection(for: scrollView.semanticContentAttribute) == .rightToLeft
-    let flipsHorizontallyInOppositeLayoutDirection: Bool = {
-      if let collectionView = scrollView as? UICollectionView {
-        return collectionView.collectionViewLayout.flipsHorizontallyInOppositeLayoutDirection
-      }
-      return false
-    }()
+      let scrollViewBounds = scrollView.bounds
+      let scrollViewContentSize = scrollView.contentSize
+      let scrollViewContentOffset = scrollView.contentOffset
+      let shouldRenderRTLLayout =
+        UIView.userInterfaceLayoutDirection(for: scrollView.semanticContentAttribute)
+        == .rightToLeft
+      let flipsHorizontallyInOppositeLayoutDirection: Bool = {
+        if let collectionView = scrollView as? UICollectionView {
+          return collectionView.collectionViewLayout.flipsHorizontallyInOppositeLayoutDirection
+        }
+        return false
+      }()
     #elseif canImport(AppKit)
-    let scrollViewBounds = scrollView.contentView.bounds
-    let scrollViewContentSize = scrollView.documentView?.frame.size ?? .zero
-    let scrollViewContentOffset = scrollView.contentView.bounds.origin
-    let shouldRenderRTLLayout = NSApp?.userInterfaceLayoutDirection == .rightToLeft
-    let flipsHorizontallyInOppositeLayoutDirection = false
+      let scrollViewBounds = scrollView.contentView.bounds
+      let scrollViewContentSize = scrollView.documentView?.frame.size ?? .zero
+      let scrollViewContentOffset = scrollView.contentView.bounds.origin
+      let shouldRenderRTLLayout = NSApp?.userInterfaceLayoutDirection == .rightToLeft
+      let flipsHorizontallyInOppositeLayoutDirection = false
     #endif
 
     if shouldPrefetchNextPage(
