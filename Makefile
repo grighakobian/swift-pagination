@@ -4,7 +4,6 @@ default: test-ios
 
 test-ios:
 	xcodebuild test \
-		-workspace Pagination.xcworkspace \
 		-scheme Pagination \
 		-destination platform="$(PLATFORM_IOS)"
 
