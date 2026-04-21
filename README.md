@@ -14,6 +14,7 @@ A flexible and easy-to-use pagination framework inspired by [Texture](https://gi
 - [Getting Started](#getting-started)
   - [Objective-C Integration](#objective-c-integration)
   - [macOS Integration](#macos-integration)
+- [Examples](#examples)
 - [Installation](#installation)
 - [License](#license)
 
@@ -105,6 +106,10 @@ The same API is available on macOS via `NSScrollView`:
 scrollView.pagination.delegate = self
 scrollView.pagination.direction = .horizontal
 ```
+
+## Examples
+
+The [`Examples`](Examples) directory contains a sample project demonstrating `Pagination` across UIKit, AppKit, and Objective-C. Generate the Xcode project by running `make examples` from the repository root.
 
 ## Installation
 
