@@ -1,3 +1,5 @@
+import ObjectiveC
+
 #if canImport(UIKit)
   import UIKit
   public typealias ScrollView = UIScrollView
@@ -6,6 +8,7 @@
   public typealias ScrollView = NSScrollView
 #endif
 
+// MARK: - ScrollView Pagination
 
 /// A key used for associating the `Pagination` instance with a scroll view object.
 nonisolated(unsafe) private var paginationKey: UInt8 = 0
