@@ -7,7 +7,7 @@ import Foundation
 @objcMembers public final class PaginationContext: NSObject, @unchecked Sendable {
 
   /// A lock to ensure thread safety when accessing or modifying the state.
-  internal let lock: NSRecursiveLock
+  private let lock: NSLock
 
   /// The current state of the pagination context, reflecting its progress through the pagination lifecycle.
   ///
@@ -19,7 +19,7 @@ import Foundation
   /// This initializer sets up the pagination context and ensures it is ready for use in managing pagination operations.
   public override init() {
     self.state = .none
-    self.lock = NSRecursiveLock()
+    self.lock = NSLock()
     super.init()
   }
 
@@ -65,6 +65,7 @@ import Foundation
   ///
   /// Use this method to drive the pagination lifecycle, e.g. `.started` when a new page is requested,
   /// `.completed` or `.failed` when the operation concludes, or `.cancelled` when it is aborted.
+  @objc(updateState:)
   public func update(state: PaginationState) {
     lock.withLock {
       self.state = state
