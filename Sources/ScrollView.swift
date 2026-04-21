@@ -30,7 +30,8 @@ extension ScrollView {
       } else {
         let pagination = Pagination()
         pagination.scrollView = self
-        objc_setAssociatedObject(self, &paginationKey, pagination, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(
+          self, &paginationKey, pagination, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return pagination
       }
     }

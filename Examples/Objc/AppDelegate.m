@@ -8,7 +8,7 @@
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
 
     RepositoriesViewController *reposVC = [[RepositoriesViewController alloc] init];
-    reposVC.title = @"Obj-C — Popular Repositories";
+    reposVC.title = @"Popular Repositories";
 
     UINavigationController *nav =
         [[UINavigationController alloc] initWithRootViewController:reposVC];

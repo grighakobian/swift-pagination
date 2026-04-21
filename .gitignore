@@ -2,7 +2,7 @@
 /.build
 /.swiftpm
 /Packages
-/*.xcodeproj
+*.xcodeproj
 xcuserdata/
 *.xcuserstate
 DerivedData/

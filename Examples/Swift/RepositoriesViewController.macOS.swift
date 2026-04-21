@@ -1,28 +1,18 @@
 #if canImport(AppKit)
 import AppKit
+import Combine
 import Pagination
-import SwiftUI
-
-/// SwiftUI wrapper so the AppKit view controller can be previewed without running the app.
-struct AppKitCaseStudy: NSViewControllerRepresentable {
-  func makeNSViewController(context: Context) -> RepositoriesViewController {
-    RepositoriesViewController()
-  }
-
-  func updateNSViewController(_ nsViewController: RepositoriesViewController, context: Context) {}
-}
 
 /// An `NSViewController` demonstrating pagination using an `NSCollectionView` with a
 /// compositional list layout.
 final class RepositoriesViewController: NSViewController {
   private static let itemIdentifier: NSUserInterfaceItemIdentifier = NSUserInterfaceItemIdentifier("RepoItem")
 
-  private let service = GitHubService()
+  private let viewModel = RepositoriesViewModel()
+  private var cancellables = Set<AnyCancellable>()
   private let scrollView: NSScrollView
   private let collectionView: NSCollectionView
-  private let dataSource: NSCollectionViewDiffableDataSource<Int, Repository>
-  private var currentPage = 0
-  private var hasMorePages = true
+  private let dataSource: NSCollectionViewDiffableDataSource<Int, RepositoryViewModel>
 
   init() {
     let collectionView = NSCollectionView()
@@ -38,13 +28,13 @@ final class RepositoriesViewController: NSViewController {
     scrollView.drawsBackground = false
     self.scrollView = scrollView
 
-    self.dataSource = NSCollectionViewDiffableDataSource<Int, Repository>(
+    self.dataSource = NSCollectionViewDiffableDataSource<Int, RepositoryViewModel>(
       collectionView: collectionView
-    ) { collectionView, indexPath, repo in
-      let item = collectionView.makeItem(
+    ) { collectionView, indexPath, item in
+      let cell = collectionView.makeItem(
         withIdentifier: Self.itemIdentifier, for: indexPath) as! RepositoryItem
-      item.configure(with: repo)
-      return item
+      cell.configure(with: item)
+      return cell
     }
 
     super.init(nibName: nil, bundle: nil)
@@ -69,8 +59,29 @@ final class RepositoriesViewController: NSViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
     scrollView.pagination.delegate = self
     scrollView.pagination.direction = .vertical
+
+    viewModel.$repositories
+      .removeDuplicates()
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] items in
+        guard let self else { return }
+        var snapshot = NSDiffableDataSourceSnapshot<Int, RepositoryViewModel>()
+        snapshot.appendSections([0])
+        snapshot.appendItems(items)
+        dataSource.apply(snapshot, animatingDifferences: true)
+      }
+      .store(in: &cancellables)
+
+    viewModel.$hasMorePages
+      .removeDuplicates()
+      .receive(on: DispatchQueue.main)
+      .sink { [weak self] hasMorePages in
+        self?.scrollView.pagination.isEnabled = hasMorePages
+      }
+      .store(in: &cancellables)
   }
 
   private static func makeLayout() -> NSCollectionViewCompositionalLayout {
@@ -122,10 +133,9 @@ final class RepositoryItem: NSCollectionViewItem {
     ])
   }
 
-  func configure(with repo: Repository) {
-    titleLabel.stringValue = repo.fullName
-    subtitleLabel.stringValue =
-      "★ \(repo.stargazersCount.formatted()) · \(repo.language ?? "—")"
+  func configure(with item: RepositoryViewModel) {
+    titleLabel.stringValue = item.title
+    subtitleLabel.stringValue = item.subtitle
   }
 }
 
@@ -136,28 +146,12 @@ extension RepositoriesViewController: @preconcurrency PaginationDelegate {
     context.update(state: .started)
     Task { @MainActor in
       do {
-        let nextPage = currentPage + 1
-        let response = try await service.fetchPopularRepositories(page: nextPage)
-        var snapshot = dataSource.snapshot()
-        if snapshot.sectionIdentifiers.isEmpty {
-          snapshot.appendSections([0])
-        }
-        snapshot.appendItems(response.items, toSection: 0)
-        dataSource.apply(snapshot, animatingDifferences: true)
-        currentPage = nextPage
-        hasMorePages = snapshot.numberOfItems < response.totalCount
-        pagination.isEnabled = hasMorePages
+        try await viewModel.fetchNextPage()
         context.update(state: .completed)
       } catch {
         context.update(state: .failed)
       }
     }
   }
-}
-
-// MARK: - Preview
-
-#Preview("AppKit — Popular Repositories") {
-  RepositoriesViewController()
 }
 #endif

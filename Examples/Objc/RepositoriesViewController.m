@@ -1,6 +1,5 @@
 #import "RepositoriesViewController.h"
-#import "GitHubService.h"
-#import "Repository.h"
+#import "Objc-Swift.h"
 @import Pagination;
 
 static NSString *const kCellReuseIdentifier = @"RepoCell";
@@ -13,12 +12,21 @@ static NSString *const kCellReuseIdentifier = @"RepoCell";
 
 @implementation RepositoryCell
 
++ (NSNumberFormatter *)starsFormatter {
+    static NSNumberFormatter *formatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [[NSNumberFormatter alloc] init];
+        formatter.numberStyle = NSNumberFormatterDecimalStyle;
+    });
+    return formatter;
+}
+
 - (void)configureWithRepository:(Repository *)repository {
     UIListContentConfiguration *content = [self defaultContentConfiguration];
     content.text = repository.fullName;
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    formatter.numberStyle = NSNumberFormatterDecimalStyle;
-    NSString *stars = [formatter stringFromNumber:@(repository.stargazersCount)];
+    NSString *stars = [[RepositoryCell starsFormatter]
+        stringFromNumber:@(repository.stargazersCount)];
     content.secondaryText = [NSString stringWithFormat:@"★ %@ · %@",
                              stars, repository.language ?: @"—"];
     self.contentConfiguration = content;
@@ -89,19 +97,18 @@ static NSString *const kCellReuseIdentifier = @"RepoCell";
     NSInteger nextPage = self.currentPage + 1;
     __weak typeof(self) weakSelf = self;
     [self.service fetchPopularRepositoriesAtPage:nextPage
-                                      completion:^(NSArray<Repository *> * _Nullable repos,
-                                                   NSInteger totalCount,
+                                      completion:^(RepositorySearchResponse * _Nullable response,
                                                    NSError * _Nullable error) {
         typeof(self) strongSelf = weakSelf;
         if (!strongSelf) return;
-        if (error || !repos) {
+        if (error || !response) {
             [context updateState:PaginationStateFailed];
             return;
         }
-        [strongSelf.repositories addObjectsFromArray:repos];
+        [strongSelf.repositories addObjectsFromArray:response.items];
         [strongSelf.collectionView reloadData];
         strongSelf.currentPage = nextPage;
-        strongSelf.hasMorePages = strongSelf.repositories.count < totalCount;
+        strongSelf.hasMorePages = strongSelf.repositories.count < response.totalCount;
         pagination.isEnabled = strongSelf.hasMorePages;
         [context updateState:PaginationStateCompleted];
     }];
