@@ -1,7 +1,5 @@
-import Foundation
-
 /// Represents the various states a pagination operation can be in.
-public enum PaginationState: Sendable {
+@objc public enum PaginationState: Int, Sendable {
   /// The pagination operation has started and is currently in progress.
   case started
   /// The pagination operation has successfully completed.
