@@ -18,7 +18,7 @@ extension PlatformScrollView {
   /// - Note: The `Pagination` instance monitors the scroll view's content offset to determine when to request additional data.
   /// This is particularly useful when implementing infinite scrolling or batch data loading in large lists.
   ///
-  /// > Warning: It is mandatory to call `context.start()` when beginning a fetch and `context.finish(_:)` with either `true` or `false` once the data loading is complete, to accurately reflect the pagination state.
+  /// > Warning: It is mandatory to call `context.update(state: .started)` when beginning a fetch and `context.update(state: .completed)` or `context.update(state: .failed)` once the data loading is complete, to accurately reflect the pagination state.
   @objc public var pagination: Pagination {
     get {
       if let pagination = objc_getAssociatedObject(self, &paginationKey) as? Pagination {

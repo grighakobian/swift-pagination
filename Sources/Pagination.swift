@@ -45,7 +45,7 @@
 /// extension FeedViewController: PaginationDelegate {
 ///
 ///     func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
-///         context.start()
+///         context.update(state: .started)
 ///         let nextPage = currentPage + 1
 ///         feedProvider.provideFeed(page: nextPage, pageSize: 20) { [weak self] result in
 ///             switch result {
@@ -53,15 +53,15 @@
 ///                 self?.currentPage = nextPage
 ///                 pagination.isEnabled = nextPage < newFeed.totalPages
 ///                 self?.reload(using: newFeed)
-///                 context.finish(true)
+///                 context.update(state: .completed)
 ///             case .failure:
-///                 context.finish(false)
+///                 context.update(state: .failed)
 ///             }
 ///         }
 ///     }
 /// }
 /// ```
-/// > Warning: It is mandatory to call `context.start()` when beginning a fetch and `context.finish(_:)` with either `true` or `false` once the data loading is complete, to accurately reflect the pagination state.
+/// > Warning: It is mandatory to call `context.update(state: .started)` when beginning a fetch and `context.update(state: .completed)` or `context.update(state: .failed)` once the data loading is complete, to accurately reflect the pagination state.
 ///
 /// This class provides methods to monitor scroll view events and manage pagination state efficiently.
 @MainActor

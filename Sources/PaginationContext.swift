@@ -18,7 +18,7 @@ import Foundation
   ///
   /// This initializer sets up the pagination context and ensures it is ready for use in managing pagination operations.
   public override init() {
-    self.state = nil
+    self.state = .none
     self.lock = NSLock()
     super.init()
   }
@@ -67,32 +67,15 @@ import Foundation
     return failed
   }
 
-  /// Starts the pagination context, transitioning it to a started state.
+  /// Updates the pagination context's state.
   ///
-  /// This method should be called when a new page of data is being requested, marking the beginning of the pagination process.
-  public func start() {
+  /// - Parameter state: The new `PaginationState` to transition the context to.
+  ///
+  /// Use this method to drive the pagination lifecycle, e.g. `.started` when a new page is requested,
+  /// `.completed` or `.failed` when the operation concludes, or `.cancelled` when it is aborted.
+  public func update(state: PaginationState) {
     lock.lock()
-    state = .started
-    lock.unlock()
-  }
-
-  /// Cancels the ongoing pagination context.
-  ///
-  /// Use this method to stop the pagination operation if it's no longer needed, such as when a user navigates away from the current view.
-  public func cancel() {
-    lock.lock()
-    state = .cancelled
-    lock.unlock()
-  }
-
-  /// Marks the pagination context as either completed or failed, based on the provided parameter.
-  ///
-  /// - Parameter isCompleted: A Boolean value indicating whether the pagination operation was successful (`true`) or if it failed (`false`).
-  ///
-  /// This method should be called once the pagination operation concludes, ensuring the context accurately reflects its final state.
-  public func finish(_ isCompleted: Bool) {
-    lock.lock()
-    state = isCompleted ? .completed : .failed
+    self.state = state
     lock.unlock()
   }
 }

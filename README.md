@@ -45,24 +45,24 @@ Implement the delegate method to fetch data for the new page
 
 ```swift
 func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
-    context.start()
+    context.update(state: .started)
     // Fetch the next page of data from your source
     fetchData(forPage: nextPage) { result in
         switch result {
         case .success(let data):
             // Append the new data and update UI.
             pagination.isEnabled = nextPage < data.totalPages
-            context.finish(true)
+            context.update(state: .completed)
         case .failure:
             // Failed to fetch data
-            context.finish(false)
+            context.update(state: .failed)
         }
     }
 }
 ```
 
 > [!IMPORTANT]
-> It is essential to call `context.start()` when beginning a fetch and `context.finish(_:)` once the data loading is complete to accurately update the pagination state.
+> It is essential to call `context.update(state: .started)` when beginning a fetch and `context.update(state: .completed)` or `context.update(state: .failed)` once the data loading is complete to accurately update the pagination state.
 
 To disable pagination, set the `isEnabled` property to `false`. This will stop pagination from monitoring the scrollable view
 

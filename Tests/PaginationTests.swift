@@ -149,7 +149,7 @@ struct PaginationTests {
   @Test("Should not fetch when context is already fetching")
   func batchAlreadyFetching() {
     let context = PaginationContext()
-    context.start()
+    context.update(state: .started)
     let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
@@ -167,7 +167,7 @@ struct PaginationTests {
   @Test("Should not fetch when context is already fetching in RTL layout")
   func batchAlreadyFetchingRTL() {
     let context = PaginationContext()
-    context.start()
+    context.update(state: .started)
     let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
@@ -185,7 +185,7 @@ struct PaginationTests {
   @Test("Should not fetch when context is already fetching in RTL flip layout")
   func batchAlreadyFetchingRTLFlip() {
     let context = PaginationContext()
-    context.start()
+    context.update(state: .started)
     let shouldFetch = shouldPrefetchNextPage(
       context: context,
       scrollDirection: .down,
