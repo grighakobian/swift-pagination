@@ -6,7 +6,7 @@ import Testing
 @MainActor
 struct ScrollViewPaginationTests {
 
-  let scrollView = PlatformScrollView()
+  let scrollView = ScrollView()
   let delegate = SpyPaginationDelegate()
 
   @Test("Get pagination returns associated instance with scroll view set")

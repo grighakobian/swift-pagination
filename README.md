@@ -11,6 +11,9 @@ A flexible and easy-to-use pagination framework inspired by [Texture](https://gi
 
 - [Overview](#overview)
 - [Requirements](#requirements)
+- [Getting Started](#getting-started)
+  - [Objective-C Integration](#objective-c-integration)
+  - [macOS Integration](#macos-integration)
 - [Installation](#installation)
 - [License](#license)
 
@@ -33,7 +36,7 @@ With `Pagination`, you can effortlessly manage pagination in your app by automat
 - iOS 13.0+ / macOS 11.0+
 - Swift 6.0+
 
-### Getting Started
+## Getting Started
 
 Implementing infinite scrolling is straightforward, especially with vertical scrolling. Set up the delegate to handle requests for new page prefetching
 
@@ -45,24 +48,24 @@ Implement the delegate method to fetch data for the new page
 
 ```swift
 func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
-    context.start()
+    context.update(state: .started)
     // Fetch the next page of data from your source
     fetchData(forPage: nextPage) { result in
         switch result {
         case .success(let data):
             // Append the new data and update UI.
             pagination.isEnabled = nextPage < data.totalPages
-            context.finish(true)
+            context.update(state: .completed)
         case .failure:
             // Failed to fetch data
-            context.finish(false)
+            context.update(state: .failed)
         }
     }
 }
 ```
 
 > [!IMPORTANT]
-> It is essential to call `context.start()` when beginning a fetch and `context.finish(_:)` once the data loading is complete to accurately update the pagination state.
+> It is essential to call `context.update(state: .started)` when beginning a fetch and `context.update(state: .completed)` or `context.update(state: .failed)` once the data loading is complete to accurately update the pagination state.
 
 To disable pagination, set the `isEnabled` property to `false`. This will stop pagination from monitoring the scrollable view
 
@@ -88,10 +91,10 @@ collectionView.pagination.leadingScreensForPrefetching = 3
 > `Pagination` is fully compatible with Objective-C projects. Simply import the module and use the provided APIs.
 
 ```objc
-self.tableView.pagination.isEnabled = YES;
-self.tableView.pagination.direction = PaginationDirectionVertical;
-self.tableView.pagination.leadingScreensForPrefetching = 3;
-self.tableView.pagination.delegate = self;
+collectionView.pagination.isEnabled = YES;
+collectionView.pagination.direction = PaginationDirectionVertical;
+collectionView.pagination.leadingScreensForPrefetching = 3;
+collectionView.pagination.delegate = self;
 ```
 
 ### macOS Integration
@@ -119,4 +122,4 @@ dependencies: [
 
 ## License
 
-Paginator is available under the MIT license. See the LICENSE file for more info.
+Pagination is available under the MIT license. See the LICENSE file for more info.

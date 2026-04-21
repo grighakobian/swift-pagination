@@ -6,8 +6,8 @@ final class SpyPaginationDelegate: PaginationDelegate {
   nonisolated(unsafe) var didPrefetchNextPageCalled = false
 
   func pagination(_ pagination: Pagination, prefetchNextPageWith context: PaginationContext) {
-    context.start()
+    context.update(state: .started)
     self.didPrefetchNextPageCalled = true
-    context.finish(true)
+    context.update(state: .completed)
   }
 }

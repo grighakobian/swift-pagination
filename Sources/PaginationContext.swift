@@ -6,105 +6,95 @@ import Foundation
 /// Concurrency safety is enforced via `NSLock`, so it is safe to pass across actors.
 @objcMembers public final class PaginationContext: NSObject, @unchecked Sendable {
 
-  /// Represents the various states a pagination context can be in.
-  public enum State: Sendable {
-    /// The context is idle, awaiting the start of a pagination operation.
-    case idle
-    /// The context is currently in the process of fetching new data.
-    case fetching
-    /// The context's operation has been cancelled.
-    case cancelled
-    /// The context has successfully completed its operation.
-    case completed
-    /// The context has encountered a failure during its operation.
-    case failed
-  }
-
   /// A lock to ensure thread safety when accessing or modifying the state.
-  internal let lock: NSLock
+  private let lock: NSLock
 
   /// The current state of the pagination context, reflecting its progress through the pagination lifecycle.
-  public private(set) var state: State
+  ///
+  /// A `nil` value indicates that no pagination operation has been started yet.
+  public private(set) var state: PaginationState?
 
-  /// Initializes a new `PaginationContext` instance with an idle state.
+  /// Initializes a new `PaginationContext` instance with no active state.
   ///
   /// This initializer sets up the pagination context and ensures it is ready for use in managing pagination operations.
   public override init() {
-    self.state = .idle
+    self.state = .none
     self.lock = NSLock()
     super.init()
   }
 
-  /// A Boolean value indicating whether the context is currently fetching data.
+  /// A Boolean value indicating whether a pagination operation has been started and is in progress.
   ///
-  /// This property is useful for checking the context’s status before initiating a new fetch operation.
-  public var isFetching: Bool {
-    var fetching: Bool
-    lock.lock()
-    fetching = state == .fetching
-    lock.unlock()
-    return fetching
+  /// This property is useful for checking the context's status before initiating a new fetch operation.
+  public var isStarted: Bool {
+    lock.withLock {
+      state == .started
+    }
   }
 
   /// A Boolean value indicating whether the context's operation has been cancelled.
   ///
   /// This property helps determine if a pagination operation was intentionally stopped before completion.
   public var isCancelled: Bool {
-    var cancelled: Bool
-    lock.lock()
-    cancelled = state == .cancelled
-    lock.unlock()
-    return cancelled
+    lock.withLock {
+      state == .cancelled
+    }
   }
 
   /// A Boolean value indicating whether the context's operation has completed.
   ///
   /// Use this property to check if the pagination operation has successfully finished.
   public var isCompleted: Bool {
-    var completed: Bool
-    lock.lock()
-    completed = state == .completed
-    lock.unlock()
-    return completed
+    lock.withLock {
+      state == .completed
+    }
   }
 
   /// A Boolean value indicating whether the context's operation has failed.
   ///
   /// This property helps identify if an error occurred during the pagination process.
   public var isFailed: Bool {
-    var failed: Bool
-    lock.lock()
-    failed = state == .failed
-    lock.unlock()
-    return failed
+    lock.withLock {
+      state == .failed
+    }
   }
 
-  /// Starts the pagination context, transitioning it to a fetching state.
+  /// Updates the pagination context's state.
   ///
-  /// This method should be called when a new page of data is being requested, marking the beginning of the pagination process.
-  public func start() {
-    lock.lock()
-    state = .fetching
-    lock.unlock()
+  /// - Parameter state: The new `PaginationState` to transition the context to.
+  ///
+  /// Use this method to drive the pagination lifecycle, e.g. `.started` when a new page is requested,
+  /// `.completed` or `.failed` when the operation concludes, or `.cancelled` when it is aborted.
+  @objc(updateState:)
+  public func update(state: PaginationState) {
+    lock.withLock {
+      self.state = state
+    }
+  }
+}
+
+// MARK: - Deprecated API
+
+extension PaginationContext {
+
+  @available(*, deprecated, renamed: "PaginationState")
+  public typealias State = PaginationState
+
+  @available(*, deprecated, renamed: "isStarted")
+  public var isFetching: Bool { isStarted }
+
+  @available(*, deprecated, renamed: "update(state:)", message: "Use update(state: .started) instead.")
+  @objc public func start() {
+    update(state: .started)
   }
 
-  /// Cancels the ongoing pagination context, resetting it to an idle state.
-  ///
-  /// Use this method to stop the pagination operation if it’s no longer needed, such as when a user navigates away from the current view.
-  public func cancel() {
-    lock.lock()
-    state = .cancelled
-    lock.unlock()
+  @available(*, deprecated, renamed: "update(state:)", message: "Use update(state: .cancelled) instead.")
+  @objc public func cancel() {
+    update(state: .cancelled)
   }
 
-  /// Marks the pagination context as either completed or failed, based on the provided parameter.
-  ///
-  /// - Parameter isCompleted: A Boolean value indicating whether the pagination operation was successful (`true`) or if it failed (`false`).
-  ///
-  /// This method should be called once the pagination operation concludes, ensuring the context accurately reflects its final state.
-  public func finish(_ isCompleted: Bool) {
-    lock.lock()
-    state = isCompleted ? .completed : .failed
-    lock.unlock()
+  @available(*, deprecated, renamed: "update(state:)", message: "Use update(state: .completed) or update(state: .failed) instead.")
+  @objc public func finish(_ isCompleted: Bool) {
+    update(state: isCompleted ? .completed : .failed)
   }
 }

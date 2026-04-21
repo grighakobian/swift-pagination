@@ -5,53 +5,54 @@ import Testing
 @Suite("PaginationContext")
 struct PaginationContextTests {
 
-  @Test("Initial state is idle")
+  @Test("Initial state is nil")
   func initialState() {
     let context = PaginationContext()
-    #expect(!context.isFetching)
+    #expect(context.state == nil)
+    #expect(!context.isStarted)
     #expect(!context.isCancelled)
     #expect(!context.isCompleted)
     #expect(!context.isFailed)
   }
 
-  @Test("Start transitions to fetching state")
-  func startPrefetching() {
+  @Test("Update to started transitions to started state")
+  func updateStarted() {
     let context = PaginationContext()
-    context.start()
-    #expect(context.isFetching)
+    context.update(state: .started)
+    #expect(context.isStarted)
     #expect(!context.isCancelled)
     #expect(!context.isCompleted)
     #expect(!context.isFailed)
   }
 
-  @Test("Cancel transitions to cancelled state")
-  func cancelPrefetching() {
+  @Test("Update to cancelled transitions to cancelled state")
+  func updateCancelled() {
     let context = PaginationContext()
-    context.start()
-    context.cancel()
-    #expect(!context.isFetching)
+    context.update(state: .started)
+    context.update(state: .cancelled)
+    #expect(!context.isStarted)
     #expect(context.isCancelled)
     #expect(!context.isCompleted)
     #expect(!context.isFailed)
   }
 
-  @Test("Finish with true transitions to completed state")
-  func finishPrefetchingSuccessfully() {
+  @Test("Update to completed transitions to completed state")
+  func updateCompleted() {
     let context = PaginationContext()
-    context.start()
-    context.finish(true)
-    #expect(!context.isFetching)
+    context.update(state: .started)
+    context.update(state: .completed)
+    #expect(!context.isStarted)
     #expect(!context.isCancelled)
     #expect(context.isCompleted)
     #expect(!context.isFailed)
   }
 
-  @Test("Finish with false transitions to failed state")
-  func prefetchingFailed() {
+  @Test("Update to failed transitions to failed state")
+  func updateFailed() {
     let context = PaginationContext()
-    context.start()
-    context.finish(false)
-    #expect(!context.isFetching)
+    context.update(state: .started)
+    context.update(state: .failed)
+    #expect(!context.isStarted)
     #expect(!context.isCancelled)
     #expect(!context.isCompleted)
     #expect(context.isFailed)
