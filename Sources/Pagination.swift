@@ -111,6 +111,13 @@
     private(set) var observation: (any NSObjectProtocol)?
   #endif
 
+  /// The content size at the moment the last prefetch was triggered, or `nil` before the
+  /// first trigger. Used to suppress redundant prefetch calls that can fire between
+  /// `context.update(state: .completed)` and the scroll view's content size being updated
+  /// with the newly-loaded data — during that window `shouldPrefetchNextPage` would otherwise
+  /// still see a remaining distance below the threshold and re-invoke the delegate.
+  private var contentSizeAtLastFetch: CGSize?
+
   /// Initializes a new instance of `Pagination` with default settings.
   public override init() {
     self.isEnabled = true
@@ -228,6 +235,13 @@
       let flipsHorizontallyInOppositeLayoutDirection = false
     #endif
 
+    // Suppress duplicate triggers while the scroll view's content size is still
+    // reflecting data from the previous fetch. Optional handling keeps the first
+    // call (empty or small content) from being suppressed.
+    if let last = contentSizeAtLastFetch, scrollViewContentSize == last {
+      return
+    }
+
     if shouldPrefetchNextPage(
       context: context,
       scrollDirection: scrollDirection,
@@ -240,6 +254,7 @@
       shouldRenderRTLLayout: shouldRenderRTLLayout,
       flipsHorizontallyInOppositeLayoutDirection: flipsHorizontallyInOppositeLayoutDirection)
     {
+      contentSizeAtLastFetch = scrollViewContentSize
       delegate.pagination(self, prefetchNextPageWith: context)
     }
   }
