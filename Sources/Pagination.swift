@@ -1,9 +1,7 @@
 #if canImport(UIKit)
   import UIKit
-  public typealias PlatformScrollView = UIScrollView
 #elseif canImport(AppKit)
   import AppKit
-  public typealias PlatformScrollView = NSScrollView
 #endif
 
 /// A protocol that defines methods for handling pagination.
@@ -71,7 +69,7 @@
   /// This scroll view is monitored for scroll events to trigger pagination.
   ///
   /// Defaults to `nil`.
-  weak var scrollView: PlatformScrollView? {
+  weak var scrollView: ScrollView? {
     didSet { togglePrefetchingEnabled() }
   }
 
@@ -199,7 +197,7 @@
 
   /// Evaluates whether the next page of data should be prefetched based on the scroll view's current state and direction of scrolling.
   func prefetchIfNeeded(
-    scrollView: PlatformScrollView,
+    scrollView: ScrollView,
     delegate: PaginationDelegate,
     oldOffset: CGPoint,
     newOffset: CGPoint
