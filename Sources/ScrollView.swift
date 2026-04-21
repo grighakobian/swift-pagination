@@ -2,10 +2,10 @@ import ObjectiveC
 
 #if canImport(UIKit)
   import UIKit
-  public typealias ScrollView = UIScrollView
+  typealias ScrollView = UIScrollView
 #elseif canImport(AppKit)
   import AppKit
-  public typealias ScrollView = NSScrollView
+  typealias ScrollView = NSScrollView
 #endif
 
 // MARK: - ScrollView Pagination
@@ -30,8 +30,7 @@ extension ScrollView {
       } else {
         let pagination = Pagination()
         pagination.scrollView = self
-        objc_setAssociatedObject(
-          self, &paginationKey, pagination, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &paginationKey, pagination, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return pagination
       }
     }
