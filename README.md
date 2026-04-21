@@ -11,6 +11,9 @@ A flexible and easy-to-use pagination framework inspired by [Texture](https://gi
 
 - [Overview](#overview)
 - [Requirements](#requirements)
+- [Getting Started](#getting-started)
+  - [Objective-C Integration](#objective-c-integration)
+  - [macOS Integration](#macos-integration)
 - [Installation](#installation)
 - [License](#license)
 
@@ -33,7 +36,7 @@ With `Pagination`, you can effortlessly manage pagination in your app by automat
 - iOS 13.0+ / macOS 11.0+
 - Swift 6.0+
 
-### Getting Started
+## Getting Started
 
 Implementing infinite scrolling is straightforward, especially with vertical scrolling. Set up the delegate to handle requests for new page prefetching
 
@@ -88,10 +91,10 @@ collectionView.pagination.leadingScreensForPrefetching = 3
 > `Pagination` is fully compatible with Objective-C projects. Simply import the module and use the provided APIs.
 
 ```objc
-self.tableView.pagination.isEnabled = YES;
-self.tableView.pagination.direction = PaginationDirectionVertical;
-self.tableView.pagination.leadingScreensForPrefetching = 3;
-self.tableView.pagination.delegate = self;
+collectionView.pagination.isEnabled = YES;
+collectionView.pagination.direction = PaginationDirectionVertical;
+collectionView.pagination.leadingScreensForPrefetching = 3;
+collectionView.pagination.delegate = self;
 ```
 
 ### macOS Integration
@@ -119,4 +122,4 @@ dependencies: [
 
 ## License
 
-Paginator is available under the MIT license. See the LICENSE file for more info.
+Pagination is available under the MIT license. See the LICENSE file for more info.
