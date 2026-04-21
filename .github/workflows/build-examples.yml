@@ -1,0 +1,42 @@
+name: Examples
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+  workflow_dispatch:
+
+concurrency:
+  group: examples-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    strategy:
+      matrix:
+        target:
+          - build-examples-ios
+          - build-examples-macos
+          - build-objc-ios
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.3.app
+
+      - name: Cache Derived Data
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.derivedData
+            .build
+          key: examples-${{ matrix.target }}-${{ hashFiles('Examples/**/*.swift', 'Examples/**/*.h', 'Examples/**/*.m', 'Examples/project.yml', 'Sources/**/*.swift', 'Package.swift') }}
+          restore-keys: |
+            examples-${{ matrix.target }}-
+
+      - name: Build (${{ matrix.target }})
+        run: make ${{ matrix.target }}
