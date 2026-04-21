@@ -5,20 +5,21 @@ import Testing
 @Suite("PaginationContext")
 struct PaginationContextTests {
 
-  @Test("Initial state is idle")
+  @Test("Initial state is nil")
   func initialState() {
     let context = PaginationContext()
-    #expect(!context.isFetching)
+    #expect(context.state == nil)
+    #expect(!context.isStarted)
     #expect(!context.isCancelled)
     #expect(!context.isCompleted)
     #expect(!context.isFailed)
   }
 
-  @Test("Start transitions to fetching state")
+  @Test("Start transitions to started state")
   func startPrefetching() {
     let context = PaginationContext()
     context.start()
-    #expect(context.isFetching)
+    #expect(context.isStarted)
     #expect(!context.isCancelled)
     #expect(!context.isCompleted)
     #expect(!context.isFailed)
@@ -29,7 +30,7 @@ struct PaginationContextTests {
     let context = PaginationContext()
     context.start()
     context.cancel()
-    #expect(!context.isFetching)
+    #expect(!context.isStarted)
     #expect(context.isCancelled)
     #expect(!context.isCompleted)
     #expect(!context.isFailed)
@@ -40,7 +41,7 @@ struct PaginationContextTests {
     let context = PaginationContext()
     context.start()
     context.finish(true)
-    #expect(!context.isFetching)
+    #expect(!context.isStarted)
     #expect(!context.isCancelled)
     #expect(context.isCompleted)
     #expect(!context.isFailed)
@@ -51,7 +52,7 @@ struct PaginationContextTests {
     let context = PaginationContext()
     context.start()
     context.finish(false)
-    #expect(!context.isFetching)
+    #expect(!context.isStarted)
     #expect(!context.isCancelled)
     #expect(!context.isCompleted)
     #expect(context.isFailed)

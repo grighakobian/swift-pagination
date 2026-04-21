@@ -263,7 +263,7 @@ func shouldPrefetchNextPage(
   shouldRenderRTLLayout: Bool,
   flipsHorizontallyInOppositeLayoutDirection: Bool
 ) -> Bool {
-  if context.isFetching {
+  if context.isStarted {
     return false
   }
   if leadingScreens <= 0.0 || scrollViewBounds.isEmpty {
