@@ -22,6 +22,8 @@ jobs:
           - build-examples-ios
           - build-examples-macos
           - build-objc-ios
+          - build-swiftui-ios
+          - build-swiftui-macos
 
     steps:
       - uses: actions/checkout@v4
