@@ -7,7 +7,7 @@ import Foundation
 @objcMembers public final class PaginationContext: NSObject, @unchecked Sendable {
 
   /// A lock to ensure thread safety when accessing or modifying the state.
-  internal let lock: NSLock
+  internal let lock: NSRecursiveLock
 
   /// The current state of the pagination context, reflecting its progress through the pagination lifecycle.
   ///
@@ -19,7 +19,7 @@ import Foundation
   /// This initializer sets up the pagination context and ensures it is ready for use in managing pagination operations.
   public override init() {
     self.state = .none
-    self.lock = NSLock()
+    self.lock = NSRecursiveLock()
     super.init()
   }
 
@@ -27,44 +27,36 @@ import Foundation
   ///
   /// This property is useful for checking the context's status before initiating a new fetch operation.
   public var isStarted: Bool {
-    var started: Bool
-    lock.lock()
-    started = state == .started
-    lock.unlock()
-    return started
+    lock.withLock {
+      state == .started
+    }
   }
 
   /// A Boolean value indicating whether the context's operation has been cancelled.
   ///
   /// This property helps determine if a pagination operation was intentionally stopped before completion.
   public var isCancelled: Bool {
-    var cancelled: Bool
-    lock.lock()
-    cancelled = state == .cancelled
-    lock.unlock()
-    return cancelled
+    lock.withLock {
+      state == .cancelled
+    }
   }
 
   /// A Boolean value indicating whether the context's operation has completed.
   ///
   /// Use this property to check if the pagination operation has successfully finished.
   public var isCompleted: Bool {
-    var completed: Bool
-    lock.lock()
-    completed = state == .completed
-    lock.unlock()
-    return completed
+    lock.withLock {
+      state == .completed
+    }
   }
 
   /// A Boolean value indicating whether the context's operation has failed.
   ///
   /// This property helps identify if an error occurred during the pagination process.
   public var isFailed: Bool {
-    var failed: Bool
-    lock.lock()
-    failed = state == .failed
-    lock.unlock()
-    return failed
+    lock.withLock {
+      state == .failed
+    }
   }
 
   /// Updates the pagination context's state.
@@ -74,8 +66,8 @@ import Foundation
   /// Use this method to drive the pagination lifecycle, e.g. `.started` when a new page is requested,
   /// `.completed` or `.failed` when the operation concludes, or `.cancelled` when it is aborted.
   public func update(state: PaginationState) {
-    lock.lock()
-    self.state = state
-    lock.unlock()
+    lock.withLock {
+      self.state = state
+    }
   }
 }
