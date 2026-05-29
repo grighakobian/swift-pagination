@@ -2,7 +2,7 @@ import Combine
 import Foundation
 
 @MainActor
-final class RepositoriesViewModel {
+final class RepositoriesViewModel: ObservableObject {
   @Published private(set) var repositories: [RepositoryViewModel] = []
   @Published private(set) var hasMorePages = true
   private(set) var currentPage = 0
@@ -23,7 +23,7 @@ final class RepositoriesViewModel {
   }
 }
 
-struct RepositoryViewModel: Hashable, Sendable {
+struct RepositoryViewModel: Hashable, Sendable, Identifiable {
   let id: Int
   let title: String
   let subtitle: String

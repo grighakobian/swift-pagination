@@ -49,3 +49,23 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
     dependencies:
       - package: Pagination
+  SwiftUIExample:
+    type: application
+    platform: iOS
+    sources:
+      - SwiftUI
+      - Shared
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: ""
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.SwiftUIExample
+        SDKROOT: auto
+        SUPPORTED_PLATFORMS: iphonesimulator iphoneos macosx
+        TARGETED_DEVICE_FAMILY: "1,2"
+    dependencies:
+      - package: Pagination
