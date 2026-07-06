@@ -12,6 +12,7 @@ A flexible and easy-to-use pagination framework inspired by [Texture](https://gi
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Getting Started](#getting-started)
+  - [SwiftUI Integration](#swiftui-integration)
   - [Objective-C Integration](#objective-c-integration)
   - [macOS Integration](#macos-integration)
 - [Examples](#examples)
@@ -30,6 +31,7 @@ With `Pagination`, you can effortlessly manage pagination in your app by automat
 - Works on both **iOS** and **macOS**.
 - Supports both `vertical` and `horizontal` scroll directions.
 - Provides customizable prefetching distance to control when the next batch of data is fetched.
+- **SwiftUI Support**: A native `.pagination` view modifier for `List`, `ScrollView`, and other scrollable containers.
 - **Objective-C Support**: Fully compatible with Objective-C projects, making it easier to integrate into existing codebases.
 
 ## Requirements
@@ -86,6 +88,28 @@ To adjust the prefetching distance, set the `leadingScreensForPrefetching` prope
 collectionView.pagination.leadingScreensForPrefetching = 3
 ```
 
+### SwiftUI Integration
+
+In SwiftUI, attach pagination to the nearest enclosing scroll view (`List`, `ScrollView`, and similar containers) with the `.pagination(state:action:)` modifier. The `action` is an async throwing closure that fetches the next page — returning marks the page `.completed`, throwing marks it `.failed`, so there's no `PaginationContext` to manage yourself.
+
+```swift
+List(viewModel.repositories) { repository in
+    RepositoryRow(repository: repository)
+}
+.paginationDirection(.vertical)
+.paginationLeadingScreens(2.0)
+.paginationEnabled(viewModel.hasMorePages)
+.pagination(state: $viewModel.state) {
+    try await viewModel.fetchNextPage()
+}
+```
+
+The `state` binding mirrors the lifecycle (`.started` → `.completed` / `.failed`) — store it in a `@State` var or a settable `@Published var state: PaginationState?` on your model. The other modifiers are read from the environment and can be applied to any ancestor:
+
+- `.paginationDirection(_:)` — scroll direction to monitor (default `.vertical`).
+- `.paginationLeadingScreens(_:)` — prefetch distance in leading screens (default `2.0`; `0` disables prefetching).
+- `.paginationEnabled(_:)` — enables or disables prefetching; bind it to your "has more pages" flag to stop at the last page.
+
 ### Objective-C Integration
 
 > [!NOTE]
@@ -109,7 +133,7 @@ scrollView.pagination.direction = .horizontal
 
 ## Examples
 
-The [`Examples`](Examples) directory contains a sample project demonstrating `Pagination` across UIKit, AppKit, and Objective-C. Generate the Xcode project by running `make examples` from the repository root.
+The [`Examples`](Examples) directory contains a sample project demonstrating `Pagination` across SwiftUI, UIKit, AppKit, and Objective-C. Generate the Xcode project by running `make examples` from the repository root.
 
 ## Installation
 
